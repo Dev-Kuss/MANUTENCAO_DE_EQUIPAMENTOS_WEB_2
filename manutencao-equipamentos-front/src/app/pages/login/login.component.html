@@ -1,1 +1,35 @@
-<p>login works!</p>
+<div class="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+    <h2 class="text-2xl font-semibold mb-6 text-center text-gray-700">Login</h2>
+  
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-600">E-mail:</label>
+        <input id="email" formControlName="email" type="email" placeholder="Digite seu e-mail" 
+               class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" 
+             class="text-red-500 text-xs mt-1">
+          E-mail inválido.
+        </div>
+      </div>
+  
+      <div>
+        <label for="senha" class="block text-sm font-medium text-gray-600">Senha:</label>
+        <input id="senha" formControlName="senha" type="password" placeholder="Digite sua senha" 
+               class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        <div *ngIf="loginForm.get('senha')?.invalid && loginForm.get('senha')?.touched" 
+             class="text-red-500 text-xs mt-1">
+          Senha inválida (mínimo 4 números).
+        </div>
+      </div>
+  
+      <button type="submit" 
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+        Entrar
+      </button>
+      
+      <div *ngIf="loginError" class="text-red-500 text-center text-sm mt-2">
+        E-mail ou senha incorretos.
+      </div>
+    </form>
+  </div>
+  
