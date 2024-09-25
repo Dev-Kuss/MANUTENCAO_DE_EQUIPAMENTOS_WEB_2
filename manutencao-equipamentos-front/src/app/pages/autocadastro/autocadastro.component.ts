@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-autocadastro',
@@ -13,7 +14,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 export class AutocadastroComponent {
   autocadastroForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private http: HttpClient) {
     this.autocadastroForm = this.fb.group({
       cpf: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
       nome: ['', Validators.required],
@@ -42,17 +43,36 @@ export class AutocadastroComponent {
   // TODO: substituir pela API ViaCEP
   buscarCEP() {
     const cep = this.autocadastroForm.get('cep')?.value;
+    
     if (cep && cep.length === 8) {
-      // Simular preenchimento dos campos de endereço
-      this.autocadastroForm.patchValue({
-        logradouro: 'Rua Exemplo',
-        bairro: 'Bairro Exemplo',
-        cidade: 'Cidade Exemplo',
-        estado: 'Estado Exemplo'
-      });
-      console.log('Dados do endereço preenchidos para o CEP:', cep);
-    } else {
-      alert('Por favor, insira um CEP válido.');
+      this.http.get(`https://viacep.com.br/ws/${cep}/json/`).subscribe(
+        (dados: any) => {
+          if (!dados.erro) {
+            this.autocadastroForm.patchValue({
+              logradouro: dados.logradouro,
+              bairro: dados.bairro,
+              cidade: dados.localidade,
+              estado: dados.uf
+            });
+          } else {
+            this.limparEndereco();
+            alert('CEP não encontrado.')
+          }
+        },
+        (error) => {
+          console.error('Erro ao buscar o CEP', error);
+          this.limparEndereco();
+        }
+      );
     }
+  }
+
+  limparEndereco() {
+    this.autocadastroForm.patchValue({
+      logradouro: '',
+      bairro: '',
+      cidade: '',
+      estado: ''
+    });
   }
 }

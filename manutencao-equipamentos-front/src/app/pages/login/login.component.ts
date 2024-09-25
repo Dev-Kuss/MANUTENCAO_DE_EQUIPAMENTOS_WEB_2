@@ -1,14 +1,17 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html'
+  templateUrl: './login.component.html',
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule],
 })
 
 export class LoginComponent {
   loginForm: FormGroup;
-  loginError = false;
+  loginError = false; 
 
   constructor(private fb: FormBuilder) {
     this.loginForm = this.fb.group({
