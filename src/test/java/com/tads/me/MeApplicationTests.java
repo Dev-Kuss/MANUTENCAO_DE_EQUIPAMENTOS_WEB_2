@@ -1,10 +1,10 @@
-package com.example.manutencaoequipamentos;
+package com.tads.me;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ManutencaoequipamentosApplicationTests {
+class MeApplicationTests {
 
 	@Test
 	void contextLoads() {

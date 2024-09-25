@@ -1,13 +1,13 @@
-package com.example.manutencaoequipamentos;
+package com.tads.me;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ManutencaoequipamentosApplication {
+public class MeApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ManutencaoequipamentosApplication.class, args);
+		SpringApplication.run(MeApplication.class, args);
 	}
 
 }
