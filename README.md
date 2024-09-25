@@ -51,9 +51,3 @@ Este projeto é um sistema para controle de manutenção de equipamentos, desenv
 2. Java 11+ (para execução do Spring Boot)
 3. PostgreSQL ou MySQL (para o banco de dados)
 4. Navegador Firefox (versão mais recente)
-
-### Passos para Execução
-
-1. Clone este repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/sua-repositorio.git
