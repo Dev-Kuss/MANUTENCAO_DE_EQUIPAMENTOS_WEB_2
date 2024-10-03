@@ -72,20 +72,3 @@ As principais dependências do projeto estão listadas no arquivo `pom.xml` e in
 5. Acesse o sistema em: `http://localhost:8080`.
 
 ### Estrutura do Projeto
-
-- `src/main/java`: Contém o código-fonte da aplicação.
-  - `controller`: Controladores REST.
-  - `model`: Entidades JPA.
-  - `repository`: Interfaces para acesso ao banco de dados.
-  - `service`: Lógica de negócios.
-  
-- `src/main/resources`: Arquivos de configuração e templates.
-  - `application.properties`: Configurações da aplicação.
-  - `static`: Arquivos estáticos (CSS, JS).
-  
-### Contribuições
-
-Sinta-se à vontade para enviar pull requests ou abrir issues para sugerir melhorias.
-
-### Licença
-Este projeto é parte de um trabalho acadêmico e não possui uma licença formal. Para mais informações, entre em contato com o autor.
