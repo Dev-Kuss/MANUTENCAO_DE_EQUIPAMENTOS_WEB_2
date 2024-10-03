@@ -1,4 +1,4 @@
-package com.tads.me.cliente;
+package com.tads.me.domain.cliente;
 
 public record ClienteRequestDTO(String nome) {
 }

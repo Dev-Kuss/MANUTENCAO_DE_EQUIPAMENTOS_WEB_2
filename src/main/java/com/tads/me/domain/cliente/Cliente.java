@@ -1,14 +1,12 @@
-package com.tads.me.cliente;
+package com.tads.me.domain.cliente;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Table(name = "clientes")
-@Entity(name = "clientes")
+@Table(name = "cliente")
+@Entity(name = "cliente")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
