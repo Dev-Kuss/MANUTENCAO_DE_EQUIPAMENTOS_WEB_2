@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.tads.me.cliente.Cliente;
+import com.tads.me.cliente.ClienteRequestDTO;
+import com.tads.me.cliente.ClienteResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,30 +17,38 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestController;
 
-// @RestController
-// @RequestMapping("/cliente")
-// class ClienteController {
+import com.tads.me.cliente.ClienteRepository;
 
-//     @Autowired
-//     ClienteRepo repository;
+@RestController
+@RequestMapping("/cliente")
+class ClienteController {
 
-//     @GetMapping
-//     public ResponseEntity<List<Cliente>> getAll() {
-//         try {
-//             List<Cliente> items = new ArrayList<Cliente>();
+    @Autowired
+    ClienteRepository repository;
 
-//             repository.findAll().forEach(items::add);
+    @GetMapping
+    public ResponseEntity<List<ClienteResponseDTO>> getAll() {
+        try {
+            List<ClienteResponseDTO> items = repository.findAll().stream().map(ClienteResponseDTO::new).toList();
 
-//             if (items.isEmpty())
-//                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (items.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-//             return new ResponseEntity<>(items, HttpStatus.OK);
-//         } catch (Exception e) {
-//             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-//         }
-//     }
+            return new ResponseEntity<>(items, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping
+    public void create(@RequestBody ClienteRequestDTO data) {
+        Cliente clienteData = new Cliente(data);
+        repository.save(clienteData);
+
+    }
+}
 
 //     @GetMapping("{id}")
 //     public ResponseEntity<Cliente> getById(@PathVariable("id") Long id) {
@@ -47,16 +58,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 //             return new ResponseEntity<>(existingItemOptional.get(), HttpStatus.OK);
 //         } else {
 //             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//         }
-//     }
-
-//     @PostMapping
-//     public ResponseEntity<Cliente> create(@RequestBody Cliente item) {
-//         try {
-//             Cliente savedItem = repository.save(item);
-//             return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
-//         } catch (Exception e) {
-//             return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
 //         }
 //     }
 
