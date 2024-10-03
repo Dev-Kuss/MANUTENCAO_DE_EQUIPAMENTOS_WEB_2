@@ -29,7 +29,7 @@ export class ClienteHomeComponent {
   solicitacaoSelecionada: Solicitacao | null = null;
   mostrarModal = false;
 
-  categorias = ['Eletrônico', 'Eletrodoméstico', 'Mecânico', 'Outro']; 
+  categorias = ['Notebook', 'Desktop', 'Impressora', 'Mouse', 'Teclado']; 
   solicitacoes: Solicitacao[] = [
     {
       dataHora: new Date('2024-09-25T10:30:00'),
