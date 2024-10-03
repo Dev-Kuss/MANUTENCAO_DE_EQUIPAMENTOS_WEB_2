@@ -1,53 +1,74 @@
-# Controle de Manutenção de Equipamentos
+# Aplicação Web de Manutenção de Equipamentos
 
-## Descrição do Projeto
+## Visão Geral
+Este é um projeto desenvolvido em **Spring Boot** como parte da disciplina de **Desenvolvimento Web II** no curso de **Tecnologia em Análise e Desenvolvimento de Sistemas** da **UFPR**. O sistema implementa um **Controle de Manutenção de Equipamentos**, onde clientes podem registrar solicitações de serviço e acompanhar o histórico de mudanças de status. Funcionários podem gerenciar essas solicitações, realizar orçamentos, efetuar manutenções e gerar relatórios.
 
-Este projeto é um sistema para controle de manutenção de equipamentos, desenvolvido para a disciplina de Desenvolvimento Web II, no curso de Tecnologia em Análise e Desenvolvimento de Sistemas (TADS) da UFPR. O sistema permite o gerenciamento de solicitações de manutenção de equipamentos, abrangendo funcionalidades para clientes e funcionários.
+### Funcionalidades Principais
+- Perfis de Cliente e Funcionário com login seguro.
+- Registro de solicitações de manutenção de equipamentos com rastreamento de status.
+- Funcionalidades específicas para clientes e funcionários:
+  - **Clientes:** Autocadastro, visualização de solicitações, aprovação ou rejeição de serviços, pagamento de serviços.
+  - **Funcionários:** Visualização e gestão de solicitações, realização de orçamentos, manutenção de categorias de equipamentos e funcionários, geração de relatórios de receita.
 
-## Funcionalidades
+### Requisitos do Sistema
+- **Backend:** Spring Boot (v3.3.4) com **Java 23**.
+- **Banco de Dados:** PostgreSQL.
+- **Front-end:** Angular 17+ (implementação standalone) para comunicação com o backend via API REST.
+- **Outras Tecnologias:** Bootstrap ou Material para layout, jQuery para manipulação dinâmica de telas, API ViaCEP para preenchimento automático de endereços.
 
-### Perfis de Usuário
+### Requisitos Funcionais
+- **RF001:** Autocadastro de clientes com CPF e e-mail únicos, integração com API ViaCEP para preenchimento de endereços.
+- **RF002:** Login seguro com identificação automática do perfil.
+- **RF003:** Página inicial do cliente exibindo as solicitações em ordem cronológica.
+- **RF004:** Registro de novas solicitações de manutenção.
+- **RF005-RF010:** Aprovação, rejeição, resgate de serviços e pagamento de manutenções.
+- **RF011-RF016:** Funcionalidades de funcionários como efetuação de orçamentos, manutenção e finalização de solicitações.
+- **RF017-RF020:** CRUD de categorias e funcionários, geração de relatórios de receita.
 
-- **Cliente**:
-  - Autocadastro com validação de CPF e e-mail únicos (RF001).
-  - Login no sistema (RF002).
-  - Visualização e gerenciamento das suas solicitações de manutenção (RF003).
-  - Registro de novas solicitações (RF004).
-  - Aprovação ou rejeição de orçamentos (RF005, RF006, RF007).
-  - Pagamento de serviços após conclusão (RF010).
+### Configuração do Projeto
 
-- **Funcionário**:
-  - Visualização de solicitações em aberto e efetuação de orçamentos (RF011, RF012).
-  - Execução e redirecionamento de manutenção (RF014, RF015).
-  - Finalização de solicitações (RF016).
-  - Gerenciamento de categorias de equipamento (CRUD) (RF017).
-  - Gerenciamento de funcionários (CRUD) (RF018).
-  - Geração de relatórios de receitas e categorias em PDF (RF019, RF020).
+1. **Docker:** O projeto inclui um Dockerfile configurado para criar uma imagem do aplicativo Spring Boot e executar o sistema em um container. Para rodar o projeto, basta seguir os passos:
+   ```bash
+   docker build -t manutencao-equipamentos .
+   docker run -p 8080:8080 manutencao-equipamentos
+   ```
+   
+2. **Banco de Dados:** O projeto utiliza o PostgreSQL. Configure o banco de dados com as seguintes variáveis de ambiente no arquivo `application.properties`:
+   ```properties
+   spring.datasource.url=jdbc:postgresql://localhost:5432/mydb
+   spring.datasource.username=user
+   spring.datasource.password=password
+   spring.datasource.driver-class-name=org.postgresql.Driver
+   ```
 
-### Requisitos Não-Funcionais
+### Dependências
+As principais dependências do projeto estão listadas no arquivo `pom.xml` e incluem:
+- **Spring Boot Starter Web**: Para construir APIs REST.
+- **Spring Boot Starter Data JPA**: Para integração com o banco de dados.
+- **Spring Boot Starter Actuator**: Monitoramento do sistema.
+- **PostgreSQL**: Driver para conexão com o banco de dados.
+- **Lombok**: Facilita a redução de código boilerplate (opcional).
+- **Docker Compose**: Suporte para execução do ambiente via Docker.
+- **Springdoc OpenAPI**: Para geração de documentação da API.
 
-- Layout responsivo e elaborado.
-- Uso de Angular (v17+) no front-end e Spring Boot com REST no back-end.
-- Implementação de padrões de projeto, boas práticas de programação e arquitetura.
-- Senhas criptografadas com SHA-256 + SALT.
-- Banco de dados normalizado (3FN), com consultas otimizadas via JOINS.
-- Validação de campos no front-end (Angular) e back-end (Spring).
-- API de consulta de endereço ViaCEP para preenchimento automático do endereço do cliente.
-- Implementação de máscaras para formatação de campos (datas, valores monetários).
+### Como Executar
 
-## Tecnologias Utilizadas
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/seu-usuario/seu-repositorio.git
+   ```
+2. Navegue até o diretório do projeto:
+   ```bash
+   cd manutencao-equipamentos
+   ```
+3. Construa o projeto com Maven:
+   ```bash
+   ./mvnw clean install
+   ```
+4. Execute o aplicativo:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+5. Acesse o sistema em: `http://localhost:8080`.
 
-- **Front-end**: Angular (v17+)
-- **Back-end**: Spring Boot, REST
-- **Banco de Dados**: PostgreSQL ou MySQL
-- **Bibliotecas e Frameworks**: Bootstrap, jQuery, API ViaCEP
-- **Outras Tecnologias**: SHA-256 para criptografia, Firestore para testes com banco de dados
-
-## Como Executar o Projeto
-
-### Pré-requisitos
-
-1. Node.js (para execução do Angular)
-2. Java 11+ (para execução do Spring Boot)
-3. PostgreSQL ou MySQL (para o banco de dados)
-4. Navegador Firefox (versão mais recente)
+### Estrutura do Projeto

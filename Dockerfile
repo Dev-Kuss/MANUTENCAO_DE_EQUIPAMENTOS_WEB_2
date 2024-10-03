@@ -1,34 +1,27 @@
-# Usar uma imagem base do Java 23 para a build
-FROM eclipse-temurin:23-jdk-alpine as build
+# Use a imagem base do JDK para compilar a aplicação
+FROM eclipse-temurin:23-jdk-alpine AS build
 
-# Definir o diretório de trabalho
+# Instala o Maven no container
+RUN apk add --no-cache maven
+
 WORKDIR /app
 
-# Copiar o arquivo pom.xml e o script Maven Wrapper para o container
+# Copie o arquivo pom.xml e baixe as dependências do Maven
 COPY pom.xml ./
-COPY mvnw ./
-COPY .mvn .mvn
+RUN mvn dependency:go-offline -B
 
-# Baixar as dependências do Maven
-RUN ./mvnw dependency:go-offline -B
+# Copie o código do projeto
+COPY . .
 
-# Copiar o código-fonte do projeto para o container
-COPY src ./src
+# Compile a aplicação
+RUN mvn clean package -DskipTests
 
-# Compilar o projeto (sem testes para acelerar o processo)
-RUN ./mvnw package -DskipTests
-
-# Usar uma imagem base mais leve do Java 23 Runtime
+# Use uma imagem mais leve para rodar a aplicação
 FROM eclipse-temurin:23-jre-alpine
 
-# Definir o diretório de trabalho
 WORKDIR /app
 
-# Copiar o JAR compilado da fase de build
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/*.jar ./app.jar
 
-# Expor a porta 8080
-EXPOSE 8080
-
-# Comando para executar o JAR
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Comando para iniciar a aplicação
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
