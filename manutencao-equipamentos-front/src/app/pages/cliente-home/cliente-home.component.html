@@ -16,20 +16,18 @@
                 <td class="py-2 px-4 text-sm">{{ solicitacao.descricaoEquipamento | slice:0:30 }}</td>
                 <td class="py-2 px-4 text-sm">{{ solicitacao.estado }}</td>
                 <td class="py-2 px-4 text-sm text-center space-x-2">
-                    <!-- Botão de Visualizar Solicitação -->
                     <button (click)="visualizarSolicitacao(solicitacao)"
                         class="bg-gray-500 text-white py-1 px-3 rounded hover:bg-gray-600">
                         Visualizar
                     </button>
 
-                    <!-- Botões de ação conforme o estado -->
                     <ng-container [ngSwitch]="solicitacao.estado">
-                        <button *ngSwitchCase="'ORÇADA'" (click)="aprovarRejeitarServico()"
-                            class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600">
-                            Aprovar/Rejeitar Serviço
+                        <button *ngSwitchCase="'ORÇADA'" (click)="abrirModalSolicitacao(solicitacao)"
+                            class="bg-gray-500 text-white py-1 px-3 rounded hover:bg-gray-600">
+                            Ver Orçamento
                         </button>
                         <button *ngSwitchCase="'REJEITADA'" (click)="resgatarServico()"
-                            class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600">
+                            class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-red-600">
                             Resgatar Serviço
                         </button>
                         <button *ngSwitchCase="'ARRUMADA'" (click)="pagarServico()"
@@ -49,52 +47,12 @@
         </button>
     </div>
 
-    <!-- TODO: Trocar modal por drawer e deixar em componente separado -->
-    <div *ngIf="isDrawerOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white p-6 rounded-lg w-full max-w-lg shadow-lg">
-            <h2 class="text-2xl font-semibold mb-6 text-center text-gray-700">Solicitação de Manutenção</h2>
-            <form [formGroup]="solicitacaoForm" (ngSubmit)="registrarSolicitacao()" class="space-y-4">
-                <div>
-                    <label for="descricaoEquipamento" class="block text-sm font-medium text-gray-600">Descrição do Equipamento:</label>
-                    <input id="descricaoEquipamento" formControlName="descricaoEquipamento" type="text" placeholder="Digite a descrição do equipamento" 
-                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    <div *ngIf="solicitacaoForm.get('descricaoEquipamento')?.invalid && solicitacaoForm.get('descricaoEquipamento')?.touched" 
-                         class="text-red-500 text-xs mt-1">
-                        Descrição é obrigatória.
-                    </div>
-                </div>
-
-                <div>
-                    <label for="categoriaEquipamento" class="block text-sm font-medium text-gray-600">Categoria do Equipamento:</label>
-                    <select id="categoriaEquipamento" formControlName="categoriaEquipamento" 
-                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                        <option value="" disabled selected>Selecione uma categoria</option>
-                        <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
-                    </select>
-                    <div *ngIf="solicitacaoForm.get('categoriaEquipamento')?.invalid && solicitacaoForm.get('categoriaEquipamento')?.touched" 
-                         class="text-red-500 text-xs mt-1">
-                        Categoria é obrigatória.
-                    </div>
-                </div>
-
-                <div>
-                    <label for="descricaoDefeito" class="block text-sm font-medium text-gray-600">Descrição do Defeito:</label>
-                    <textarea id="descricaoDefeito" formControlName="descricaoDefeito" rows="3" placeholder="Descreva o defeito" 
-                              class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
-                    <div *ngIf="solicitacaoForm.get('descricaoDefeito')?.invalid && solicitacaoForm.get('descricaoDefeito')?.touched" 
-                         class="text-red-500 text-xs mt-1">
-                        Descrição do defeito é obrigatória.
-                    </div>
-                </div>
-
-                <div class="flex justify-end">
-                    <button type="button" (click)="fecharDrawer()" class="mr-2 bg-gray-300 text-black py-1 px-4 rounded-md">Cancelar</button>
-                    <button type="submit" 
-                            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                        Enviar
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <app-modal />
+    <app-solicitacao-orcamento-modal 
+        *ngIf="mostrarModal" 
+        [solicitacao]="solicitacaoSelecionada"
+        [precoOrcado]="solicitacaoSelecionada?.precoOrcado || 0" 
+        (onAprovar)="aprovarServico()"
+        (onRejeitar)="rejeitarServico()"
+    />
 </div>

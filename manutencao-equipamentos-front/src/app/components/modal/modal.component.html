@@ -1,0 +1,47 @@
+<div *ngIf="isDrawerOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white p-6 rounded-lg w-full max-w-lg shadow-lg">
+        <h2 class="text-2xl font-semibold mb-6 text-center text-gray-700">Solicitação de Manutenção</h2>
+        <form [formGroup]="solicitacaoForm" (ngSubmit)="registrarSolicitacao()" class="space-y-4">
+            <div>
+                <label for="descricaoEquipamento" class="block text-sm font-medium text-gray-600">Descrição do Equipamento:</label>
+                <input id="descricaoEquipamento" formControlName="descricaoEquipamento" type="text" placeholder="Digite a descrição do equipamento" 
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <div *ngIf="solicitacaoForm.get('descricaoEquipamento')?.invalid && solicitacaoForm.get('descricaoEquipamento')?.touched" 
+                     class="text-red-500 text-xs mt-1">
+                    Descrição é obrigatória.
+                </div>
+            </div>
+
+            <div>
+                <label for="categoriaEquipamento" class="block text-sm font-medium text-gray-600">Categoria do Equipamento:</label>
+                <select id="categoriaEquipamento" formControlName="categoriaEquipamento" 
+                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <option value="" disabled selected>Selecione uma categoria</option>
+                    <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
+                </select>
+                <div *ngIf="solicitacaoForm.get('categoriaEquipamento')?.invalid && solicitacaoForm.get('categoriaEquipamento')?.touched" 
+                     class="text-red-500 text-xs mt-1">
+                    Categoria é obrigatória.
+                </div>
+            </div>
+
+            <div>
+                <label for="descricaoDefeito" class="block text-sm font-medium text-gray-600">Descrição do Defeito:</label>
+                <textarea id="descricaoDefeito" formControlName="descricaoDefeito" rows="3" placeholder="Descreva o defeito" 
+                          class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+                <div *ngIf="solicitacaoForm.get('descricaoDefeito')?.invalid && solicitacaoForm.get('descricaoDefeito')?.touched" 
+                     class="text-red-500 text-xs mt-1">
+                    Descrição do defeito é obrigatória.
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="button" (click)="fecharDrawer()" class="mr-2 bg-gray-300 text-black py-1 px-4 rounded-md">Cancelar</button>
+                <button type="submit" 
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                    Enviar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

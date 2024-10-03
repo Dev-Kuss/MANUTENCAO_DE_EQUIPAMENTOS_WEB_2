@@ -5,33 +5,31 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';  
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';  
 
+import { ModalComponent } from "../../components/modal/modal.component";
+import { SolicitacaoOrcamentoModalComponent } from '../../components/solicitacao-orcamento-modal/solicitacao-orcamento-modal.component';
+import { DrawerService } from '../../services/modal.service';
+import { SolicitacaoService } from '../../services/solicitacao-orcamento-modal.service';
+
 interface Solicitacao {
   dataHora: Date;
   descricaoEquipamento: string;
   estado: string;
+  precoOrcado?: number;
 }
 
 @Component({
   selector: 'app-cliente-home',
   templateUrl: './cliente-home.component.html',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule]
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, ModalComponent, SolicitacaoOrcamentoModalComponent]
 })
 
 export class ClienteHomeComponent {
-  solicitacaoForm: FormGroup;
   isDrawerOpen: boolean = false;
-  
-  constructor(private fb: FormBuilder) {
-    this.solicitacaoForm = this.fb.group({
-      descricaoEquipamento: ['', [Validators.required]],
-      categoriaEquipamento: ['', [Validators.required]],
-      descricaoDefeito: ['', [Validators.required]],
-    });
-  }
-  
+  solicitacaoSelecionada: Solicitacao | null = null;
+  mostrarModal = false;
+
   categorias = ['Eletrônico', 'Eletrodoméstico', 'Mecânico', 'Outro']; 
-  
   solicitacoes: Solicitacao[] = [
     {
       dataHora: new Date('2024-09-25T10:30:00'),
@@ -54,29 +52,11 @@ export class ClienteHomeComponent {
       estado: 'ARRUMADA'
     }
   ];
-
+  
+  constructor(private drawerService: DrawerService, private solicitacaoService: SolicitacaoService) {}
+  
   abrirDrawer() {
-    this.isDrawerOpen = true;
-  }
-
-  fecharDrawer() {
-    this.isDrawerOpen = false;
-    this.solicitacaoForm.reset(); // Limpar o formulário ao fechar
-  }
-
-  registrarSolicitacao() {
-    if (this.solicitacaoForm.valid) {
-      const novaSolicitacao: Solicitacao = {
-        dataHora: new Date(),
-        descricaoEquipamento: this.solicitacaoForm.value.descricaoEquipamento,
-        estado: 'ABERTA'
-      };
-      this.solicitacoes.push(novaSolicitacao); // Adiciona a nova solicitação à lista
-      console.log('Nova solicitação registrada:', novaSolicitacao);
-      this.fecharDrawer(); // Fecha o drawer após registrar
-    } else {
-      console.log('Formulário inválido');
-    }
+    this.drawerService.openDrawer();
   }
   
   visualizarSolicitacao(solicitacao: Solicitacao) {
@@ -97,5 +77,28 @@ export class ClienteHomeComponent {
   pagarServico() {
     console.log('Pagar Serviço');
     // TODO: Implementar lógica para RF010
+  }
+
+  abrirModalSolicitacao(solicitacao: Solicitacao) {
+    this.solicitacaoSelecionada = solicitacao;
+    this.mostrarModal = true;
+  }
+
+  fecharModal() {
+    this.mostrarModal = false;
+  }
+
+  aprovarServico() {
+    if (this.solicitacaoSelecionada) {
+      this.solicitacaoService.aprovarSolicitacao(this.solicitacaoSelecionada);
+      this.fecharModal();
+    }
+  }
+
+  rejeitarServico() {
+    if (this.solicitacaoSelecionada) {
+      this.solicitacaoService.rejeitarSolicitacao(this.solicitacaoSelecionada);
+      this.fecharModal();
+    }
   }
 }
