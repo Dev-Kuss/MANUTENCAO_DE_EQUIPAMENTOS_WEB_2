@@ -19,6 +19,12 @@ public class Cliente {
 
     public Cliente(ClienteRequestDTO data) {
         this.nome = data.nome();
-
     }
+
+    public Cliente() {
+    }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
 }
