@@ -8,7 +8,6 @@ import { HttpClient } from '@angular/common/http';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './autocadastro.component.html',
-  styleUrl: './autocadastro.component.css'
 })
 
 export class AutocadastroComponent {

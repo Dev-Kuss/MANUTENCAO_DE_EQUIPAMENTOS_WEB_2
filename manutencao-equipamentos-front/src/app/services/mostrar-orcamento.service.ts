@@ -10,20 +10,19 @@ interface Solicitacao {
 @Injectable({
   providedIn: 'root',
 })
-export class SolicitacaoService {
+
+export class MostrarOrcamentoService {
   constructor() {}
 
   aprovarSolicitacao(solicitacao: Solicitacao) {
     solicitacao.estado = 'ARRUMADA';
     console.log('Serviço aprovado:', solicitacao);
-    // Possível chamada ao backend
-    // return this.http.put('/api/solicitacoes/' + solicitacao.id, solicitacao);
+    // TODO: Chamada ao back-end
   }
 
   rejeitarSolicitacao(solicitacao: Solicitacao) {
     solicitacao.estado = 'REJEITADA';
     console.log('Serviço rejeitado:', solicitacao);
-    // Possível chamada ao backend
-    // return this.http.put('/api/solicitacoes/' + solicitacao.id, solicitacao);
+    // TODO: Chamada ao back-end
   }
 }

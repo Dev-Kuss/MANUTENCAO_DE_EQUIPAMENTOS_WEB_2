@@ -3,12 +3,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';  
 import { RouterModule } from '@angular/router';  
-import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';  
+import { ReactiveFormsModule } from '@angular/forms';  
 
-import { ModalComponent } from "../../components/modal/modal.component";
-import { SolicitacaoOrcamentoModalComponent } from '../../components/solicitacao-orcamento-modal/solicitacao-orcamento-modal.component';
-import { DrawerService } from '../../services/modal.service';
-import { SolicitacaoService } from '../../services/solicitacao-orcamento-modal.service';
+import { BaseModalComponent } from '../../components/base-modal/base-modal.component';
+import { SolicitarManutencaoComponent } from "../../components/solicitar-manutencao-form/solicitar-manutencao.component";
+import { MostrarOrcamentoComponent } from '../../components/mostrar-orcamento-form/mostrar-orcamento.component';
 
 interface Solicitacao {
   dataHora: Date;
@@ -21,15 +20,14 @@ interface Solicitacao {
   selector: 'app-cliente-home',
   templateUrl: './cliente-home.component.html',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, ModalComponent, SolicitacaoOrcamentoModalComponent]
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, BaseModalComponent, SolicitarManutencaoComponent, MostrarOrcamentoComponent]
 })
 
 export class ClienteHomeComponent {
-  isDrawerOpen: boolean = false;
-  solicitacaoSelecionada: Solicitacao | null = null;
-  mostrarModal = false;
+  isManutencaoModalOpen = false;
+  isOrcamentoModalOpen = false;
 
-  categorias = ['Notebook', 'Desktop', 'Impressora', 'Mouse', 'Teclado']; 
+  solicitacaoSelecionada: Solicitacao | null = null;
   solicitacoes: Solicitacao[] = [
     {
       dataHora: new Date('2024-09-25T10:30:00'),
@@ -52,21 +50,29 @@ export class ClienteHomeComponent {
       estado: 'ARRUMADA'
     }
   ];
+  categorias = ['Notebook', 'Desktop', 'Impressora', 'Mouse', 'Teclado']; 
   
-  constructor(private drawerService: DrawerService, private solicitacaoService: SolicitacaoService) {}
-  
-  abrirDrawer() {
-    this.drawerService.openDrawer();
+  abrirManutencaoModal() {
+    this.isManutencaoModalOpen = true;
+  }
+
+  fecharManutencaoModal() {
+    this.isManutencaoModalOpen = false;
+    console.log(this.isManutencaoModalOpen)
+  }
+
+  abrirOrcamentoModal(solicitacao: Solicitacao) {
+    this.solicitacaoSelecionada = solicitacao;
+    this.isOrcamentoModalOpen = true;
+  }
+
+  fecharOrcamentoModal() {
+    this.isOrcamentoModalOpen = false;
   }
   
   visualizarSolicitacao(solicitacao: Solicitacao) {
     console.log(`Visualizando solicitação: ${solicitacao.descricaoEquipamento}`);
     // TODO: Navegar para a página de visualização da solicitação (RF008)
-  }
-
-  aprovarRejeitarServico() {
-    console.log('Aprovar ou Rejeitar Serviço');
-    // TODO: Implementar lógica para RF005
   }
 
   resgatarServico() {
@@ -77,28 +83,5 @@ export class ClienteHomeComponent {
   pagarServico() {
     console.log('Pagar Serviço');
     // TODO: Implementar lógica para RF010
-  }
-
-  abrirModalSolicitacao(solicitacao: Solicitacao) {
-    this.solicitacaoSelecionada = solicitacao;
-    this.mostrarModal = true;
-  }
-
-  fecharModal() {
-    this.mostrarModal = false;
-  }
-
-  aprovarServico() {
-    if (this.solicitacaoSelecionada) {
-      this.solicitacaoService.aprovarSolicitacao(this.solicitacaoSelecionada);
-      this.fecharModal();
-    }
-  }
-
-  rejeitarServico() {
-    if (this.solicitacaoSelecionada) {
-      this.solicitacaoService.rejeitarSolicitacao(this.solicitacaoSelecionada);
-      this.fecharModal();
-    }
   }
 }
