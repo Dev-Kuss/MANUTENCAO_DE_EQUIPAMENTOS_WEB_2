@@ -55,7 +55,7 @@
                 <td class="py-2 px-4 text-sm">{{ solicitacao.descricaoEquipamento | slice:0:30 }}</td>
                 <td class="py-2 px-4 text-sm">{{ solicitacao.estado }}</td>
                 <td class="py-2 px-4 text-sm text-center space-x-2">
-                    <button (click)="visualizarSolicitacao(solicitacao)"
+                    <button (click)="visualizarServico(solicitacao)"
                         class="bg-gray-500 text-white py-1 px-3 rounded hover:bg-gray-600">
                         Visualizar
                     </button>
@@ -94,7 +94,15 @@
         <h2 class="text-2xl font-semibold text-gray-700">Orçamento</h2>
     </ng-container>
     <ng-container modal-body>
-        <app-mostrar-orcamento [solicitacao]="solicitacaoSelecionada"
-            [fecharModal]="fecharOrcamentoModal"></app-mostrar-orcamento>
+        <app-mostrar-orcamento [solicitacao]="solicitacaoSelecionada"></app-mostrar-orcamento>
     </ng-container>
 </app-base-modal>
+
+<app-base-modal [isOpen]="isVisualizarModalOpen" (onClose)="fecharVisualizarModal()">
+    <ng-container modal-header>
+      <h2 class="text-2xl font-semibold text-gray-700">Visualizar Serviço</h2>
+    </ng-container>
+    <ng-container modal-body>
+      <app-visualizar-servico [solicitacao]="solicitacaoSelecionada"></app-visualizar-servico>
+    </ng-container>
+  </app-base-modal>

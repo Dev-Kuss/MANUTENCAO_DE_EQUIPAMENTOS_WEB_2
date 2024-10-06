@@ -23,14 +23,14 @@
       <span class="text-xl text-pink-600 ml-2">{{ precoOrcado | currency:'BRL' }}</span>
     </p>
   </div>
-  <div class="flex justify-between">
-    <button (click)="aprovarServico()"
-      class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md shadow-md">
-      Aprovar Serviço
-    </button>
+  <div class="flex justify-end gap-2.5">
     <button (click)="rejeitarServico()"
-      class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md shadow-md">
-      Rejeitar Serviço
-    </button>
+    class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md shadow-md">
+    Rejeitar Serviço
+  </button>
+  <button (click)="aprovarServico()"
+    class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md shadow-md">
+    Aprovar Serviço
+  </button>
   </div>
 </div>
