@@ -4,6 +4,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';  
 import { RouterModule } from '@angular/router';  
 import { ReactiveFormsModule } from '@angular/forms';  
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faEye, faFileInvoiceDollar, faUndoAlt, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
 
 import { BaseModalComponent } from '../../components/base-modal/base-modal.component';
 import { SolicitarManutencaoComponent } from "../../components/solicitar-manutencao-form/solicitar-manutencao.component";
@@ -23,6 +25,7 @@ import { Solicitacao } from '../../models/solicitacao.model';
     CommonModule, 
     RouterModule, 
     ReactiveFormsModule, 
+    FontAwesomeModule,
     BaseModalComponent, 
     SolicitarManutencaoComponent, 
     MostrarOrcamentoComponent,
@@ -32,6 +35,12 @@ import { Solicitacao } from '../../models/solicitacao.model';
 })
 
 export class ClienteHomeComponent {
+  // Icons
+  faEye = faEye;
+  faFileInvoiceDollar = faFileInvoiceDollar;
+  faUndoAlt = faUndoAlt;
+  faMoneyBillWave = faMoneyBillWave;
+
   isManutencaoModalOpen = false;
   isOrcamentoModalOpen = false;
   isVisualizarModalOpen = false;

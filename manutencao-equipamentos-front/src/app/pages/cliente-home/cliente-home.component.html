@@ -31,7 +31,7 @@
         <p class="text-sm lg:text-base text-[#89b6fd]">Veja as suas solicitações recentes</p>
     </div>
 </div>
-<div class="-mt-24 max-w-screen-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+<div class="-mt-32 max-w-screen-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-4xl font-semibold text-gray-700 mt-2">Minhas Solicitações</h2>
         <button (click)="abrirManutencaoModal()"
@@ -56,22 +56,21 @@
                 <td class="py-2 px-4 text-sm">{{ solicitacao.estado }}</td>
                 <td class="py-2 px-4 text-sm text-center space-x-2">
                     <button (click)="visualizarServico(solicitacao)"
-                        class="bg-gray-500 text-white py-1 px-3 rounded hover:bg-gray-600">
-                        Visualizar
+                        class="bg-gray-500 text-white py-2 px-3 rounded hover:bg-gray-600 w-10 h-10" title="Visualizar">
+                        <fa-icon [icon]="faEye"></fa-icon>
                     </button>
-
                     <ng-container [ngSwitch]="solicitacao.estado">
                         <button *ngSwitchCase="'ORÇADA'" (click)="abrirOrcamentoModal(solicitacao)"
-                            class="bg-gray-500 text-white py-1 px-3 rounded hover:bg-gray-600">
-                            Ver Orçamento
+                            class="bg-gray-500 text-white py-2 px-3 rounded hover:bg-gray-600 w-10 h-10" title="Ver Orçamento">
+                            <fa-icon [icon]="faFileInvoiceDollar"></fa-icon>
                         </button>
                         <button *ngSwitchCase="'REJEITADA'" (click)="resgatarServico(solicitacao)"
-                            class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-red-600">
-                            Resgatar Serviço
+                            class="bg-blue-500 text-white py-2 px-3 rounded hover:bg-blue-600 w-10 h-10" title="Resgatar Serviço">
+                            <fa-icon [icon]="faUndoAlt"></fa-icon>
                         </button>
                         <button *ngSwitchCase="'ARRUMADA'" (click)="abrirPagamentoModal(solicitacao)"
-                            class="bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600">
-                            Pagar Serviço
+                            class="bg-green-500 text-white py-2 px-3 rounded hover:bg-green-600 w-10 h-10" title="Pagar Serviço">
+                            <fa-icon [icon]="faMoneyBillWave"></fa-icon>
                         </button>
                     </ng-container>
                 </td>
@@ -109,12 +108,10 @@
 
 <app-base-modal [isOpen]="isPagamentoModalOpen" (onClose)="fecharPagamentoModal()">
     <ng-container modal-header>
-      <h2 class="text-2xl font-semibold text-gray-700">Pagamento do Serviço</h2>
+        <h2 class="text-2xl font-semibold text-gray-700">Pagamento do Serviço</h2>
     </ng-container>
     <ng-container modal-body>
-      <app-pagar-servico
-        [solicitacao]="solicitacaoSelecionada"
-        (onPagamentoConfirmado)="onPagamentoConfirmado()"
-      ></app-pagar-servico>
+        <app-pagar-servico [solicitacao]="solicitacaoSelecionada"
+            (onPagamentoConfirmado)="onPagamentoConfirmado()"></app-pagar-servico>
     </ng-container>
-  </app-base-modal>
+</app-base-modal>
