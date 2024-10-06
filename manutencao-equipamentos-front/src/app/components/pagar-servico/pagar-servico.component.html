@@ -1,0 +1,28 @@
+<div class="p-4 space-y-4">
+    <h2 class="text-2xl font-semibold text-gray-700">Detalhes do Serviço</h2>
+    <div>
+      <label class="block text-sm font-medium text-gray-600">Equipamento</label>
+      <p class="mt-1 text-gray-800">{{ solicitacao?.descricaoEquipamento }}</p>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-600">Data e Hora</label>
+      <p class="mt-1 text-gray-800">{{ solicitacao?.dataHora | date: 'short' }}</p>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-600">Estado Atual</label>
+      <p class="mt-1 text-gray-800">{{ solicitacao?.estado }}</p>
+    </div>
+    <div class="my-6">
+      <p class="text-lg font-semibold text-gray-800">
+        <strong>Valor a Pagar:</strong>
+        <span class="text-xl text-pink-600 ml-2">{{ solicitacao?.precoOrcado | currency:'BRL' }}</span>
+      </p>
+    </div>
+    <div class="flex justify-end gap-2.5 mt-6">
+      <button (click)="confirmarPagamento()"
+        class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md shadow-md">
+        Confirmar Pagamento
+      </button>
+    </div>
+  </div>
+  

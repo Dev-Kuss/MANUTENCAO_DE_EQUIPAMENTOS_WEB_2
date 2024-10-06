@@ -9,6 +9,10 @@ import { BaseModalComponent } from '../../components/base-modal/base-modal.compo
 import { SolicitarManutencaoComponent } from "../../components/solicitar-manutencao-form/solicitar-manutencao.component";
 import { MostrarOrcamentoComponent } from '../../components/mostrar-orcamento-form/mostrar-orcamento.component';
 import { VisualizarServicoComponent } from '../../components/visualizar-servico/visualizar-servico.component';
+import { PagarServicoComponent } from '../../components/pagar-servico/pagar-servico.component';
+
+import { MostrarOrcamentoService } from '../../services/mostrar-orcamento.service';
+
 import { Solicitacao } from '../../models/solicitacao.model';
 
 @Component({
@@ -22,7 +26,8 @@ import { Solicitacao } from '../../models/solicitacao.model';
     BaseModalComponent, 
     SolicitarManutencaoComponent, 
     MostrarOrcamentoComponent,
-    VisualizarServicoComponent
+    VisualizarServicoComponent,
+    PagarServicoComponent
   ]
 })
 
@@ -30,13 +35,33 @@ export class ClienteHomeComponent {
   isManutencaoModalOpen = false;
   isOrcamentoModalOpen = false;
   isVisualizarModalOpen = false;
+  isPagamentoModalOpen = false;
 
   solicitacaoSelecionada: Solicitacao | null = null;
   solicitacoes: Solicitacao[] = [
     {
+      dataHora: new Date('2024-09-28T12:00:00'),
+      descricaoEquipamento: 'Televisão',
+      estado: 'ARRUMADA',
+      precoOrcado: 382.0,
+      historico: [
+        {
+          dataHora: new Date('2024-09-28T12:00:00'),
+          descricao: 'Solicitação criada pelo cliente.',
+          funcionario: 'Cliente',
+        },
+        {
+          dataHora: new Date('2024-09-29T09:00:00'),
+          descricao: 'Serviço concluído e aguardando pagamento.',
+          funcionario: 'Técnico Ana',
+        },
+      ],
+    },
+    {
       dataHora: new Date('2024-09-25T10:30:00'),
       descricaoEquipamento: 'Máquina de Lavar',
       estado: 'ORÇADA',
+      precoOrcado: 300.0,
       historico: [
         {
           dataHora: new Date('2024-09-24T14:45:00'),
@@ -78,6 +103,7 @@ export class ClienteHomeComponent {
       dataHora: new Date('2024-09-22T16:00:00'),
       descricaoEquipamento: 'Refrigerador',
       estado: 'ARRUMADA',
+      precoOrcado: 300.0,
       historico: [
         {
           dataHora: new Date('2024-09-26T16:30:00'),
@@ -111,6 +137,10 @@ export class ClienteHomeComponent {
   ];
   categorias = ['Notebook', 'Desktop', 'Impressora', 'Mouse', 'Teclado']; 
   
+  constructor(
+    private mostrarOrcamentoService: MostrarOrcamentoService,
+  ) {}
+
   abrirManutencaoModal() {
     this.isManutencaoModalOpen = true;
   }
@@ -137,6 +167,15 @@ export class ClienteHomeComponent {
   fecharVisualizarModal() {
     this.isVisualizarModalOpen  = false;
   }
+
+  abrirPagamentoModal(solicitacao: Solicitacao) {
+    this.solicitacaoSelecionada = solicitacao;
+    this.isPagamentoModalOpen = true;
+  }
+
+  fecharPagamentoModal() {
+    this.isPagamentoModalOpen = false;
+  }
   
   visualizarServico(solicitacao: Solicitacao) {
     console.log(`Visualizando solicitação: ${solicitacao.descricaoEquipamento}`);
@@ -144,13 +183,30 @@ export class ClienteHomeComponent {
     // TODO: Navegar para a página de visualização da solicitação (RF008)
   }
 
-  resgatarServico() {
-    console.log('Resgatar Serviço');
-    // TODO: Implementar lógica para RF009
+  resgatarServico(solicitacao: Solicitacao) {
+    const previousEstado = solicitacao.estado
+    solicitacao.estado = 'APROVADA'
+
+    if (!solicitacao.historico) {
+      solicitacao.historico = []
+    }
+
+    solicitacao.historico.push({
+      dataHora: new Date(),
+      descricao: `Solicitação passou de ${previousEstado} para APROVADA.`,
+      funcionario: 'Cliente',
+    });
+
+    alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');
   }
 
   pagarServico() {
     console.log('Pagar Serviço');
     // TODO: Implementar lógica para RF010
+  }
+
+  onPagamentoConfirmado() {
+    this.fecharPagamentoModal();
+    // Optional: Additional actions after payment confirmation
   }
 }

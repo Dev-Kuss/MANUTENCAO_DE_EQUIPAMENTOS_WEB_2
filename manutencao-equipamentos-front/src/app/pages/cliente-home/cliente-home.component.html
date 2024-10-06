@@ -65,11 +65,11 @@
                             class="bg-gray-500 text-white py-1 px-3 rounded hover:bg-gray-600">
                             Ver Orçamento
                         </button>
-                        <button *ngSwitchCase="'REJEITADA'" (click)="resgatarServico()"
+                        <button *ngSwitchCase="'REJEITADA'" (click)="resgatarServico(solicitacao)"
                             class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-red-600">
                             Resgatar Serviço
                         </button>
-                        <button *ngSwitchCase="'ARRUMADA'" (click)="pagarServico()"
+                        <button *ngSwitchCase="'ARRUMADA'" (click)="abrirPagamentoModal(solicitacao)"
                             class="bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600">
                             Pagar Serviço
                         </button>
@@ -100,9 +100,21 @@
 
 <app-base-modal [isOpen]="isVisualizarModalOpen" (onClose)="fecharVisualizarModal()">
     <ng-container modal-header>
-      <h2 class="text-2xl font-semibold text-gray-700">Visualizar Serviço</h2>
+        <h2 class="text-2xl font-semibold text-gray-700">Visualizar Serviço</h2>
     </ng-container>
     <ng-container modal-body>
-      <app-visualizar-servico [solicitacao]="solicitacaoSelecionada"></app-visualizar-servico>
+        <app-visualizar-servico [solicitacao]="solicitacaoSelecionada"></app-visualizar-servico>
+    </ng-container>
+</app-base-modal>
+
+<app-base-modal [isOpen]="isPagamentoModalOpen" (onClose)="fecharPagamentoModal()">
+    <ng-container modal-header>
+      <h2 class="text-2xl font-semibold text-gray-700">Pagamento do Serviço</h2>
+    </ng-container>
+    <ng-container modal-body>
+      <app-pagar-servico
+        [solicitacao]="solicitacaoSelecionada"
+        (onPagamentoConfirmado)="onPagamentoConfirmado()"
+      ></app-pagar-servico>
     </ng-container>
   </app-base-modal>
