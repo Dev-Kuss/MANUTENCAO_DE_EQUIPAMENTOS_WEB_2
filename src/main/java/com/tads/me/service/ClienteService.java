@@ -12,10 +12,10 @@ public class ClienteService {
 
     @Autowired
     private ClienteRepository repository;
+
     @Transactional
-    public Cliente createCliente(ClienteRequestDTO data){
-        Cliente newCliente = new Cliente();
-        newCliente.setNome(data.nome());
+    public Cliente createCliente(ClienteRequestDTO data) {
+        Cliente newCliente = new Cliente(data);  // Using the constructor that accepts ClienteRequestDTO
         repository.save(newCliente);
         return newCliente;
     }
