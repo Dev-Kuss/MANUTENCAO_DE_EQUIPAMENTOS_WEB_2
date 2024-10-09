@@ -1,4 +1,4 @@
 CREATE TABLE cliente (
-    id INTEGER NOT NULL,
+    id SERIAL PRIMARY KEY,
     nome VARCHAR(100)
 );
