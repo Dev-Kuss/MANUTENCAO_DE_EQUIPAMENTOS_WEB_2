@@ -1,7 +1,3 @@
-Aqui está a versão final do **README.md**, agora incluindo as informações dos requisitos funcionais e não funcionais com base no arquivo **Manutenção de Equipamentos - 2024-2.pdf**:
-
----
-
 # Projeto de Manutenção de Equipamentos
 
 ## Descrição
