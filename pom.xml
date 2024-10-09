@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -27,20 +27,20 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>23</java.version>
+		<java.version>21</java.version> <!-- Atualizando para a versão Java 21 LTS -->
 	</properties>
 	<dependencies>
-		
+
 		<dependency>
-    	 <groupId>org.springdoc</groupId>
-        	<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-        	<version>2.2.0</version>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.2.0</version>
 		</dependency>
 
 		<dependency>
-		 <groupId>org.postgresql</groupId>
-    		<artifactId>postgresql</artifactId>
-    		<version>42.6.0</version> <!-- Verifique se essa é a versão mais recente -->
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.2</version> <!-- Verifique se essa é a versão mais recente -->
 		</dependency>
 
 		<dependency>
@@ -76,7 +76,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.34</version> <!-- Verifique se você está usando a versão mais recente -->
+			<version>1.18.34</version> <!-- Atualizado para versão mais recente -->
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -93,25 +93,30 @@
 
 	<build>
 		<plugins>
+			<!-- Spring Boot Maven Plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
+					<!-- A exclusão do Lombok foi removida -->
 				</configuration>
 			</plugin>
+
+			<!-- Maven Compiler Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
 				<configuration>
-					<source>23</source>
-					<target>23</target>
-					<compilerArgs>--enable-preview</compilerArgs>
+					<source>17</source> <!-- Alinhado com a versão estável do Java -->
+					<target>17</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>1.18.34</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 		</plugins>

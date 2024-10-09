@@ -1,27 +1,17 @@
-# Use a imagem base do JDK para compilar a aplicação
-FROM eclipse-temurin:23-jdk-alpine AS build
-
-# Instala o Maven no container
-RUN apk add --no-cache maven
-
+# Etapa de build usando Maven e JDK 21 da distribuição Eclipse Temurin
+FROM maven:3.9.4-eclipse-temurin-21 as builder
 WORKDIR /app
 
-# Copie o arquivo pom.xml e baixe as dependências do Maven
-COPY pom.xml ./
-RUN mvn dependency:go-offline -B
-
-# Copie o código do projeto
 COPY . .
 
-# Compile a aplicação
-RUN mvn clean package -DskipTests
+RUN mvn clean install -DskipTests
 
-# Use uma imagem mais leve para rodar a aplicação
-FROM eclipse-temurin:23-jre-alpine
-
+# Etapa de runtime usando Eclipse Temurin JDK 21
+FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 
-COPY --from=build /app/target/*.jar ./app.jar
+COPY --from=builder /app/target/*.jar app.jar
 
-# Comando para iniciar a aplicação
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
