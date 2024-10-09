@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/cliente")
@@ -21,6 +22,12 @@ class ClienteController {
     ClienteService clienteService;
     @Autowired
     ClienteRepository repository;
+
+    @PostMapping("/persistir")
+    public ResponseEntity<Cliente> create(@RequestBody ClienteRequestDTO data) {
+        Cliente newCliente = this.clienteService.createCliente(data);
+        return ResponseEntity.ok(newCliente);
+    }
 
     @GetMapping("/todos")
     public ResponseEntity<List<ClienteResponseDTO>> getAll() {
@@ -42,9 +49,13 @@ class ClienteController {
         }
     }
 
-    @PostMapping("/persistir")
-    public ResponseEntity<Cliente> create(@RequestBody ClienteRequestDTO data) {
-        Cliente newCliente = this.clienteService.createCliente(data);
-        return ResponseEntity.ok(newCliente);
+    @GetMapping("{id}")
+    public ResponseEntity<Cliente> getById(@PathVariable("id") Long id) {
+        Optional<Cliente> existingItemOptional = repository.findById(id);
+
+        return existingItemOptional.map(cliente -> new ResponseEntity<>(cliente, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+        
+
+    
 }
