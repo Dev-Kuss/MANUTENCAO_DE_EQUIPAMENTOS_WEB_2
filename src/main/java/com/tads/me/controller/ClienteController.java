@@ -37,14 +37,13 @@ class ClienteController {
             if (items.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-            // Converter Cliente para ClienteResponseDTO
             List<ClienteResponseDTO> responseItems = items.stream()
                     .map(ClienteResponseDTO::new)
                     .toList();
 
             return new ResponseEntity<>(responseItems, HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace(); // Adiciona o log da exceção no console
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -55,7 +54,10 @@ class ClienteController {
 
         return existingItemOptional.map(cliente -> new ResponseEntity<>(cliente, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-        
 
-    
+    @PutMapping("/alterar/{id}")
+    public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody ClienteRequestDTO data) {
+        Optional<Cliente> clienteOptional = this.clienteService.updateCliente(id, data);
+        return clienteOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 }
