@@ -1,0 +1,15 @@
+ALTER TABLE public.cliente ADD cpf varchar NULL;
+ALTER TABLE public.cliente ADD email text NULL;
+ALTER TABLE public.cliente ADD cep integer NULL;
+ALTER TABLE public.cliente ADD logradouro text NULL;
+ALTER TABLE public.cliente ADD complemento text NULL;
+ALTER TABLE public.cliente ADD unidade text NULL;
+ALTER TABLE public.cliente ADD bairro text NULL;
+ALTER TABLE public.cliente ADD localidade text NULL;
+ALTER TABLE public.cliente ADD uf text NULL;
+ALTER TABLE public.cliente ADD estado text NULL;
+ALTER TABLE public.cliente ADD regiao text NULL;
+ALTER TABLE public.cliente ADD ibge text NULL;
+ALTER TABLE public.cliente ADD gia text NULL;
+ALTER TABLE public.cliente ADD ddd text NULL;
+ALTER TABLE public.cliente ADD siafi text NULL;

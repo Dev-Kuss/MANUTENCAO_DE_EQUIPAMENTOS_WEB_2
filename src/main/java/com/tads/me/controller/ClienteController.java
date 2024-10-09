@@ -22,7 +22,7 @@ class ClienteController {
     @Autowired
     ClienteRepository repository;
 
-    @GetMapping
+    @GetMapping("/todos")
     public ResponseEntity<List<ClienteResponseDTO>> getAll() {
         try {
             List<Cliente> items = repository.findAll();
@@ -42,8 +42,7 @@ class ClienteController {
         }
     }
 
-
-    @PostMapping
+    @PostMapping("/persistir")
     public ResponseEntity<Cliente> create(@RequestBody ClienteRequestDTO data) {
         Cliente newCliente = this.clienteService.createCliente(data);
         return ResponseEntity.ok(newCliente);
