@@ -1,0 +1,117 @@
+<!-- TODO: Mudar isso para componente de Header -->
+<div class="bg-gradient-to-b from-blue-700 to-blue-500 px-4 py-8 lg:px-14 pb-36">
+    <nav class="max-w-screen-2xl mx-auto flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-4">
+            <img class="" src="assets/logo.svg" alt="Logo" class="h-7 w-7">
+            <span class="font-semibold text-white text-2xl ml-2.5">Manutenção</span>
+        </div>
+
+        <ul class="hidden lg:flex items-center space-x-8">
+            <li><a href="#" class="px-4 py-2 hover:rounded text-white text-sm hover:bg-white/20 hover:text-white">Página
+                    Inicial</a></li>
+            <li><a href="#"
+                    class="px-4 py-2 hover:rounded text-white text-sm hover:bg-white/20 hover:text-white">Solicitações</a>
+            </li>
+            <li><a href="#"
+                    class="px-4 py-2 hover:rounded text-white text-sm hover:bg-white/20 hover:text-white">Orçamentos</a>
+            </li>
+            <li><a href="#"
+                    class="px-4 py-2 hover:rounded text-white text-sm hover:bg-white/20 hover:text-white">Serviços</a>
+            </li>
+        </ul>
+
+        <div class="flex items-center space-x-4">
+            <div class="bg-pink-500 h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold">
+                L
+            </div>
+        </div>
+    </nav>
+    <div class="max-w-screen-2xl mx-auto flex flex-col justify-between mt-10">
+        <h1 class="text-2xl lg:text-4xl text-white font-medium">Bem-vindo de volta, Lucas!</h1>
+        <p class="text-sm lg:text-base text-[#89b6fd]">Veja as suas solicitações recentes</p>
+    </div>
+</div>
+<div class="-mt-32 max-w-screen-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-4xl font-semibold text-gray-700 mt-2">Minhas Solicitações</h2>
+        <button (click)="abrirManutencaoModal()"
+            class="bg-black hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md shadow-md">
+            Solicitar Manutenção
+        </button>
+    </div>
+
+    <table class="min-w-full bg-white border border-gray-200 rounded">
+        <thead>
+            <tr>
+                <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Data/Hora</th>
+                <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Descrição</th>
+                <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Estado</th>
+                <th class="py-2 px-4 text-center text-sm font-semibold text-gray-600">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let solicitacao of solicitacoes" class="border-t">
+                <td class="py-2 px-4 text-sm">{{ solicitacao.dataHora | date: 'short' }}</td>
+                <td class="py-2 px-4 text-sm">{{ solicitacao.descricaoEquipamento | slice:0:30 }}</td>
+                <td class="py-2 px-4 text-sm">{{ solicitacao.estado }}</td>
+                <td class="py-2 px-4 text-sm text-center space-x-2">
+                    <button (click)="visualizarServico(solicitacao)"
+                        class="bg-gray-500 text-white py-2 px-3 rounded hover:bg-gray-600 w-10 h-10" title="Visualizar">
+                        <fa-icon [icon]="faEye"></fa-icon>
+                    </button>
+                    <ng-container [ngSwitch]="solicitacao.estado">
+                        <button *ngSwitchCase="'ORÇADA'" (click)="abrirOrcamentoModal(solicitacao)"
+                            class="bg-gray-500 text-white py-2 px-3 rounded hover:bg-gray-600 w-10 h-10" title="Ver Orçamento">
+                            <fa-icon [icon]="faFileInvoiceDollar"></fa-icon>
+                        </button>
+                        <button *ngSwitchCase="'REJEITADA'" (click)="resgatarServico(solicitacao)"
+                            class="bg-blue-500 text-white py-2 px-3 rounded hover:bg-blue-600 w-10 h-10" title="Resgatar Serviço">
+                            <fa-icon [icon]="faUndoAlt"></fa-icon>
+                        </button>
+                        <button *ngSwitchCase="'ARRUMADA'" (click)="abrirPagamentoModal(solicitacao)"
+                            class="bg-green-500 text-white py-2 px-3 rounded hover:bg-green-600 w-10 h-10" title="Pagar Serviço">
+                            <fa-icon [icon]="faMoneyBillWave"></fa-icon>
+                        </button>
+                    </ng-container>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<app-base-modal [isOpen]="isManutencaoModalOpen" (onClose)="fecharManutencaoModal()">
+    <ng-container modal-header>
+        <h2 class="text-2xl font-semibold text-gray-700">Solicitação de Manutenção</h2>
+    </ng-container>
+    <ng-container modal-body>
+        <app-solicitar-manutencao [fecharModal]="fecharManutencaoModal" />
+    </ng-container>
+</app-base-modal>
+
+<app-base-modal [isOpen]="isOrcamentoModalOpen" (onClose)="fecharOrcamentoModal()">
+    <ng-container modal-header>
+        <h2 class="text-2xl font-semibold text-gray-700">Orçamento</h2>
+    </ng-container>
+    <ng-container modal-body>
+        <app-mostrar-orcamento [solicitacao]="solicitacaoSelecionada"></app-mostrar-orcamento>
+    </ng-container>
+</app-base-modal>
+
+<app-base-modal [isOpen]="isVisualizarModalOpen" (onClose)="fecharVisualizarModal()">
+    <ng-container modal-header>
+        <h2 class="text-2xl font-semibold text-gray-700">Visualizar Serviço</h2>
+    </ng-container>
+    <ng-container modal-body>
+        <app-visualizar-servico [solicitacao]="solicitacaoSelecionada"></app-visualizar-servico>
+    </ng-container>
+</app-base-modal>
+
+<app-base-modal [isOpen]="isPagamentoModalOpen" (onClose)="fecharPagamentoModal()">
+    <ng-container modal-header>
+        <h2 class="text-2xl font-semibold text-gray-700">Pagamento do Serviço</h2>
+    </ng-container>
+    <ng-container modal-body>
+        <app-pagar-servico [solicitacao]="solicitacaoSelecionada"
+            (onPagamentoConfirmado)="onPagamentoConfirmado()"></app-pagar-servico>
+    </ng-container>
+</app-base-modal>

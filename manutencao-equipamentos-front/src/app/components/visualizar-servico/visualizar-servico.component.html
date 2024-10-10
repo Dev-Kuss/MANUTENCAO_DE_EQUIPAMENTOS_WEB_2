@@ -1,0 +1,45 @@
+<div class="p-4 space-y-4">
+    <div class="flex space-x-8">
+        <div>
+            <label class="block text-sm font-medium text-gray-600">Equipamento</label>
+            <p class="mt-1 text-gray-800">{{ solicitacao?.descricaoEquipamento }}</p>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-600">Estado Atual</label>
+            <p class="mt-1 text-gray-800">{{ solicitacao?.estado }}</p>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-600">Data e Hora</label>
+            <p class="mt-1 text-gray-800">{{ solicitacao?.dataHora | date: 'short' }}</p>
+        </div>
+        <div *ngIf="solicitacao?.precoOrcado">
+            <label class="block text-sm font-medium text-gray-600">Preço Orçado</label>
+            <p class="mt-1 text-gray-800">{{ solicitacao?.precoOrcado | currency:'BRL' }}</p>
+        </div>
+    </div>
+
+    <div>
+        <h3 class="text-xl font-semibold text-gray-700 mt-6">Histórico</h3>
+        <ul class="mt-2 space-y-2">
+            <li *ngFor="let item of solicitacao?.historico">
+                <div class="p-2 bg-gray-100 rounded-md">
+                    <p class="text-sm text-gray-600">
+                        <strong>{{ item.dataHora | date: 'short' }}</strong> - {{ item.funcionario }}
+                    </p>
+                    <p class="text-gray-800">{{ item.descricao }}</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Botões de ação -->
+    <div class="flex justify-end gap-2.5 mt-6">
+        <!-- Exemplo de botões, você pode ajustar conforme necessário -->
+        <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md">
+            Ação 1
+        </button>
+        <button class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md shadow-md">
+            Ação 2
+        </button>
+    </div>
+</div>

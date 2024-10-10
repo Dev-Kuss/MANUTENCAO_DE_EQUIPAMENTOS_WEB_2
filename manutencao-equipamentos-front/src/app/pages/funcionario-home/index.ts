@@ -1,0 +1,1 @@
+export * from "./funcionario-home.component"

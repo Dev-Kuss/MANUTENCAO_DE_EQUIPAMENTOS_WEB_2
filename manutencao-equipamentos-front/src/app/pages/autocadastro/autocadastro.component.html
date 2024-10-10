@@ -1,0 +1,86 @@
+<div class="max-w-lg mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+  <h2 class="text-2xl font-semibold mb-6 text-center text-gray-700">Autocadastro</h2>
+  
+  <form [formGroup]="autocadastroForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    <div>
+      <label for="cpf" class="block text-sm font-medium text-gray-600">CPF:</label>
+      <input id="cpf" formControlName="cpf" type="text" placeholder="Digite seu CPF" 
+             class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+      <div *ngIf="autocadastroForm.get('cpf')?.invalid && autocadastroForm.get('cpf')?.touched" 
+           class="text-red-500 text-xs mt-1">
+        CPF inválido (deve conter 11 dígitos).
+      </div>
+    </div>
+
+    <div>
+      <label for="nome" class="block text-sm font-medium text-gray-600">Nome:</label>
+      <input id="nome" formControlName="nome" type="text" placeholder="Digite seu nome" 
+             class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+      <div *ngIf="autocadastroForm.get('nome')?.invalid && autocadastroForm.get('nome')?.touched" 
+           class="text-red-500 text-xs mt-1">
+        Nome é obrigatório.
+      </div>
+    </div>
+
+    <div>
+      <label for="email" class="block text-sm font-medium text-gray-600">E-mail:</label>
+      <input id="email" formControlName="email" type="email" placeholder="Digite seu e-mail" 
+             class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+      <div *ngIf="autocadastroForm.get('email')?.invalid && autocadastroForm.get('email')?.touched" 
+           class="text-red-500 text-xs mt-1">
+        E-mail inválido.
+      </div>
+    </div>
+
+    <div>
+      <label for="telefone" class="block text-sm font-medium text-gray-600">Telefone:</label>
+      <input id="telefone" formControlName="telefone" type="text" placeholder="Digite seu telefone" 
+             class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+      <div *ngIf="autocadastroForm.get('telefone')?.invalid && autocadastroForm.get('telefone')?.touched" 
+           class="text-red-500 text-xs mt-1">
+        Telefone é obrigatório.
+      </div>
+    </div>
+
+    <div>
+      <label for="cep" class="block text-sm font-medium text-gray-600">CEP:</label>
+      <input id="cep" formControlName="cep" type="text" placeholder="Digite seu CEP" (blur)="buscarCEP()"
+             class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+      <div *ngIf="autocadastroForm.get('cep')?.invalid && autocadastroForm.get('cep')?.touched" 
+           class="text-red-500 text-xs mt-1">
+        CEP inválido.
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label for="logradouro" class="block text-sm font-medium text-gray-600">Logradouro:</label>
+        <input id="logradouro" formControlName="logradouro" type="text" readonly 
+               class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm">
+      </div>
+
+      <div>
+        <label for="bairro" class="block text-sm font-medium text-gray-600">Bairro:</label>
+        <input id="bairro" formControlName="bairro" type="text" readonly 
+               class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm">
+      </div>
+
+      <div>
+        <label for="cidade" class="block text-sm font-medium text-gray-600">Cidade:</label>
+        <input id="cidade" formControlName="cidade" type="text" readonly 
+               class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm">
+      </div>
+
+      <div>
+        <label for="estado" class="block text-sm font-medium text-gray-600">Estado:</label>
+        <input id="estado" formControlName="estado" type="text" readonly 
+               class="mt-1 block w-full p-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm">
+      </div>
+    </div>
+
+    <button type="submit" 
+            class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+      Cadastrar
+    </button>
+  </form>
+</div>

@@ -1,0 +1,36 @@
+<div class="p-1 space-y-4">
+  <div>
+    <label for="descricaoEquipamento" class="block text-sm font-medium text-gray-600">Equipamento</label>
+    <input id="descricaoEquipamento" type="text" [value]="solicitacao?.descricaoEquipamento"
+      class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-600"
+      disabled>
+  </div>
+  <div>
+    <label for="dataHora" class="block text-sm font-medium text-gray-600">Data e Hora</label>
+    <input id="dataHora" type="text" [value]="solicitacao?.dataHora | date: 'short'"
+      class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-600"
+      disabled>
+  </div>
+  <div>
+    <label for="estado" class="block text-sm font-medium text-gray-600">Estado Atual</label>
+    <input id="estado" type="text" [value]="solicitacao?.estado"
+      class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-600"
+      disabled>
+  </div>
+  <div class="my-6">
+    <p class="text-lg font-semibold text-gray-800">
+      <strong>Preço Orçado:</strong>
+      <span class="text-xl text-pink-600 ml-2">{{ precoOrcado | currency:'BRL' }}</span>
+    </p>
+  </div>
+  <div class="flex justify-end gap-2.5">
+    <button (click)="rejeitarServico()"
+    class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md shadow-md">
+    Rejeitar Serviço
+  </button>
+  <button (click)="aprovarServico()"
+    class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md shadow-md">
+    Aprovar Serviço
+  </button>
+  </div>
+</div>
