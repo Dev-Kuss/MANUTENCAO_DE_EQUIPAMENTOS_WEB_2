@@ -1,0 +1,4 @@
+CREATE TABLE categoria_equipamento (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    nome VARCHAR(255) NOT NULL
+);

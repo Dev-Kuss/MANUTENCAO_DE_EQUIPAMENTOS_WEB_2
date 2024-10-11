@@ -3,7 +3,7 @@ package com.tads.me.controller;
 import com.tads.me.domain.funcionario.Funcionario;
 import com.tads.me.domain.funcionario.FuncionarioRequestDTO;
 import com.tads.me.domain.funcionario.FuncionarioResponseDTO;
-import com.tads.me.repositories.FuncionarioRepository;
+import com.tads.me.repository.FuncionarioRepository;
 import com.tads.me.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/funcionario")
+@RequestMapping("/funcionario")
 class FuncionarioController {
 
     @Autowired
@@ -23,13 +23,13 @@ class FuncionarioController {
     @Autowired
     FuncionarioRepository repository;
 
-    @PostMapping("/persistir")
+    @PostMapping("/create")
     public ResponseEntity<Funcionario> create(@RequestBody FuncionarioRequestDTO data) {
         Funcionario newFuncionario = this.funcionarioService.createFuncionario(data);
         return ResponseEntity.ok(newFuncionario);
     }
 
-    @GetMapping("/todos")
+    @GetMapping("/read-all")
     public ResponseEntity<List<FuncionarioResponseDTO>> getAll() {
         try {
             List<Funcionario> items = repository.findAll();
@@ -48,7 +48,7 @@ class FuncionarioController {
         }
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/read/{id}")
     public ResponseEntity<Funcionario> getById(@PathVariable("id") Long id) {
         Optional<Funcionario> existingItemOptional = repository.findById(id);
 
@@ -56,10 +56,20 @@ class FuncionarioController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/alterar/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Funcionario> updateFuncionario(@PathVariable Long id, @RequestBody FuncionarioRequestDTO data) {
         Optional<Funcionario> funcionarioOptional = this.funcionarioService.updateFuncionario(id, data);
         return funcionarioOptional.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteFuncionario(@PathVariable Long id) {
+        try {
+            repository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
