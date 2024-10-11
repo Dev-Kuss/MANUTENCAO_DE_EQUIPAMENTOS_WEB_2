@@ -2,7 +2,7 @@
 FROM maven:3.9.4-eclipse-temurin-21 as builder
 WORKDIR /app
 
-COPY . .
+COPY .. .
 
 RUN mvn clean install -DskipTests
 
