@@ -17,7 +17,7 @@ public class Solicitacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_solicitacao;
 
     @Column(nullable = false)
     private LocalDateTime dataHora;
@@ -28,7 +28,7 @@ public class Solicitacao {
     @Column(nullable = false, length = 50)
     private String estado;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_categoria", nullable = false)
     private CategoriaEquipamento categoria;
 

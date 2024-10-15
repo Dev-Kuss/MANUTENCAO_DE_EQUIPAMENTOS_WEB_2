@@ -4,6 +4,6 @@ CREATE TABLE orcamento (
    valor DECIMAL(10, 2) NOT NULL,
    data_hora TIMESTAMP NOT NULL,
    id_funcionario INT NOT NULL,
-   FOREIGN KEY (id_solicitacao) REFERENCES solicitacao(id),
+   FOREIGN KEY (id_solicitacao) REFERENCES solicitacao(id_solicitacao),
    FOREIGN KEY (id_funcionario) REFERENCES funcionario(id)
 );

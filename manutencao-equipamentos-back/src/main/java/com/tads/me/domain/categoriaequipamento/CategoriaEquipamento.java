@@ -17,9 +17,9 @@ public class CategoriaEquipamento {
     private Long id;
 
     @Column(nullable = false)
-    private String nome;
+    private String nome_categoria;
 
     public CategoriaEquipamento(CategoriaEquipamentoRequestDTO data){
-        this.nome = data.getNome();
+        this.nome_categoria = data.getNome_categoria();
     }
 }

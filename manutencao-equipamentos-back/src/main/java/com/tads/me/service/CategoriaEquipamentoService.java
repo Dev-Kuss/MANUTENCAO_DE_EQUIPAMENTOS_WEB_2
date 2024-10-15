@@ -21,7 +21,7 @@ public class CategoriaEquipamentoService {
     @Transactional
     public CategoriaEquipamento createCategoria(CategoriaEquipamentoRequestDTO data) {
         CategoriaEquipamento newCategoria = new CategoriaEquipamento();
-        newCategoria.setNome(data.getNome());
+        newCategoria.setNome_categoria(data.getNome_categoria());
         repository.save(newCategoria);
         return newCategoria;
     }
@@ -31,7 +31,7 @@ public class CategoriaEquipamentoService {
         Optional<CategoriaEquipamento> categoriaOptional = repository.findById(id);
         if (categoriaOptional.isPresent()) {
             CategoriaEquipamento existingCategoria = categoriaOptional.get();
-            existingCategoria.setNome(data.getNome());
+            existingCategoria.setNome_categoria(data.getNome_categoria());
             repository.save(existingCategoria);
             return Optional.of(existingCategoria);
         }

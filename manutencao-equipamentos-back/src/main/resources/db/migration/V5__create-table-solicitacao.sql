@@ -1,5 +1,5 @@
 CREATE TABLE solicitacao (
-     id SERIAL PRIMARY KEY,
+     id_solicitacao SERIAL PRIMARY KEY,
      data_hora TIMESTAMP NOT NULL,
      descricao_equipamento VARCHAR(30) NOT NULL,
      estado VARCHAR(50) NOT NULL,  -- Estados: aberta, orçada, aprovada, etc.

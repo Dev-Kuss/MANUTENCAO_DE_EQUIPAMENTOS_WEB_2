@@ -2,13 +2,13 @@ package com.tads.me.domain.categoriaequipamento;
 
 public record CategoriaEquipamentoResponseDTO(
         Long id,
-        String nome
+        String nome_categoria
 ) {
 
     public CategoriaEquipamentoResponseDTO(CategoriaEquipamento categoriaEquipamento) {
         this(
                 categoriaEquipamento.getId(),
-                categoriaEquipamento.getNome()
+                categoriaEquipamento.getNome_categoria()
         );
     }
 }

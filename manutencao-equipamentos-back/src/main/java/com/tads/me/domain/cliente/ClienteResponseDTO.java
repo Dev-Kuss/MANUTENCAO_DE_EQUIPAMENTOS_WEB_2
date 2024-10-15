@@ -1,23 +1,13 @@
 package com.tads.me.domain.cliente;
 
+import com.tads.me.domain.endereco.Endereco;
+
 public record ClienteResponseDTO(
         Long id,
         String nome,
         String cpf,
         String email,
-        Integer cep,
-        String logradouro,
-        String complemento,
-        String unidade,
-        String bairro,
-        String localidade,
-        String uf,
-        String estado,
-        String regiao,
-        String ibge,
-        String gia,
-        String ddd,
-        String siafi
+        Endereco endereco
 ) {
     public ClienteResponseDTO(Cliente cliente) {
         this(
@@ -25,19 +15,7 @@ public record ClienteResponseDTO(
                 cliente.getNome(),
                 cliente.getCpf(),
                 cliente.getEmail(),
-                cliente.getCep(),
-                cliente.getLogradouro(),
-                cliente.getComplemento(),
-                cliente.getUnidade(),
-                cliente.getBairro(),
-                cliente.getLocalidade(),
-                cliente.getUf(),
-                cliente.getEstado(),
-                cliente.getRegiao(),
-                cliente.getIbge(),
-                cliente.getGia(),
-                cliente.getDdd(),
-                cliente.getSiafi()
+                cliente.getEndereco()
         );
     }
 }
