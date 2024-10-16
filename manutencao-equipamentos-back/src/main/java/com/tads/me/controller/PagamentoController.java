@@ -1,8 +1,8 @@
 package com.tads.me.controller;
 
-import com.tads.me.domain.pagamento.Pagamento;
-import com.tads.me.domain.pagamento.PagamentoRequestDTO;
-import com.tads.me.domain.pagamento.PagamentoResponseDTO;
+import com.tads.me.entity.Pagamento;
+import com.tads.me.dto.PagamentoRequestDTO;
+import com.tads.me.dto.PagamentoResponseDTO;
 import com.tads.me.repository.PagamentoRepository;
 import com.tads.me.service.PagamentoService;
 import org.springframework.beans.factory.annotation.Autowired;

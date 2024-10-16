@@ -1,8 +1,8 @@
 package com.tads.me.service;
 
-import com.tads.me.domain.categoriaequipamento.CategoriaEquipamentoRequestDTO;
-import com.tads.me.domain.categoriaequipamento.CategoriaEquipamentoResponseDTO;
-import com.tads.me.domain.categoriaequipamento.CategoriaEquipamento;
+import com.tads.me.dto.CategoriaEquipamentoRequestDTO;
+import com.tads.me.dto.CategoriaEquipamentoResponseDTO;
+import com.tads.me.entity.CategoriaEquipamento;
 import com.tads.me.repository.CategoriaEquipamentoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

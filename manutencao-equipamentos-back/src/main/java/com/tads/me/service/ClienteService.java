@@ -1,7 +1,7 @@
 package com.tads.me.service;
 
-import com.tads.me.domain.cliente.Cliente;
-import com.tads.me.domain.cliente.ClienteRequestDTO;
+import com.tads.me.entity.Cliente;
+import com.tads.me.dto.ClienteRequestDTO;
 import com.tads.me.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

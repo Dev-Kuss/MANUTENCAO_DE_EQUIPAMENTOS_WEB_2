@@ -1,8 +1,8 @@
 package com.tads.me.controller;
 
-import com.tads.me.domain.cliente.Cliente;
-import com.tads.me.domain.cliente.ClienteRequestDTO;
-import com.tads.me.domain.cliente.ClienteResponseDTO;
+import com.tads.me.entity.Cliente;
+import com.tads.me.dto.ClienteRequestDTO;
+import com.tads.me.dto.ClienteResponseDTO;
 import com.tads.me.repository.ClienteRepository;
 import com.tads.me.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.tads.me.service;
 
-import com.tads.me.domain.endereco.Endereco;
-import com.tads.me.domain.endereco.EnderecoRequestDTO;
+import com.tads.me.entity.Endereco;
+import com.tads.me.dto.EnderecoRequestDTO;
 import com.tads.me.repository.EnderecoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

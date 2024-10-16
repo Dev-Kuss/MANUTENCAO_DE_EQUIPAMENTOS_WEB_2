@@ -1,8 +1,8 @@
 package com.tads.me.controller;
 
-import com.tads.me.domain.orcamento.Orcamento;
-import com.tads.me.domain.orcamento.OrcamentoRequestDTO;
-import com.tads.me.domain.orcamento.OrcamentoResponseDTO;
+import com.tads.me.entity.Orcamento;
+import com.tads.me.dto.OrcamentoRequestDTO;
+import com.tads.me.dto.OrcamentoResponseDTO;
 import com.tads.me.repository.OrcamentoRepository;
 import com.tads.me.service.OrcamentoService;
 import org.springframework.beans.factory.annotation.Autowired;

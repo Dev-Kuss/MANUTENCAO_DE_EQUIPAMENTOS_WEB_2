@@ -1,8 +1,8 @@
 package com.tads.me.service;
 
-import com.tads.me.domain.historicosolicitacao.HistoricoSolicitacao;
-import com.tads.me.domain.historicosolicitacao.HistoricoSolicitacaoRequestDTO;
-import com.tads.me.domain.historicosolicitacao.HistoricoSolicitacaoResponseDTO;
+import com.tads.me.entity.HistoricoSolicitacao;
+import com.tads.me.dto.HistoricoSolicitacaoRequestDTO;
+import com.tads.me.dto.HistoricoSolicitacaoResponseDTO;
 import com.tads.me.repository.HistoricoSolicitacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
 package com.tads.me.controller;
 
-import com.tads.me.domain.funcionario.Funcionario;
-import com.tads.me.domain.funcionario.FuncionarioRequestDTO;
-import com.tads.me.domain.funcionario.FuncionarioResponseDTO;
+import com.tads.me.entity.Funcionario;
+import com.tads.me.dto.FuncionarioRequestDTO;
+import com.tads.me.dto.FuncionarioResponseDTO;
 import com.tads.me.repository.FuncionarioRepository;
 import com.tads.me.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;

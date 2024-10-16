@@ -1,7 +1,7 @@
 package com.tads.me.service;
 
-import com.tads.me.domain.funcionario.Funcionario;
-import com.tads.me.domain.funcionario.FuncionarioRequestDTO;
+import com.tads.me.entity.Funcionario;
+import com.tads.me.dto.FuncionarioRequestDTO;
 import com.tads.me.repository.FuncionarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
