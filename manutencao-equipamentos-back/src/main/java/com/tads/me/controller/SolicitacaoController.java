@@ -1,8 +1,8 @@
 package com.tads.me.controller;
 
-import com.tads.me.domain.solicitacao.Solicitacao;
-import com.tads.me.domain.solicitacao.SolicitacaoRequestDTO;
-import com.tads.me.domain.solicitacao.SolicitacaoResponseDTO;
+import com.tads.me.entity.Solicitacao;
+import com.tads.me.dto.SolicitacaoRequestDTO;
+import com.tads.me.dto.SolicitacaoResponseDTO;
 import com.tads.me.repository.SolicitacaoRepository;
 import com.tads.me.service.SolicitacaoService;
 import org.springframework.beans.factory.annotation.Autowired;

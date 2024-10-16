@@ -1,8 +1,8 @@
 package com.tads.me.controller;
 
-import com.tads.me.domain.cliente.Cliente;
-import com.tads.me.domain.cliente.ClienteRequestDTO;
-import com.tads.me.domain.cliente.ClienteResponseDTO;
+import com.tads.me.entity.Cliente;
+import com.tads.me.dto.ClienteRequestDTO;
+import com.tads.me.dto.ClienteResponseDTO;
 import com.tads.me.repository.ClienteRepository;
 import com.tads.me.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ class ClienteController {
     ClienteRepository repository;
 
     @PostMapping("/create")
-    public ResponseEntity<Cliente> create(@RequestBody ClienteRequestDTO data) {
+    public ResponseEntity<Cliente> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
         Cliente newCliente = this.clienteService.createCliente(data);
         return ResponseEntity.ok(newCliente);
     }

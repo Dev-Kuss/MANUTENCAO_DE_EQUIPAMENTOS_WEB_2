@@ -1,6 +1,6 @@
 package com.tads.me.repository;
 
-import com.tads.me.domain.pagamento.Pagamento;
+import com.tads.me.entity.Pagamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

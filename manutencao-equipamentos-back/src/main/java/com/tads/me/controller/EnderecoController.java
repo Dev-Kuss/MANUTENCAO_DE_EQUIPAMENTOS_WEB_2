@@ -1,8 +1,8 @@
 package com.tads.me.controller;
 
-import com.tads.me.domain.endereco.Endereco;
-import com.tads.me.domain.endereco.EnderecoRequestDTO;
-import com.tads.me.domain.endereco.EnderecoResponseDTO;
+import com.tads.me.entity.Endereco;
+import com.tads.me.dto.EnderecoRequestDTO;
+import com.tads.me.dto.EnderecoResponseDTO;
 import com.tads.me.service.EnderecoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

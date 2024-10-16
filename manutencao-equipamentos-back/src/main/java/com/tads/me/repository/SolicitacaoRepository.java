@@ -1,6 +1,6 @@
 package com.tads.me.repository;
 
-import com.tads.me.domain.solicitacao.Solicitacao;
+import com.tads.me.entity.Solicitacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
