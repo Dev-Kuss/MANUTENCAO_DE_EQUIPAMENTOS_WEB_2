@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY .. .
 
-RUN mvn clean install -DskipTests
+RUN mvn clean install
 
 # Etapa de runtime usando Eclipse Temurin JDK 21
 FROM eclipse-temurin:21-jdk-alpine
