@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ class ClienteController {
     ClienteRepository repository;
 
     @PostMapping("/create")
-    public ResponseEntity<Cliente> create(@RequestBody ClienteRequestDTO data) {
+    public ResponseEntity<Cliente> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
         Cliente newCliente = this.clienteService.createCliente(data);
         return ResponseEntity.ok(newCliente);
     }

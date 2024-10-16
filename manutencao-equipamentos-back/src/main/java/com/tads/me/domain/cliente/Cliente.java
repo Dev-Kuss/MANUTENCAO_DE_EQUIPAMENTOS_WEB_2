@@ -24,6 +24,8 @@ public class Cliente {
     private String cpf;
     private String email;
     private String telefone;
+    private String senhaHash;
+    private String salt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "endereco_id")
