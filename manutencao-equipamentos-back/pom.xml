@@ -89,6 +89,10 @@
 			<artifactId>flyway-core</artifactId>
 			<version>9.8.1</version> <!-- or a more recent compatible version -->
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

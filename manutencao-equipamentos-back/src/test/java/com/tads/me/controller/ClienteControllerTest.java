@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSender;  // Import this
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
@@ -32,6 +33,9 @@ public class ClienteControllerTest {
 
     @MockBean
     private ClienteRepository clienteRepository;
+
+    @MockBean
+    private JavaMailSender mailSender;  // Mock the JavaMailSender
 
     private Cliente cliente;
 

@@ -29,11 +29,10 @@ export class AutocadastroComponent {
     });
   }
 
-  // TODO: substituir pelo cadastro integrado ao backend/bd
   onSubmit() {
     if (this.autocadastroForm.valid) {
       // Gera uma senha aleatória de 4 números
-      const senhaAleatoria = Math.floor(1000 + Math.random() * 9000); // Gera um número aleatório entre 1000 e 9999
+      const senhaAleatoria = Math.floor(1000 + Math.random() * 9000);
       const formData = {
         ...this.autocadastroForm.value,
         senha: senhaAleatoria // Adiciona a senha gerada aos dados do formulário
