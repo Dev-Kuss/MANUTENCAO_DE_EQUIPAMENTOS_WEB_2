@@ -42,7 +42,7 @@ export class AutocadastroComponent {
       this.http.post(`${this.apiUrl}/create`, formData).subscribe({
         next: (response) => {
           console.log('Formulário enviado com sucesso:', response);
-          alert('Autocadastro realizado com sucesso! Sua senha é: ' + senhaAleatoria);
+          alert('Auto cadastro realizado com sucesso! Sua senha foi enviada para o e-mail : ' + formData.email);
         },
         error: (error) => {
           console.error('Erro ao enviar formulário:', error);

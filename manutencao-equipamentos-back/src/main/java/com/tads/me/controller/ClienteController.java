@@ -41,15 +41,17 @@ class ClienteController {
         return ResponseEntity.ok(newCliente);
     }
 
-    // Método responsável por enviar o e-mail
     private void enviarEmailComSenha(String emailDestino, String senha) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(emailDestino);
-        message.setSubject("Sua senha de acesso ao sistema");
-        message.setText("Olá,\n\nSeu cadastro foi realizado com sucesso! Sua senha de acesso é: " + senha + "\n\nPor favor, mantenha-a em segurança.");
-
-        // Envia o e-mail
-        mailSender.send(message);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(emailDestino);
+            message.setSubject("Sua senha de acesso ao sistema");
+            message.setText("Olá,\n\nSeu cadastro foi realizado com sucesso! Sua senha de acesso é: " + senha + "\n\nPor favor, mantenha-a em segurança.");
+            // Envia o e-mail
+            mailSender.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();  // You can replace this with proper logging if necessary
+        }
     }
 
     @GetMapping("/read-all")
