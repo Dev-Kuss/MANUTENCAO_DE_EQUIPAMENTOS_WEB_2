@@ -13,6 +13,8 @@ import { HttpClient } from '@angular/common/http';
 export class AutocadastroComponent {
   autocadastroForm: FormGroup;
 
+  private apiUrl = 'http://localhost:8080/cliente';
+
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.autocadastroForm = this.fb.group({
       cpf: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
@@ -27,13 +29,26 @@ export class AutocadastroComponent {
     });
   }
 
-  // TODO: substituir pelo cadastro integrado ao backend/bd
   onSubmit() {
     if (this.autocadastroForm.valid) {
+      // Gera uma senha aleatória de 4 números
       const senhaAleatoria = Math.floor(1000 + Math.random() * 9000);
-      console.log('Formulário enviado:', this.autocadastroForm.value);
-      console.log('Senha aleatória gerada:', senhaAleatoria);
-      alert('Autocadastro realizado com sucesso! Sua senha é: ' + senhaAleatoria);
+      const formData = {
+        ...this.autocadastroForm.value,
+        senha: senhaAleatoria // Adiciona a senha gerada aos dados do formulário
+      };
+
+      // Enviar uma solicitação POST para o backend para criar um novo cliente
+      this.http.post(`${this.apiUrl}/create`, formData).subscribe({
+        next: (response) => {
+          console.log('Formulário enviado com sucesso:', response);
+          alert('Auto cadastro realizado com sucesso! Sua senha foi enviada para o e-mail : ' + formData.email);
+        },
+        error: (error) => {
+          console.error('Erro ao enviar formulário:', error);
+          alert('Ocorreu um erro ao realizar o autocadastro. Por favor, tente novamente.');
+        }
+      });
     } else {
       alert('Por favor, preencha todos os campos corretamente.');
     }
@@ -42,7 +57,7 @@ export class AutocadastroComponent {
   // TODO: substituir pela API ViaCEP
   buscarCEP() {
     const cep = this.autocadastroForm.get('cep')?.value;
-    
+
     if (cep && cep.length === 8) {
       this.http.get(`https://viacep.com.br/ws/${cep}/json/`).subscribe(
         (dados: any) => {

@@ -22,6 +22,9 @@ services:
       - db
     networks:
       - app-network
+    dns:
+      - 8.8.8.8  # Google's public DNS server
+      - 8.8.4.4  # Backup Google DNS
 
   frontend:
     build:
@@ -34,6 +37,13 @@ services:
     networks:
       - app-network
 
+#  mailhog:
+#    image: mailhog/mailhog
+#    ports:
+#      - "8025:8025"  # Web UI
+#      - "1025:1025"  # SMTP server
+#    networks:
+#      - app-network
 networks:
   app-network:
     driver: bridge

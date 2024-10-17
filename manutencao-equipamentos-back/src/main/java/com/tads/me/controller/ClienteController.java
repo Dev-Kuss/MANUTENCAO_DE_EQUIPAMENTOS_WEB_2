@@ -9,11 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/cliente")
 class ClienteController {
@@ -24,10 +27,31 @@ class ClienteController {
     @Autowired
     ClienteRepository repository;
 
+    @Autowired
+    private JavaMailSender mailSender;
+
     @PostMapping("/create")
     public ResponseEntity<Cliente> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
+        // Cria o cliente
         Cliente newCliente = this.clienteService.createCliente(data);
+
+        // Enviar e-mail com a senha
+        enviarEmailComSenha(data.email(), data.senha());
+
         return ResponseEntity.ok(newCliente);
+    }
+
+    private void enviarEmailComSenha(String emailDestino, String senha) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(emailDestino);
+            message.setSubject("Sua senha de acesso ao sistema");
+            message.setText("Olá,\n\nSeu cadastro foi realizado com sucesso! Sua senha de acesso é: " + senha + "\n\nPor favor, mantenha-a em segurança.");
+            // Envia o e-mail
+            mailSender.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();  // You can replace this with proper logging if necessary
+        }
     }
 
     @GetMapping("/read-all")
