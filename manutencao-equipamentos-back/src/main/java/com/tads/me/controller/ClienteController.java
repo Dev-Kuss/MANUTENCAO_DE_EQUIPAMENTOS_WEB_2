@@ -32,10 +32,8 @@ class ClienteController {
 
     @PostMapping("/create")
     public ResponseEntity<Cliente> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
-        // Cria o cliente
         Cliente newCliente = this.clienteService.createCliente(data);
 
-        // Enviar e-mail com a senha
         enviarEmailComSenha(data.email(), data.senha());
 
         return ResponseEntity.ok(newCliente);
@@ -47,10 +45,9 @@ class ClienteController {
             message.setTo(emailDestino);
             message.setSubject("Sua senha de acesso ao sistema");
             message.setText("Olá,\n\nSeu cadastro foi realizado com sucesso! Sua senha de acesso é: " + senha + "\n\nPor favor, mantenha-a em segurança.");
-            // Envia o e-mail
             mailSender.send(message);
         } catch (Exception e) {
-            e.printStackTrace();  // You can replace this with proper logging if necessary
+            e.printStackTrace();
         }
     }
 

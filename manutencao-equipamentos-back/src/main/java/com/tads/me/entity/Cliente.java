@@ -26,15 +26,26 @@ public class Cliente {
     private String telefone;
     private String senhaHash;
     private String salt;
+    private String cep;
+    private String rua;
+    private String numero;
+    private String complemento;
+    private String bairro;
+    private String cidade;
+    private String estado;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "endereco_id")
-    private Endereco endereco;
 
     public Cliente(ClienteRequestDTO data) {
         this.nome = data.nome();
         this.cpf = data.cpf();
         this.email = data.email();
         this.telefone = data.telefone();
+        this.cep = data.cep();
+        this.rua = data.rua();
+        this.numero = data.numero();
+        this.complemento = data.complemento();
+        this.bairro = data.bairro();
+        this.cidade = data.cidade();
+        this.estado = data.estado();
     }
 }
