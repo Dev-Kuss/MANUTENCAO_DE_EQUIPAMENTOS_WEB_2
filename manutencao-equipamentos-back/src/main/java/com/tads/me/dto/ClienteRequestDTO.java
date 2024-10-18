@@ -7,7 +7,7 @@ public record ClienteRequestDTO(
         String telefone,
         String senha,
         String cep,
-        String rua,
+        String logradouro,
         String numero,
         String complemento,
         String bairro,

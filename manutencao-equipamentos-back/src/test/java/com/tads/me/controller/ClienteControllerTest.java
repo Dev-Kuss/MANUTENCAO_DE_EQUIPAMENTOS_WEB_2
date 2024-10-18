@@ -47,10 +47,25 @@ public class ClienteControllerTest {
         cliente.setCpf("12345678900");
         cliente.setEmail("joao.silva@example.com");
         cliente.setTelefone("123456789");
+        cliente.setCep("12345-678");
+        cliente.setLogradouro("Rua A");
+        cliente.setNumero("123");
+        cliente.setComplemento("Apto 1");
+        cliente.setBairro("Centro");
+        cliente.setCidade("Cidade X");
+        cliente.setEstado("Estado Y");
     }
 
     @Test
     void testGetClienteById() throws Exception {
+        cliente.setCep("12345-678");
+        cliente.setLogradouro("Rua A");
+        cliente.setNumero("123");
+        cliente.setComplemento("Apto 1");
+        cliente.setBairro("Centro");
+        cliente.setCidade("Cidade X");
+        cliente.setEstado("Estado Y");
+
         when(clienteRepository.findById(1L)).thenReturn(Optional.of(cliente));
 
         mockMvc.perform(get("/cliente/read/1"))
@@ -59,7 +74,14 @@ public class ClienteControllerTest {
                 .andExpect(jsonPath("$.nome").value("João Silva"))
                 .andExpect(jsonPath("$.cpf").value("12345678900"))
                 .andExpect(jsonPath("$.email").value("joao.silva@example.com"))
-                .andExpect(jsonPath("$.telefone").value("123456789"));
+                .andExpect(jsonPath("$.telefone").value("123456789"))
+                .andExpect(jsonPath("$.cep").value("12345-678"))
+                .andExpect(jsonPath("$.logradouro").value("Rua A"))
+                .andExpect(jsonPath("$.numero").value("123"))
+                .andExpect(jsonPath("$.complemento").value("Apto 1"))
+                .andExpect(jsonPath("$.bairro").value("Centro"))
+                .andExpect(jsonPath("$.cidade").value("Cidade X"))
+                .andExpect(jsonPath("$.estado").value("Estado Y"));
 
         verify(clienteRepository, times(1)).findById(1L);
     }
@@ -68,18 +90,26 @@ public class ClienteControllerTest {
     void testCreateCliente() throws Exception {
         when(clienteService.createCliente(any(ClienteRequestDTO.class))).thenReturn(cliente);
 
-        String clienteJson = "{ \"nome\": \"João Silva\", \"cpf\": \"12345678900\", \"email\": \"joao.silva@example.com\", \"telefone\": \"123456789\", \"senha\": \"password123\" }";
+        String clienteJson = "{ \"nome\": \"João Silva\", \"cpf\": \"12345678900\", \"email\": \"joao.silva@example.com\", \"telefone\": \"123456789\", \"senha\": \"password123\", \"cep\": \"12345-678\", \"rua\": \"Rua A\", \"numero\": \"123\", \"complemento\": \"Apto 1\", \"bairro\": \"Centro\", \"cidade\": \"Cidade X\", \"estado\": \"Estado Y\" }";
 
         mockMvc.perform(post("/cliente/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(clienteJson))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.nome").value("João Silva"))
                 .andExpect(jsonPath("$.cpf").value("12345678900"))
                 .andExpect(jsonPath("$.email").value("joao.silva@example.com"))
-                .andExpect(jsonPath("$.telefone").value("123456789"));
+                .andExpect(jsonPath("$.telefone").value("123456789"))
+                .andExpect(jsonPath("$.cep").value("12345-678"))
+                .andExpect(jsonPath("$.logradouro").value("Rua A"))
+                .andExpect(jsonPath("$.numero").value("123"))
+                .andExpect(jsonPath("$.complemento").value("Apto 1"))
+                .andExpect(jsonPath("$.bairro").value("Centro"))
+                .andExpect(jsonPath("$.cidade").value("Cidade X"))
+                .andExpect(jsonPath("$.estado").value("Estado Y"));
 
         verify(clienteService, times(1)).createCliente(any(ClienteRequestDTO.class));
     }
+
 }

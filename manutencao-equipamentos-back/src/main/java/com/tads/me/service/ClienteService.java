@@ -20,6 +20,11 @@ public class ClienteService {
     @Autowired
     private ClienteRepository repository;
 
+    @Transactional(readOnly = true)
+    public boolean cpfExists(String cpf) {
+        return repository.findByCpf(cpf).isPresent();
+    }
+
     @Transactional
     public Cliente createCliente(ClienteRequestDTO data) throws NoSuchAlgorithmException {
         Cliente newCliente = new Cliente(data);
@@ -40,11 +45,19 @@ public class ClienteService {
             existingCliente.setCpf(data.cpf());
             existingCliente.setEmail(data.email());
             existingCliente.setTelefone(data.telefone());
+            existingCliente.setCep(data.cep());
+            existingCliente.setLogradouro(data.logradouro());
+            existingCliente.setNumero(data.numero());
+            existingCliente.setComplemento(data.complemento());
+            existingCliente.setBairro(data.bairro());
+            existingCliente.setCidade(data.cidade());
+            existingCliente.setEstado(data.estado());
             repository.save(existingCliente);
             return Optional.of(existingCliente);
         }
         return Optional.empty();
     }
+
 
     @Transactional
     public String gerarSalt() {

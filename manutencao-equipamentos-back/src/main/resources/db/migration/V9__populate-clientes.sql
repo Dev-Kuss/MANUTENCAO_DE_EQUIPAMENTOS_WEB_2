@@ -1,4 +1,4 @@
-INSERT INTO cliente (nome, cpf, email, telefone, senha_hash, salt, cep, rua, numero, complemento, bairro, cidade,
+INSERT INTO cliente (nome, cpf, email, telefone, senha_hash, salt, cep, logradouro, numero, complemento, bairro, cidade,
                      estado)
 VALUES ('João', '123.456.789-00', 'joao@example.com', '(41) 99999-9999', 'kh+OiIjKk7mNtRNRPhDoqB5wmrvaXGOyH8Yy8BMnR8k=',
         '4p0ko0E8N8sUif5YUff2kQ==', '12345678', 'Rua A', '100', 'Apt 101', 'Centro', 'Cidade A', 'SP'),

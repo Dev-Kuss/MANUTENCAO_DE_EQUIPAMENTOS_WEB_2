@@ -27,7 +27,7 @@ public class Cliente {
     private String senhaHash;
     private String salt;
     private String cep;
-    private String rua;
+    private String logradouro;
     private String numero;
     private String complemento;
     private String bairro;
@@ -41,7 +41,7 @@ public class Cliente {
         this.email = data.email();
         this.telefone = data.telefone();
         this.cep = data.cep();
-        this.rua = data.rua();
+        this.logradouro = data.logradouro();
         this.numero = data.numero();
         this.complemento = data.complemento();
         this.bairro = data.bairro();

@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
@@ -31,12 +34,24 @@ class ClienteController {
     private JavaMailSender mailSender;
 
     @PostMapping("/create")
-    public ResponseEntity<Cliente> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
-        Cliente newCliente = this.clienteService.createCliente(data);
+    public ResponseEntity<ClienteResponseDTO> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
 
+        if (clienteService.cpfExists(data.cpf())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
+
+        Cliente newCliente = this.clienteService.createCliente(data);
         enviarEmailComSenha(data.email(), data.senha());
 
-        return ResponseEntity.ok(newCliente);
+        ClienteResponseDTO clienteResponseDTO = new ClienteResponseDTO(newCliente);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newCliente.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(clienteResponseDTO);
     }
 
     private void enviarEmailComSenha(String emailDestino, String senha) {
