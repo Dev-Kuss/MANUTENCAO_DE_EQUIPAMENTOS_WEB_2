@@ -2,6 +2,7 @@ package com.tads.me.service;
 
 import com.tads.me.entity.Cliente;
 import com.tads.me.dto.ClienteRequestDTO;
+import com.tads.me.entity.User;
 import com.tads.me.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,8 @@ public class ClienteService {
     }
 
     @Transactional
-    public Cliente createCliente(ClienteRequestDTO data) throws NoSuchAlgorithmException {
-        Cliente newCliente = new Cliente(data);
+    public Cliente createCliente(ClienteRequestDTO data, User user) throws NoSuchAlgorithmException {
+        Cliente newCliente = new Cliente(data, user);
         String salt = gerarSalt();
         String senhaHash = hashSenhaComSalt(data.senha(), salt);
         newCliente.setSenhaHash(senhaHash);
@@ -78,5 +79,10 @@ public class ClienteService {
     public boolean validarSenha(String senha, Cliente cliente) throws NoSuchAlgorithmException {
         String hashSenhaFornecida = hashSenhaComSalt(senha, cliente.getSalt());
         return hashSenhaFornecida.equals(cliente.getSenhaHash());
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Cliente> getClienteById(Long id) {
+        return repository.findById(id);
     }
 }

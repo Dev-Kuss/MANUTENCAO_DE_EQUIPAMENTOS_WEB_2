@@ -2,5 +2,6 @@
 <project version="4">
   <component name="DiffGenerationConfig">
     <option name="sourceModelValue" value="me:me" />
+    <option name="targetDbValue" value="9d88e8ae-c294-4062-9f2a-802077772089" />
   </component>
 </project>

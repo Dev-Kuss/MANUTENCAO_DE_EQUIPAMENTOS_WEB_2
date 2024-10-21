@@ -3,6 +3,7 @@ package com.tads.me.controller;
 import com.tads.me.entity.Funcionario;
 import com.tads.me.dto.FuncionarioRequestDTO;
 import com.tads.me.dto.FuncionarioResponseDTO;
+import com.tads.me.entity.User;
 import com.tads.me.repository.FuncionarioRepository;
 import com.tads.me.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ class FuncionarioController {
     FuncionarioRepository repository;
 
     @PostMapping("/create")
-    public ResponseEntity<Funcionario> create(@RequestBody FuncionarioRequestDTO data) {
-        Funcionario newFuncionario = this.funcionarioService.createFuncionario(data);
+    public ResponseEntity<Funcionario> create(@RequestBody FuncionarioRequestDTO data, User user) {
+        Funcionario newFuncionario = this.funcionarioService.createFuncionario(data, user);
         return ResponseEntity.ok(newFuncionario);
     }
 

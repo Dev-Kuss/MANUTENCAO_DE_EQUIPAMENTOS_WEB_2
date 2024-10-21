@@ -34,8 +34,12 @@ public class Cliente {
     private String cidade;
     private String estado;
 
+    // Relacionamento 1:1 com User
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    public Cliente(ClienteRequestDTO data) {
+    public Cliente(ClienteRequestDTO data, User user) {
         this.nome = data.nome();
         this.cpf = data.cpf();
         this.email = data.email();
@@ -47,5 +51,6 @@ public class Cliente {
         this.bairro = data.bairro();
         this.cidade = data.cidade();
         this.estado = data.estado();
+        this.user = user;
     }
 }

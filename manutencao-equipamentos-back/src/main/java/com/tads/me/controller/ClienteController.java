@@ -3,6 +3,7 @@ package com.tads.me.controller;
 import com.tads.me.entity.Cliente;
 import com.tads.me.dto.ClienteRequestDTO;
 import com.tads.me.dto.ClienteResponseDTO;
+import com.tads.me.entity.User;
 import com.tads.me.repository.ClienteRepository;
 import com.tads.me.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +35,13 @@ class ClienteController {
     private JavaMailSender mailSender;
 
     @PostMapping("/create")
-    public ResponseEntity<ClienteResponseDTO> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
+    public ResponseEntity<ClienteResponseDTO> create(@RequestBody ClienteRequestDTO data, User user) throws NoSuchAlgorithmException {
 
         if (clienteService.cpfExists(data.cpf())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
 
-        Cliente newCliente = this.clienteService.createCliente(data);
+        Cliente newCliente = this.clienteService.createCliente(data, user);
         enviarEmailComSenha(data.email(), data.senha());
 
         ClienteResponseDTO clienteResponseDTO = new ClienteResponseDTO(newCliente);
@@ -86,12 +87,12 @@ class ClienteController {
     }
 
     @GetMapping("/read/{id}")
-    public ResponseEntity<Cliente> getById(@PathVariable("id") Long id) {
-        Optional<Cliente> existingItemOptional = repository.findById(id);
-
-        return existingItemOptional.map(cliente -> new ResponseEntity<>(cliente, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Cliente> getById(@PathVariable Long id) {
+        return clienteService.getClienteById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody ClienteRequestDTO data) {

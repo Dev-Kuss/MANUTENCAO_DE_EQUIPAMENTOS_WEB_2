@@ -3,7 +3,6 @@ package com.tads.me.entity;
 import com.tads.me.dto.FuncionarioRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
 
 @Table(name = "funcionario")
@@ -32,10 +31,16 @@ public class Funcionario {
     @Column(nullable = false)
     private String senha;
 
-    public Funcionario(FuncionarioRequestDTO data) {
+    // Relacionamento 1:1 com User
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public Funcionario(FuncionarioRequestDTO data, User user) {
         this.email = data.email();
         this.nome = data.nome();
         this.dataNascimento = data.dataNascimento();
         this.senha = data.senha();
+        this.user = user;
     }
 }

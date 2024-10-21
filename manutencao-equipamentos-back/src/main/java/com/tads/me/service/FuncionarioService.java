@@ -2,6 +2,7 @@ package com.tads.me.service;
 
 import com.tads.me.entity.Funcionario;
 import com.tads.me.dto.FuncionarioRequestDTO;
+import com.tads.me.entity.User;
 import com.tads.me.repository.FuncionarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,8 @@ public class FuncionarioService {
     private FuncionarioRepository repository;
 
     @Transactional
-    public Funcionario createFuncionario(FuncionarioRequestDTO data) {
-        Funcionario newFuncionario = new Funcionario(data);
+    public Funcionario createFuncionario(FuncionarioRequestDTO data, User user) {
+        Funcionario newFuncionario = new Funcionario(data, user);
         repository.save(newFuncionario);
         return newFuncionario;
     }
