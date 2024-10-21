@@ -1,120 +1,105 @@
-# Projeto de Manutenção de Equipamentos
+Para atualizar o `README.md` com base nos arquivos fornecidos, vou integrar as informações obtidas dos arquivos `pom.xml`, `package.json`, `docker-compose.yml`, e `Dockerfile`.
 
-## Descrição
-Este é um projeto de controle de manutenção de equipamentos, desenvolvido como parte da disciplina **Desenvolvimento Web II**. O sistema gerencia solicitações de manutenção, histórico de serviços, e oferece funcionalidades tanto para clientes quanto para funcionários.
-
-## Tecnologias Utilizadas
-
-- **Java 21 LTS** - Linguagem de programação principal do backend
-- **Spring Boot 3.3.4** - Framework para simplificação do desenvolvimento Java
-- **Spring Data JPA** - Para integração com banco de dados
-- **PostgreSQL** - Banco de dados utilizado
-- **Flyway** - Para controle de versões do banco de dados
-- **Docker Compose** - Para orquestração de containers
-- **Lombok** - Redução de boilerplate no código Java
-- **Springdoc OpenAPI** - Para documentação automática da API
-
-## Requisitos Funcionais
-
-### Perfil Cliente
-- **RF001 - Autocadastro:** O cliente pode se cadastrar no sistema com CPF, nome, e-mail, endereço completo e telefone.
-- **RF002 - Login:** O cliente realiza login usando e-mail e senha.
-- **RF003 - Página Inicial:** Visualização das solicitações de manutenção, com detalhes e histórico.
-- **RF004 - Solicitação de Manutenção:** Criação de solicitação com detalhes do equipamento e defeito.
-- **RF005 - Aprovação/Rejeição de Orçamento:** O cliente pode aprovar ou rejeitar o orçamento.
-- **RF010 - Pagamento de Serviço:** O cliente paga o serviço após a manutenção.
-
-### Perfil Funcionário
-- **RF011 - Página Inicial:** Exibe todas as solicitações em estado "ABERTA" para que o funcionário possa efetuar o orçamento.
-- **RF012 - Efetuar Orçamento:** Funcionalidade para gerar o orçamento para a solicitação de manutenção.
-- **RF013 - Visualização de Solicitações:** Exibe e filtra solicitações por estado e data.
-- **RF014 - Efetuar Manutenção:** O funcionário realiza a manutenção do equipamento ou redireciona para outro funcionário.
-- **RF016 - Finalizar Solicitação:** Finaliza a solicitação após o serviço.
-- **RF017 - CRUD de Categoria de Equipamento:** Funcionalidade para gerenciar as categorias dos equipamentos.
-- **RF018 - CRUD de Funcionários:** Funcionalidade para gerenciar os funcionários do sistema.
-
-## Requisitos Não-Funcionais
-
-- O sistema será implementado utilizando Angular v17+ no front-end.
-- As senhas dos usuários serão criptografadas utilizando SHA-256 com SALT.
-- Todas as tabelas do banco de dados devem estar normalizadas (3FN), com exceção das tabelas de endereço.
-- Consultas ao banco de dados devem utilizar boas práticas, incluindo JOINS, quando necessário.
-- O layout deve ser responsivo e desenvolvido utilizando um framework como Bootstrap, Material ou Tailwind.
-- O sistema será testado utilizando o navegador Firefox na sua versão mais recente.
-
-## Configuração do Projeto
-
-### Banco de Dados
-O projeto está configurado para utilizar o **PostgreSQL**. As configurações de acesso ao banco de dados estão localizadas no arquivo `application.properties`, e a configuração do container do banco está no `docker-compose.yaml`.
-
-### Docker
-O arquivo `docker-compose.yaml` contém a configuração dos containers necessários para a execução da aplicação, incluindo o PostgreSQL.
-
-## Execução do Projeto com Docker Compose
-
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/projeto-manutencao-equipamentos.git
-   ```
-
-2. Navegue até a pasta do projeto:
-   ```bash
-   cd projeto-manutencao-equipamentos
-   ```
-
-3. Execute o projeto usando Docker Compose:
-   ```bash
-   docker-compose up -d
-   ```
-
-4. Acesse o Swagger UI para explorar a API:
-   ```
-   http://localhost:8080/swagger-ui.html
-   ```
-
-Isso irá iniciar tanto a aplicação quanto o banco de dados PostgreSQL.
-
-## Estrutura da Aplicação
-
-### Funcionalidades do Cliente
-- Autocadastro de clientes
-- Solicitação de manutenção
-- Visualização de histórico de solicitações
-- Aprovação e rejeição de orçamentos
-
-### Funcionalidades do Funcionário
-- CRUD de funcionários
-- Visualização de solicitações pendentes
-- Geração de orçamento
-- Finalização de manutenções
-
-### Entidades Principais
-
-- **Cliente**: Representa os clientes que fazem solicitações de manutenção.
-- **Funcionario**: Gerencia as solicitações e realiza orçamentos e manutenções.
-- **Solicitação**: Registro de um pedido de manutenção, incluindo histórico de alterações de status.
-
-## Contribuição
-
-Para contribuir com o projeto, siga os passos abaixo:
-
-1. Crie um fork do repositório
-2. Crie uma nova branch com sua feature:
-   ```bash
-   git checkout -b minha-feature
-   ```
-3. Faça commit de suas mudanças:
-   ```bash
-   git commit -m 'Adiciona minha feature'
-   ```
-4. Envie sua branch:
-   ```bash
-   git push origin minha-feature
-   ```
-5. Abra um Pull Request
-
-## Licença
-Este projeto está licenciado sob os termos da licença MIT.
+Aqui está uma sugestão para o conteúdo atualizado do `README.md`:
 
 ---
 
+# Projeto de Manutenção de Equipamentos
+
+Este projeto é parte da disciplina de **Desenvolvimento Web 2** e visa a implementação de um sistema para gerenciamento e manutenção de equipamentos. Ele é composto por uma aplicação **backend** desenvolvida com **Spring Boot** e uma aplicação **frontend** desenvolvida com **Angular**.
+
+## Arquitetura
+
+A arquitetura deste projeto utiliza um ambiente **Dockerizado** com o uso de `docker-compose` para orquestrar os serviços do frontend, backend, e banco de dados. O backend foi construído com **Spring Boot** e o frontend com **Angular**.
+
+### Principais Tecnologias Utilizadas:
+
+- **Backend**: 
+  - Java 21
+  - Spring Boot 3.3.4
+  - PostgreSQL (como banco de dados)
+  - Spring Data JPA
+  - Flyway (para migrações de banco de dados)
+  - Spring Security com JWT
+  - OpenAPI (documentação de APIs com Swagger)
+  
+- **Frontend**: 
+  - Angular 17
+  - TailwindCSS
+  - Font Awesome (para ícones)
+
+- **DevOps**:
+  - Docker e Docker Compose
+  - Integração com PostgreSQL via containers Docker
+  - Versionamento de API com OpenAPI
+
+## Estrutura do Projeto
+
+### Backend (Spring Boot)
+O backend é responsável por fornecer as APIs REST para a interação com o banco de dados e outras funcionalidades do sistema. O projeto backend está configurado no arquivo `pom.xml` e inclui as seguintes dependências principais:
+
+- **Spring Boot Starter Actuator**: Para monitoramento.
+- **Spring Boot Starter Data JPA**: Para integração com o banco de dados.
+- **Spring Boot Starter Security**: Para autenticação e autorização com tokens JWT.
+- **Flyway**: Para controle de versões do banco de dados.
+- **PostgreSQL**: Banco de dados utilizado.
+
+### Frontend (Angular)
+O frontend foi desenvolvido usando o framework **Angular** e está configurado para ser servido em um container Docker. Ele se conecta ao backend por meio de chamadas API para gerenciar as operações do sistema.
+
+Principais pacotes usados no frontend, conforme o arquivo `package.json`:
+
+- **Angular** (versão 17.x)
+- **Angular Material**: Biblioteca de componentes de UI.
+- **TailwindCSS**: Para estilização.
+- **Karma**: Para testes unitários.
+- **RxJS**: Para manipulação de streams assíncronas.
+
+### Docker e Docker Compose
+A aplicação utiliza **Docker Compose** para orquestrar os serviços do backend e frontend, além de um serviço PostgreSQL. O arquivo `docker-compose.yml` gerencia esses containers e permite que o projeto seja facilmente configurado e executado localmente ou em ambiente de produção.
+
+### Comandos Principais
+
+#### Backend
+
+- **Compilar e rodar o backend**:
+  ```bash
+  mvn clean install
+  mvn spring-boot:run
+  ```
+
+#### Frontend
+
+- **Servir o frontend localmente**:
+  ```bash
+  npm install
+  npm start
+  ```
+
+#### Docker
+
+- **Iniciar todos os serviços via Docker Compose**:
+  ```bash
+  docker-compose up --build
+  ```
+
+- **Parar os serviços**:
+  ```bash
+  docker-compose down
+  ```
+
+## Como Contribuir
+
+1. Faça um fork do repositório.
+2. Crie sua branch (`git checkout -b minha-feature`).
+3. Faça suas mudanças e comente (`git commit -m 'Minha nova feature'`).
+4. Envie suas mudanças para o repositório remoto (`git push origin minha-feature`).
+5. Crie um Pull Request.
+
+## Licença
+
+Este projeto é parte de um curso acadêmico e não possui uma licença aberta para uso externo.
+
+---
+
+Essa estrutura de `README.md` oferece uma visão completa do projeto e inclui as tecnologias utilizadas, a estrutura do projeto e os comandos principais para desenvolvimento e execução. Se houver alguma outra especificação ou ajuste que você gostaria de incluir, posso auxiliar.
