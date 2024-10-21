@@ -95,6 +95,7 @@ Implementação em Angular (v17+ e standalone) com Spring Boot e REST para comun
 
 RF001, RF002, RF003, RF004, RF005, RF006, RF011, RF012, RF017, RF018
 
-### Dúvidas
+### ISSUES
 
-- A melhor maneira de criar o componente modal generalizado pra todo aplicação é dessa forma? (com component + service)
+- campo solicitacaoId faltante;
+- validação em campos de efetuar orçamento/realizar manutenção/;

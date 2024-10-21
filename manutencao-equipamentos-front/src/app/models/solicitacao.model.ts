@@ -6,6 +6,10 @@ export interface Solicitacao {
     precoOrcado?: number;
     historico?: Historico[];
     dataPagamento?: Date;
+    
+    id?: number;
+    destinoRedirecionamento?: string;
+    dataHoraFinalizacao?: Date;
 }
 
 export interface Historico {
