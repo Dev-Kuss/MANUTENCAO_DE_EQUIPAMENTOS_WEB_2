@@ -27,7 +27,22 @@ public class ClienteService {
     }
 
     @Transactional
+    public boolean emailExists(String email) {
+        return repository.existsByEmail(email);
+    }
+
+    @Transactional
     public Cliente createCliente(ClienteRequestDTO data, User user) throws NoSuchAlgorithmException {
+
+
+
+        if (cpfExists(data.cpf())) {
+            throw new IllegalArgumentException("CPF já cadastrado.");
+        }
+        // Verificar se o e-mail já existe
+        if (emailExists(data.email())) {
+            throw new IllegalArgumentException("E-mail já cadastrado.");
+        }
         Cliente newCliente = new Cliente(data, user);
         String salt = gerarSalt();
         String senhaHash = hashSenhaComSalt(data.senha(), salt);

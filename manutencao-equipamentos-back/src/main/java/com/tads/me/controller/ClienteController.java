@@ -37,11 +37,8 @@ class ClienteController {
     @PostMapping("/create")
     public ResponseEntity<ClienteResponseDTO> create(@RequestBody ClienteRequestDTO data, User user) throws NoSuchAlgorithmException {
 
-        if (clienteService.cpfExists(data.cpf())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-        }
-
         Cliente newCliente = this.clienteService.createCliente(data, user);
+
         enviarEmailComSenha(data.email(), data.senha());
 
         ClienteResponseDTO clienteResponseDTO = new ClienteResponseDTO(newCliente);
