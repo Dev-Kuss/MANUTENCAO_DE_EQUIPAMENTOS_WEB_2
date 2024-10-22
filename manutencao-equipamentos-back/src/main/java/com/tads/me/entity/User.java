@@ -1,10 +1,9 @@
 package com.tads.me.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
@@ -12,6 +11,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)  // Indica a herança usando a estratégia JOINED
 public class User {
 
     @Id
@@ -30,10 +30,5 @@ public class User {
     @Column(name = "role")
     private Set<String> roles;
 
-    // Relacionamentos com Cliente e Funcionario (1:1)
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Cliente cliente;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Funcionario funcionario;
+    // Os atributos que serão herdados devem estar aqui
 }

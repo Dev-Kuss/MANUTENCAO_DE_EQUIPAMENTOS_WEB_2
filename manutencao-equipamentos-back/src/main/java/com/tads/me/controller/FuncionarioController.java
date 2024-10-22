@@ -25,8 +25,8 @@ class FuncionarioController {
     FuncionarioRepository repository;
 
     @PostMapping("/create")
-    public ResponseEntity<Funcionario> create(@RequestBody FuncionarioRequestDTO data, User user) {
-        Funcionario newFuncionario = this.funcionarioService.createFuncionario(data, user);
+    public ResponseEntity<Funcionario> create(@RequestBody FuncionarioRequestDTO data) {
+        Funcionario newFuncionario = this.funcionarioService.createFuncionario(data);  // Remover User diretamente
         return ResponseEntity.ok(newFuncionario);
     }
 

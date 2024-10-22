@@ -1,31 +1,22 @@
 package com.tads.me.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tads.me.dto.ClienteRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Entity
 @Table(name = "cliente")
-@Entity(name = "cliente")
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(callSuper = true)  // Usando equals e hashcode da classe pai
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Cliente {
+public class Cliente extends User {  // Cliente herda de User
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String nome;
     private String cpf;
-    private String email;
+    private String nome;
     private String telefone;
-    private String senhaHash;
-    private String salt;
     private String cep;
     private String logradouro;
     private String numero;
@@ -34,15 +25,11 @@ public class Cliente {
     private String cidade;
     private String estado;
 
-    // Relacionamento 1:1 com User
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    public Cliente(ClienteRequestDTO data, User user) {
-        this.nome = data.nome();
+    public Cliente(ClienteRequestDTO data) {
+        this.setEmail(data.email());  // Atribui ao atributo de User
+        this.setPassword(data.senha());  // Atribui ao atributo de User
         this.cpf = data.cpf();
-        this.email = data.email();
+        this.nome = data.nome();
         this.telefone = data.telefone();
         this.cep = data.cep();
         this.logradouro = data.logradouro();
@@ -51,6 +38,5 @@ public class Cliente {
         this.bairro = data.bairro();
         this.cidade = data.cidade();
         this.estado = data.estado();
-        this.user = user;
     }
 }

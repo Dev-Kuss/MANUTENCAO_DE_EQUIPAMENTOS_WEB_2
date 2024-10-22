@@ -25,20 +25,18 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    // Implementação do método da interface UserDetailsService
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // Aqui estamos usando o email como nome de usuário
         Optional<User> user = findByEmail(email);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("Usuário não encontrado com o email: " + email);
         }
 
-        // Converter a entidade User para UserDetails, que o Spring Security pode usar
+        // Converter User para UserDetails
         return new org.springframework.security.core.userdetails.User(
                 user.get().getEmail(),
                 user.get().getPassword(),
-                new ArrayList<>()  // Lista de authorities ou roles, você pode customizar conforme necessário
+                new ArrayList<>()
         );
     }
 }

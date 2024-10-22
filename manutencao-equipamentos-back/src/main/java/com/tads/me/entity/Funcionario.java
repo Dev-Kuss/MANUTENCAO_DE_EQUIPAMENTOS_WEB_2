@@ -5,42 +5,23 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
 
+@Entity
 @Table(name = "funcionario")
-@Entity(name = "funcionario")
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(callSuper = true)  // Usando equals e hashcode da classe pai
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Funcionario {
+public class Funcionario extends User {  // Funcionario herda de User
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
     private String nome;
-
-    @Column(nullable = false)
     private LocalDate dataNascimento;
 
-    @Column(nullable = false)
-    private String senha;
-
-    // Relacionamento 1:1 com User
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    public Funcionario(FuncionarioRequestDTO data, User user) {
-        this.email = data.email();
+    public Funcionario(FuncionarioRequestDTO data) {
+        this.setEmail(data.email());  // Atribui ao atributo de User
+        this.setPassword(data.senha());  // Atribui ao atributo de User
         this.nome = data.nome();
         this.dataNascimento = data.dataNascimento();
-        this.senha = data.senha();
-        this.user = user;
     }
 }

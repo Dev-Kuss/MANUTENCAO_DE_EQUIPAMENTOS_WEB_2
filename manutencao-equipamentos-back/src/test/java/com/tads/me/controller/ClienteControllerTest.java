@@ -90,7 +90,7 @@ public class ClienteControllerTest {
     @Test
     void testCreateCliente() throws Exception {
         // Simula o comportamento do serviço para a criação do cliente
-        when(clienteService.createCliente(any(ClienteRequestDTO.class), any(User.class))).thenReturn(cliente);
+        when(clienteService.createCliente(any(ClienteRequestDTO.class))).thenReturn(cliente);
 
         // Executa o teste com a requisição POST e verifica a resposta
         mockMvc.perform(post("/cliente/create")
@@ -116,7 +116,7 @@ public class ClienteControllerTest {
                 .andExpect(jsonPath("$.estado").value(cliente.getEstado()));
 
         // Verifica se o método createCliente foi chamado apenas uma vez
-        verify(clienteService, times(1)).createCliente(any(ClienteRequestDTO.class), any(User.class));  // Agora passando o mock de User
+        verify(clienteService, times(1)).createCliente(any(ClienteRequestDTO.class));  // Agora passando o mock de User
     }
 
 

@@ -35,10 +35,8 @@ class ClienteController {
     private JavaMailSender mailSender;
 
     @PostMapping("/create")
-    public ResponseEntity<ClienteResponseDTO> create(@RequestBody ClienteRequestDTO data, User user) throws NoSuchAlgorithmException {
-
-        Cliente newCliente = this.clienteService.createCliente(data, user);
-
+    public ResponseEntity<ClienteResponseDTO> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
+        Cliente newCliente = this.clienteService.createCliente(data);  // Remove a necessidade de User diretamente
         enviarEmailComSenha(data.email(), data.senha());
 
         ClienteResponseDTO clienteResponseDTO = new ClienteResponseDTO(newCliente);
