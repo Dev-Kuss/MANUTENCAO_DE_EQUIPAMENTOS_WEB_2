@@ -30,8 +30,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // Desativa CSRF para evitar problemas em desenvolvimento
                 .authorizeHttpRequests(auth -> auth
-                        // Permite o acesso ao Swagger sem autenticação
-                        .requestMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                        // Libera todas as rotas relacionadas ao Swagger
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         // Permite acesso público ao endpoint de login
                         .requestMatchers("/auth/login").permitAll()
                         // Permite acesso público a outras rotas, se necessário
