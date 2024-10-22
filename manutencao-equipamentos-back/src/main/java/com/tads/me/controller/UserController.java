@@ -27,7 +27,8 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
         User user = new User();
         user.setEmail(userRequestDTO.email());
-        user.setPassword(passwordEncoder.encode(userRequestDTO.password()));
+        user.setPasswordHash(passwordEncoder.encode(userRequestDTO.passwordHash()));
+        user.setPasswordSalt(passwordEncoder.encode(userRequestDTO.passwordSalt()));
         user.setRoles(userRequestDTO.roles());
 
         User savedUser = userService.saveUser(user);

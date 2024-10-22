@@ -9,6 +9,8 @@ import com.tads.me.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,11 +26,13 @@ class FuncionarioController {
     @Autowired
     FuncionarioRepository repository;
 
+    @PreAuthorize("hasRole('ADMIN')")  // Apenas administradores podem criar funcionários
     @PostMapping("/create")
-    public ResponseEntity<Funcionario> create(@RequestBody FuncionarioRequestDTO data) {
-        Funcionario newFuncionario = this.funcionarioService.createFuncionario(data);  // Remover User diretamente
+    public ResponseEntity<Funcionario> create(@RequestBody FuncionarioRequestDTO data, @AuthenticationPrincipal User authenticatedUser) {
+        Funcionario newFuncionario = this.funcionarioService.createFuncionario(data, authenticatedUser);  // Passar o usuário autenticado
         return ResponseEntity.ok(newFuncionario);
     }
+
 
     @GetMapping("/read-all")
     public ResponseEntity<List<FuncionarioResponseDTO>> getAll() {
@@ -49,6 +53,7 @@ class FuncionarioController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/read/{id}")
     public ResponseEntity<Funcionario> getById(@PathVariable("id") Long id) {
         Optional<Funcionario> existingItemOptional = repository.findById(id);
@@ -57,13 +62,16 @@ class FuncionarioController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Funcionario> updateFuncionario(@PathVariable Long id, @RequestBody FuncionarioRequestDTO data) {
         Optional<Funcionario> funcionarioOptional = this.funcionarioService.updateFuncionario(id, data);
+
         return funcionarioOptional.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteFuncionario(@PathVariable Long id) {
         try {

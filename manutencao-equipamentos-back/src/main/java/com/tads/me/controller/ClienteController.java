@@ -9,6 +9,7 @@ import com.tads.me.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.mail.SimpleMailMessage;
@@ -81,6 +82,7 @@ class ClienteController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")  // Protegendo com base nas roles
     @GetMapping("/read/{id}")
     public ResponseEntity<Cliente> getById(@PathVariable Long id) {
         return clienteService.getClienteById(id)
@@ -89,6 +91,7 @@ class ClienteController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody ClienteRequestDTO data) {
         Optional<Cliente> clienteOptional = this.clienteService.updateCliente(id, data);
@@ -96,6 +99,7 @@ class ClienteController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
         try {

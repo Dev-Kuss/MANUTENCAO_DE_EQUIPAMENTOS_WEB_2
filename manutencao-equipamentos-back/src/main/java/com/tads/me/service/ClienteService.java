@@ -2,13 +2,19 @@ package com.tads.me.service;
 
 import com.tads.me.entity.Cliente;
 import com.tads.me.dto.ClienteRequestDTO;
+import com.tads.me.entity.User;
 import com.tads.me.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ClienteService {
@@ -28,18 +34,26 @@ public class ClienteService {
 
     @Transactional
     public Cliente createCliente(ClienteRequestDTO data) throws NoSuchAlgorithmException {
-
-        if (cpfExists(data.cpf())) {
-            throw new IllegalArgumentException("CPF já cadastrado.");
-        }
-        if (emailExists(data.email())) {
-            throw new IllegalArgumentException("E-mail já cadastrado.");
+        if (cpfExists(data.cpf()) || emailExists(data.email())) {
+            throw new IllegalArgumentException("CPF ou Email já cadastrado.");
         }
 
-        Cliente newCliente = new Cliente(data);
-        repository.save(newCliente);
-        return newCliente;
+        User newUser = new User();
+        newUser.setEmail(data.email());
+
+        // Gerar salt e hash para a senha
+        String salt = gerarSalt();
+        String password = hashSenhaComSalt(data.senha(), salt);
+
+        newUser.setPasswordHash(password);
+        newUser.setPasswordSalt(salt);
+        newUser.setRoles(Set.of("ROLE_CLIENTE"));
+
+        // Criar o Cliente com o User relacionado
+        Cliente newCliente = new Cliente(data, newUser);
+        return repository.save(newCliente);
     }
+
 
     @Transactional
     public Optional<Cliente> getClienteById(Long id) {
@@ -67,4 +81,26 @@ public class ClienteService {
         }
         return Optional.empty();
     }
+
+    @Transactional
+    public String gerarSalt() {
+        byte[] salt = new byte[16];
+        new SecureRandom().nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
+    }
+
+    @Transactional
+    public String hashSenhaComSalt(String senha, String salt) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        String passordHashSalt = senha + salt;
+        byte[] hash = md.digest(passordHashSalt.getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().encodeToString(hash);
+    }
+
+    @Transactional
+    public boolean validarSenha(String senha, Cliente cliente) throws NoSuchAlgorithmException {
+        String hashSenhaFornecida = hashSenhaComSalt(senha, cliente.getPasswordSalt());
+        return hashSenhaFornecida.equals(cliente.getPasswordHash());
+    }
+
 }

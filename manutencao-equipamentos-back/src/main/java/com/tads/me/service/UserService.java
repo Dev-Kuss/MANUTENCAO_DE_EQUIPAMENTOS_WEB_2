@@ -3,16 +3,12 @@ package com.tads.me.service;
 import com.tads.me.entity.User;
 import com.tads.me.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -23,20 +19,5 @@ public class UserService implements UserDetailsService {
 
     public User saveUser(User user) {
         return userRepository.save(user);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> user = findByEmail(email);
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException("Usuário não encontrado com o email: " + email);
-        }
-
-        // Converter User para UserDetails
-        return new org.springframework.security.core.userdetails.User(
-                user.get().getEmail(),
-                user.get().getPassword(),
-                new ArrayList<>()
-        );
     }
 }
