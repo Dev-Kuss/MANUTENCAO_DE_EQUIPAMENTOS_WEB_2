@@ -10,6 +10,9 @@ export interface Solicitacao {
     id?: number;
     destinoRedirecionamento?: string;
     dataHoraFinalizacao?: Date;
+
+    categoria?: string;
+    valor?: number;
 }
 
 export interface Historico {

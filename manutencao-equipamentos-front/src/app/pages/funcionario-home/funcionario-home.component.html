@@ -5,15 +5,13 @@
             <span class="font-semibold text-white text-2xl ml-2.5">Manutenção</span>
         </div>
 
-        <ul class="hidden lg:flex items-center space-x-8">
-            <li><a href="#" class="px-4 py-2 hover:rounded text-white text-sm hover:bg-white/20 hover:text-white">Página
+        <ul class="flex items-center space-x-8">
+            <li><a routerLink="/funcionario-home" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Página
                     Inicial</a></li>
-            <li><a href="#"
-                    class="px-4 py-2 hover:rounded text-white text-sm hover:bg-white/20 hover:text-white">Categorias</a>
-            </li>
-            <li><a href="#"
-                    class="px-4 py-2 hover:rounded text-white text-sm hover:bg-white/20 hover:text-white">Funcionários</a>
-            </li>
+            <li><a routerLink="/categorias-crud"
+                    class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Categorias</a></li>
+            <li><a routerLink="/funcionario-crud"
+                    class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Funcionários</a></li>
         </ul>
 
         <div class="flex items-center space-x-4">
@@ -33,30 +31,41 @@
     <!-- Filters -->
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-4xl font-semibold text-gray-700 mt-2">Solicitações</h2>
-        <div class="flex space-x-4">
-            <label class="inline-flex items-center">
-                <input type="radio" name="filtro" value="HOJE" class="form-radio h-5 w-5 text-blue-600" (change)="filtrarSolicitacoes()">
-                <span class="ml-2 text-gray-700">Hoje</span>
-            </label>
-            <label class="inline-flex items-center">
-                <input type="radio" name="filtro" value="PERIODO" class="form-radio h-5 w-5 text-blue-600" (change)="filtrarSolicitacoes()">
-                <span class="ml-2 text-gray-700">Período</span>
-            </label>
-            <label class="inline-flex items-center">
-                <input type="radio" name="filtro" value="TODAS" class="form-radio h-5 w-5 text-blue-600" (change)="filtrarSolicitacoes()">
-                <span class="ml-2 text-gray-700">Todas</span>
-            </label>
-        </div> 
+        <div class="flex-row space-x-2">
+            <button
+                (click)="gerarRelatorioReceitas()"
+                class="bg-black text-white font-medium py-2 px-4 rounded-md shadow-md">
+                Relatório de Receitas
+            </button>
+            <button
+                (click)="gerarRelatorioReceitasPorCategoria()"
+                class="bg-black text-white font-medium py-2 px-4 rounded-md shadow-md">
+                Relatório de Receitas/Categoria
+            </button>
+        </div>
     </div>
 
     <!-- Date Filters -->
-    <div *ngIf="filtroSelecionado === 'PERIODO'" class="mb-6">
+    <div class="flex justify-between mb-4">
         <div class="flex space-x-4">
-            <input type="date" placeholder="Data Início" class="border rounded-md px-4 py-2">
-            <input type="date" placeholder="Data Fim" class="border rounded-md px-4 py-2">
-            <button (click)="filtrarSolicitacoes()" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md shadow-md">
+            <input type="date" [(ngModel)]="dataInicio" class="border rounded-md px-4 py-2" placeholder="Data Início">
+            <input type="date" [(ngModel)]="dataFim" class="border rounded-md px-4 py-2" placeholder="Data Fim">
+            <button (click)="atualizarFiltro('PERIODO')"
+                class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md shadow-md">
                 Filtrar
             </button>
+        </div>
+        <div class="flex space-x-4">
+            <label class="inline-flex items-center">
+                <input type="radio" name="filtro" value="HOJE" class="form-radio h-5 w-5 text-blue-600"
+                    (change)="atualizarFiltro('HOJE')">
+                <span class="ml-2 text-gray-700">Hoje</span>
+            </label>
+            <label class="inline-flex items-center">
+                <input type="radio" name="filtro" value="TODAS" class="form-radio h-5 w-5 text-blue-600"
+                    (change)="atualizarFiltro('TODAS')">
+                <span class="ml-2 text-gray-700">TODAS</span>
+            </label>
         </div>
     </div>
 
@@ -72,48 +81,31 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let solicitacao of solicitacoes" class="border-t">
+            <tr *ngFor="let solicitacao of solicitacoesFiltradas" class="border-t">
                 <td class="py-2 px-4 text-sm">{{ solicitacao.dataHora | date: 'short' }}</td>
                 <td class="py-2 px-4 text-sm">{{ solicitacao.nomeCliente }}</td>
-                <td class="py-2 px-4 text-sm">{{ solicitacao.descricaoEquipamento | slice:0:30 }}</td>
+                <td class="py-2 px-4 text-sm">{{ solicitacao.descricaoEquipamento | slice: 0:30 }}</td>
                 <td class="py-2 px-4 text-sm">{{ solicitacao.estado }}</td>
                 <td class="py-2 px-4 text-sm text-center space-x-2">
                     <button *ngIf="solicitacao.estado === 'ABERTA'" (click)="efetuarOrcamento(solicitacao)"
                         class="bg-green-500 text-white py-2 px-3 rounded hover:bg-green-600" title="Efetuar Orçamento">
-                        Efetuar Orçamento
+                        <fa-icon [icon]="faFileInvoiceDollar"></fa-icon>
                     </button>
-                    <button *ngIf="solicitacao.estado === 'APROVADA' || (solicitacao.estado === 'REDIRECIONADA' && solicitacao.destinoRedirecionamento === funcionarioLogado)" (click)="efetuarManutencao(solicitacao)"
+                    <button
+                        *ngIf="solicitacao.estado === 'APROVADA' || (solicitacao.estado === 'REDIRECIONADA' && solicitacao.destinoRedirecionamento === funcionarioLogado)"
+                        (click)="efetuarManutencao(solicitacao)"
                         class="bg-blue-500 text-white py-2 px-3 rounded hover:bg-blue-600" title="Efetuar Manutenção">
-                        Efetuar Manutenção
+                        <fa-icon [icon]="faWrench"></fa-icon>
                     </button>
                     <button *ngIf="solicitacao.estado === 'PAGA'" (click)="finalizarSolicitacao(solicitacao)"
-                        class="bg-purple-500 text-white py-2 px-3 rounded hover:bg-purple-600" title="Finalizar Solicitação">
-                        Finalizar Solicitação
+                        class="bg-purple-500 text-white py-2 px-3 rounded hover:bg-purple-600"
+                        title="Finalizar Solicitação">
+                        <fa-icon [icon]="faCheckCircle"></fa-icon>
                     </button>
                 </td>
             </tr>
         </tbody>
     </table>
-
-    <!-- Additional Actions -->
-    <div class="flex justify-end mt-6 space-x-4">
-        <button (click)="manterCategoriasEquipamento()"
-            class="bg-gray-500 text-white font-medium py-2 px-4 rounded-md hover:bg-gray-600">
-            Categorias de Equipamento
-        </button>
-        <button (click)="manterFuncionarios()"
-            class="bg-gray-500 text-white font-medium py-2 px-4 rounded-md hover:bg-gray-600">
-            Funcionários
-        </button>
-        <button (click)="gerarRelatorioReceitas()"
-            class="bg-gray-500 text-white font-medium py-2 px-4 rounded-md hover:bg-gray-600">
-            Relatório de Receitas
-        </button>
-        <button (click)="gerarRelatorioReceitasPorCategoria()"
-            class="bg-gray-500 text-white font-medium py-2 px-4 rounded-md hover:bg-gray-600">
-            Relatório por Categoria
-        </button>
-    </div>
 </div>
 
 <!-- Modals -->
@@ -122,7 +114,8 @@
         <h2 class="text-2xl font-semibold text-gray-700">Efetuar Orçamento</h2>
     </ng-container>
     <ng-container modal-body>
-        <app-efetuar-orcamento [solicitacao]="solicitacaoSelecionada" (close)="fecharOrcamentoModal()"></app-efetuar-orcamento>
+        <app-efetuar-orcamento [solicitacao]="solicitacaoSelecionada"
+            (close)="fecharOrcamentoModal()"></app-efetuar-orcamento>
     </ng-container>
 </app-base-modal>
 
@@ -131,13 +124,9 @@
         <h2 class="text-2xl font-semibold text-gray-700">Efetuar Manutenção</h2>
     </ng-container>
     <ng-container modal-body>
-        <app-efetuar-manutencao 
-            [solicitacao]="solicitacaoSelecionada" 
-            [funcionarios]="listaFuncionarios"
-            [funcionarioLogado]="funcionarioLogado" 
-            (close)="fecharManutencaoModal()"
-        >
-    </app-efetuar-manutencao>
+        <app-efetuar-manutencao [solicitacao]="solicitacaoSelecionada" [funcionarios]="listaFuncionarios"
+            [funcionarioLogado]="funcionarioLogado" (close)="fecharManutencaoModal()">
+        </app-efetuar-manutencao>
     </ng-container>
 </app-base-modal>
 
@@ -146,6 +135,7 @@
         <h2 class="text-2xl font-semibold text-gray-700">Finalizar Solicitação</h2>
     </ng-container>
     <ng-container modal-body>
-        <app-finalizar-solicitacao [solicitacao]="solicitacaoSelecionada" (close)="fecharFinalizarModal()"></app-finalizar-solicitacao>
+        <app-finalizar-solicitacao [solicitacao]="solicitacaoSelecionada"
+            (close)="fecharFinalizarModal()"></app-finalizar-solicitacao>
     </ng-container>
 </app-base-modal>
