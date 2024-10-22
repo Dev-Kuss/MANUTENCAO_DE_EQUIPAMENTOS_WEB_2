@@ -1,5 +1,3 @@
-// cliente-home.component.ts
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';  
 import { RouterModule } from '@angular/router';  
@@ -12,8 +10,6 @@ import { SolicitarManutencaoComponent } from "../../components/solicitar-manuten
 import { MostrarOrcamentoComponent } from '../../components/mostrar-orcamento/mostrar-orcamento.component';
 import { VisualizarServicoComponent } from '../../components/visualizar-servico/visualizar-servico.component';
 import { PagarServicoComponent } from '../../components/pagar-servico/pagar-servico.component';
-
-import { MostrarOrcamentoService } from '../../services/mostrar-orcamento.service';
 
 import { Solicitacao } from '../../models/solicitacao.model';
 
@@ -146,17 +142,12 @@ export class ClienteHomeComponent {
   ];
   categorias = ['Notebook', 'Desktop', 'Impressora', 'Mouse', 'Teclado']; 
   
-  constructor(
-    private mostrarOrcamentoService: MostrarOrcamentoService,
-  ) {}
-
   abrirManutencaoModal() {
     this.isManutencaoModalOpen = true;
   }
 
   fecharManutencaoModal() {
     this.isManutencaoModalOpen = false;
-    console.log(this.isManutencaoModalOpen)
   }
 
   abrirOrcamentoModal(solicitacao: Solicitacao) {

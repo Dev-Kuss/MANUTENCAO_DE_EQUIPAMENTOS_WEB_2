@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -54,9 +54,9 @@ export class MostrarOrcamentoComponent {
       
       alert('Serviço Rejeitado.');
 
-      this.router.navigate(['/cliente-home']).then(() => {
-        window.location.reload(); 
-      });
+      // this.router.navigate(['/cliente-home']).then(() => {
+      //   window.location.reload(); 
+      // });
     }
   }
 }
