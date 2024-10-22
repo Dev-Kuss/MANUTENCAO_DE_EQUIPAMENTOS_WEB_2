@@ -14,5 +14,7 @@ CREATE TABLE cliente
     bairro      VARCHAR(255),
     cidade      VARCHAR(255),
     estado      VARCHAR(255),
-    CONSTRAINT pk_cliente PRIMARY KEY (id)
+    user_id     BIGINT, -- Nova coluna user_id
+    CONSTRAINT pk_cliente PRIMARY KEY (id),
+    CONSTRAINT fk_cliente_user FOREIGN KEY (user_id) REFERENCES users (id) -- Chave estrangeira para users
 );

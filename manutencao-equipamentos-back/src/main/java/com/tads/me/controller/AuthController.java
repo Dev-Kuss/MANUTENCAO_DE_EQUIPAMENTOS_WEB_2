@@ -1,16 +1,25 @@
 package com.tads.me.controller;
 
-import com.tads.me.security.JwtTokenProvider;  // Certifique-se de que essa classe exista e esteja importada corretamente.
+import com.tads.me.dto.LoginRequestDTO;
+import com.tads.me.dto.LoginResponseDTO;
+import com.tads.me.entity.User;
+import com.tads.me.security.JwtTokenProvider;
+import com.tads.me.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,32 +34,46 @@ public class AuthController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
         try {
-            // Autenticação do usuário
+            // Autentica o usuário com email e senha
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginRequest.username(),  // Usando o getter gerado automaticamente pelo record
-                            loginRequest.password()   // Usando o getter gerado automaticamente pelo record
+                            loginRequest.email(),
+                            loginRequest.password()
                     )
             );
 
-            // Gerar o token JWT após autenticação bem-sucedida
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // Busca o usuário autenticado pelo email
+            Optional<User> optionalUser = userService.findByEmail(loginRequest.email());
+            if (optionalUser.isEmpty()) {
+                return ResponseEntity.status(404).build(); // Retorna 404 se o usuário não for encontrado
+            }
+
+            User user = optionalUser.get();  // Obtém o User do Optional
+
+            // Gera o token JWT
             String token = jwtTokenProvider.generateToken(authentication);
 
-            // Retorna o token em um ResponseEntity com status 200 (OK)
-            return ResponseEntity.ok(new LoginResponse(token));
+            // Converte o Set<String> de roles para List<String>
+            List<String> roles = user.getRoles().stream().toList();
+
+            // Cria a resposta com os dados do usuário e o token
+            LoginResponseDTO response = new LoginResponseDTO(user.getId(), user.getEmail(), roles, token);
+
+            return ResponseEntity.ok(response);
 
         } catch (AuthenticationException e) {
-            // Retorna uma resposta 401 Unauthorized em caso de falha na autenticação
-            return ResponseEntity.status(401).body("Falha na autenticação: " + e.getMessage());
+            return ResponseEntity.status(401).build(); // Retorna 401 se a autenticação falhar
         }
     }
-
-    // Record para representar a requisição de login
-    public record LoginRequest(String username, String password) {}
-
-    // Classe para encapsular a resposta do login (com o token JWT)
-    public record LoginResponse(String token) {}
 }
