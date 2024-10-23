@@ -65,6 +65,10 @@ export class FuncionarioCrudComponent {
   }
 
   removerFuncionario(funcionario: Funcionario) {
-    this.funcionarios = this.funcionarios.filter(func => func.id !== funcionario.id);
+    const confirmacao = window.confirm(`Tem certeza de que deseja remover o funcionário "${funcionario.nome}"?`);
+    
+    if(confirmacao) {
+      this.funcionarios = this.funcionarios.filter(func => func.id !== funcionario.id);
+    }
   }
 }
