@@ -4,7 +4,7 @@ CREATE TABLE solicitacao (
                              descricao_equipamento VARCHAR(30) NOT NULL,
                              estado VARCHAR(50) NOT NULL,
                              id_categoria BIGINT NOT NULL,
-                             id_cliente BIGINT NOT NULL,
+                             id_cliente UUID NOT NULL,
                              FOREIGN KEY (id_categoria) REFERENCES categoria_equipamento(id),
                              FOREIGN KEY (id_cliente) REFERENCES cliente(id)
 );

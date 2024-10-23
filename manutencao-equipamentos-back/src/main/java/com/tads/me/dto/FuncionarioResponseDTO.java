@@ -2,8 +2,10 @@ package com.tads.me.dto;
 
 import com.tads.me.entity.Funcionario;
 
+import java.util.UUID;
+
 public record FuncionarioResponseDTO(
-        Long id,
+        UUID id,
         String email,
         String nome,
         String dataNascimento

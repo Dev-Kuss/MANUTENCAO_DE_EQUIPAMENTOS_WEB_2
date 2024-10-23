@@ -2,8 +2,10 @@ package com.tads.me.dto;
 
 import com.tads.me.entity.Cliente;
 
+import java.util.UUID;
+
 public record ClienteResponseDTO(
-        Long id,
+        UUID id,
         String nome,
         String cpf,
         String email,

@@ -15,6 +15,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class ClienteService {
@@ -56,7 +57,7 @@ public class ClienteService {
 
 
     @Transactional
-    public Optional<Cliente> getClienteById(Long id) {
+    public Optional<Cliente> getClienteById(UUID id) {
         return repository.findById(id);
     }
 

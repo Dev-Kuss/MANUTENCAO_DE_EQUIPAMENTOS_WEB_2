@@ -1,5 +1,5 @@
 CREATE TABLE cliente (
-                         id BIGSERIAL PRIMARY KEY NOT NULL,
+                         id UUID PRIMARY KEY NOT NULL,
                          cpf VARCHAR(11) NOT NULL UNIQUE,
                          nome VARCHAR(255) NOT NULL,
                          telefone VARCHAR(20) NOT NULL,
@@ -10,5 +10,6 @@ CREATE TABLE cliente (
                          bairro VARCHAR(255) NOT NULL,
                          cidade VARCHAR(255) NOT NULL,
                          estado VARCHAR(50) NOT NULL,
-                         FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
+                         user_id UUID NOT NULL,
+                         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

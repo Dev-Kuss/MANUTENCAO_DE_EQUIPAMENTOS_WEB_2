@@ -20,6 +20,7 @@ import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -84,7 +85,7 @@ class ClienteController {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")  // Protegendo com base nas roles
     @GetMapping("/read/{id}")
-    public ResponseEntity<Cliente> getById(@PathVariable Long id) {
+    public ResponseEntity<Cliente> getById(@PathVariable UUID id) {
         return clienteService.getClienteById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
