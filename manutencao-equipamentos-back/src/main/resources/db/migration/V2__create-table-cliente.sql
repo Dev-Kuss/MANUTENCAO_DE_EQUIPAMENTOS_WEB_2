@@ -1,20 +1,14 @@
-CREATE TABLE cliente
-(
-    id          BIGSERIAL NOT NULL,
-    nome        VARCHAR(255),
-    cpf         VARCHAR(255) UNIQUE,
-    email       VARCHAR(255),
-    telefone    VARCHAR(255),
-    senha_hash  VARCHAR(255),
-    salt        VARCHAR(255),
-    cep         VARCHAR(255),
-    logradouro  VARCHAR(255),
-    numero      VARCHAR(255),
-    complemento VARCHAR(255),
-    bairro      VARCHAR(255),
-    cidade      VARCHAR(255),
-    estado      VARCHAR(255),
-    user_id     BIGINT, -- Nova coluna user_id
-    CONSTRAINT pk_cliente PRIMARY KEY (id),
-    CONSTRAINT fk_cliente_user FOREIGN KEY (user_id) REFERENCES users (id) -- Chave estrangeira para users
+CREATE TABLE cliente (
+                         id BIGSERIAL PRIMARY KEY NOT NULL,
+                         cpf VARCHAR(11) NOT NULL UNIQUE,
+                         nome VARCHAR(255) NOT NULL,
+                         telefone VARCHAR(20) NOT NULL,
+                         cep VARCHAR(20) NOT NULL,
+                         logradouro VARCHAR(255) NOT NULL,
+                         numero VARCHAR(10) NOT NULL,
+                         complemento VARCHAR(255),
+                         bairro VARCHAR(255) NOT NULL,
+                         cidade VARCHAR(255) NOT NULL,
+                         estado VARCHAR(50) NOT NULL,
+                         FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
 );

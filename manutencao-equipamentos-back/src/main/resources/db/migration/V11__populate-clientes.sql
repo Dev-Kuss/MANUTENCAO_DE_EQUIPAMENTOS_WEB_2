@@ -1,12 +1,6 @@
-INSERT INTO cliente (nome, cpf, email, telefone, senha_hash, salt, cep, logradouro, numero, complemento, bairro, cidade,
-                     estado, user_id)
-VALUES ('João', '123.456.789-00', 'joao@example.com', '(41) 99999-9999', 'kh+OiIjKk7mNtRNRPhDoqB5wmrvaXGOyH8Yy8BMnR8k=',
-        '4p0ko0E8N8sUif5YUff2kQ==', '12345678', 'Rua A', '100', 'Apt 101', 'Centro', 'Cidade A', 'SP', 1),
-       ('Maria', '987.654.321-00', 'maria@example.com', '(41) 88888-8888',
-        'Jr3T5PZrF5MskwoN00YTMIbadX199+ipbxDWUamThGo=', 'UhWHpO+zolVmNVSPiA8sjQ==', '23456789', 'Rua B', '200', '',
-        'Jardim', 'Cidade B', 'RJ', 2),
-       ('José', '741.852.963-00', 'jose@example.com', '(41) 77777-7777', 'Mj6/P1vme5Yc/9Km3bccga27a2uCEnx0I1NzHlUMZbA=',
-        'i9ShmmmmJNoHWg/5EkzYnA==', '34567890', 'Rua C', '300', 'Casa 2', 'Vila Nova', 'Cidade C', 'MG', 3),
-       ('Joana', '852.963.741-00', 'joana@example.com', '(41) 66666-6666',
-        'Ph9tzKs9c4peIJ/x1MDwH/b8V/5na6n8x213udVXAUI=', 'l1+hMFwDNRJ+wXRmwsqDhg==', '45678901', 'Rua D', '400', '',
-        'Centro', 'Cidade D', 'BA', 4);
+INSERT INTO cliente (cpf, nome, telefone, cep, logradouro, numero, complemento, bairro, cidade, estado, id)
+VALUES
+    ('12345678901', 'João', '111111111', '12345-678', 'Rua A', '100', 'Apt 1', 'Bairro A', 'Cidade A', 'Estado A', (SELECT id FROM users WHERE email = 'joao@empresa.com')),
+    ('12345678902', 'José', '222222222', '12345-678', 'Rua B', '200', '', 'Bairro B', 'Cidade B', 'Estado B', (SELECT id FROM users WHERE email = 'jose@empresa.com')),
+    ('12345678903', 'Joana', '333333333', '12345-678', 'Rua C', '300', 'Apt 2', 'Bairro C', 'Cidade C', 'Estado C', (SELECT id FROM users WHERE email = 'joana@empresa.com')),
+    ('12345678904', 'Joaquina', '444444444', '12345-678', 'Rua D', '400', '', 'Bairro D', 'Cidade D', 'Estado D', (SELECT id FROM users WHERE email = 'joaquina@empresa.com'));

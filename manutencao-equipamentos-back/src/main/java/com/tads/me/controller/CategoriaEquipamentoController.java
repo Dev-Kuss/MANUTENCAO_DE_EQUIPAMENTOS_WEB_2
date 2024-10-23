@@ -71,7 +71,6 @@ public class CategoriaEquipamentoController {
         }
     }
 
-    @PreAuthorize("()")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") Long id) {
         try {

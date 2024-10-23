@@ -1,3 +1,4 @@
-INSERT INTO funcionario (nome, email, data_nascimento, senha, user_id)
-VALUES ('Maria', 'maria@empresa.com', '1980-05-15', 'senha123', 1),
-       ('Mário', 'mario@empresa.com', '1985-10-22', 'senha123', 2);
+INSERT INTO funcionario (nome, telefone, data_nascimento, id)
+VALUES
+    ('Maria', '555555555', '1985-07-15', (SELECT id FROM users WHERE email = 'maria@empresa.com')),
+    ('Mário', '666666666', '1990-06-10', (SELECT id FROM users WHERE email = 'mario@empresa.com'));
