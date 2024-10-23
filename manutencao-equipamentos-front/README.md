@@ -8,14 +8,17 @@
 (V) [RF003] - Página Inicial de Cliente
 (V) [RF004] - Solicitação de Manutenção
 (V) [RF005] - Mostrar orçamento
-(!) [RF006] - Aprovar Serviço
-(!) [RF007] - Rejeitar Serviço
+(V) [RF006] - Aprovar Serviço
+(V) [RF007] - Rejeitar Serviço
 (V) [RF008] - Visualizar Serviço
-(!) [RF009] - Resgatar Serviço  (Botão de ação = resgatar serviço)
+(V) [RF009] - Resgatar Serviço  (Botão de ação = resgatar serviço)
 (V) [RF010] - Pagar Serviço
+
+### PERFIL FUNCIONÁRIO
+
 (V) [RF011] - Página Inicial de Funcionário
-(!) [RF012] - Efetuar Orçamento (Campo descrição defeito)
-(!) [RF013] - Visualização de Solicitações (Tag com cores em estado)
+(V) [RF012] - Efetuar Orçamento (Campo descrição defeito)
+(V) [RF013] - Visualização de Solicitações (Tag com cores em estado)
 (V) [RF014] - Efetuar Manutenção
 (V) [RF015] - Redirecionar Manutenção
 (V) [RF016] - Finalizar Solicitação
@@ -26,12 +29,12 @@
 
 ### ISSUES
 
-- Campo solicitacaoId faltante;
-- Validação em TODOS os campos (efetuar orçamento/realizar manutenção);
-- Arrumar warnings;
-- Arrumar tamanho de linhas de grid;
-- Fechar modal ao finalizar;
-- Alterar Dados iniciais para testes (categorias e pelo menos 20 solicitações);
-- Datas em formato brasileiro;
-- Campos possuires máscara (acho que só valor/precoOrcado)
-- Remoção com confirmação;
+(F) Campo solicitacaoId faltante;
+( ) Validação em TODOS os campos (efetuar orçamento/realizar manutenção);
+( ) Arrumar warnings de compilação;
+(V) Arrumar tamanho de linhas de grid;
+(F) Fechar modal ao finalizar;
+(V) Alterar Dados iniciais para testes (categorias e pelo menos 20 solicitações);
+(V) Datas em formato brasileiro;
+( ) Campos possuires máscara (acho que só valor/precoOrcado)
+(V) Remoção com confirmação;

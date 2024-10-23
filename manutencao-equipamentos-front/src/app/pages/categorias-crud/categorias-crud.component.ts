@@ -29,6 +29,13 @@ export class CategoriasCrudComponent {
     { id: 1, nome: 'Notebook' },
     { id: 2, nome: 'Impressora' },
     { id: 3, nome: 'Desktop' },
+    { id: 4, nome: 'Monitor' },
+    { id: 5, nome: 'Smartphone' },
+    { id: 6, nome: 'Tablet' },
+    { id: 7, nome: 'Teclado' },
+    { id: 8, nome: 'Mouse' },
+    { id: 9, nome: 'Scanner' },
+    { id: 10, nome: 'Roteador' }
   ];
 
   // Categoria selecionada para edição/adicionar
@@ -72,6 +79,10 @@ export class CategoriasCrudComponent {
 
   // Remove a categoria pelo id
   removerCategoria(categoria: Categoria) {
-    this.categorias = this.categorias.filter(cat => cat.id !== categoria.id);
+    const confirmacao = window.confirm(`Tem certeza de que deseja remover a categoria "${categoria.nome}"?`);
+    
+    if (confirmacao) {
+      this.categorias = this.categorias.filter(cat => cat.id !== categoria.id);
+    }
   }
 }

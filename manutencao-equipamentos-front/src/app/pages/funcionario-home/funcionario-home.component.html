@@ -32,13 +32,11 @@
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-4xl font-semibold text-gray-700 mt-2">Solicitações</h2>
         <div class="flex-row space-x-2">
-            <button
-                (click)="gerarRelatorioReceitas()"
+            <button (click)="gerarRelatorioReceitas()"
                 class="bg-black text-white font-medium py-2 px-4 rounded-md shadow-md">
                 Relatório de Receitas
             </button>
-            <button
-                (click)="gerarRelatorioReceitasPorCategoria()"
+            <button (click)="gerarRelatorioReceitasPorCategoria()"
                 class="bg-black text-white font-medium py-2 px-4 rounded-md shadow-md">
                 Relatório de Receitas/Categoria
             </button>
@@ -81,11 +79,18 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let solicitacao of solicitacoesFiltradas" class="border-t">
-                <td class="py-2 px-4 text-sm">{{ solicitacao.dataHora | date: 'short' }}</td>
+            <tr *ngFor="let solicitacao of solicitacoesPaginadas" class="border-t h-12">
+                <td class="py-2 px-4 text-sm">{{ solicitacao.dataHora | date: 'dd/MM/yyyy HH:mm' }}</td>
                 <td class="py-2 px-4 text-sm">{{ solicitacao.nomeCliente }}</td>
                 <td class="py-2 px-4 text-sm">{{ solicitacao.descricaoEquipamento | slice: 0:30 }}</td>
-                <td class="py-2 px-4 text-sm">{{ solicitacao.estado }}</td>
+                <td class="py-2 px-4 text-sm">
+                    <span class="inline-block align-middle">
+                        {{ solicitacao.estado }}
+                    </span>
+                    <span class="inline-block w-2 h-2 rounded-full align-middle ml-2 mb-1"
+                        [ngClass]="estadoCores[solicitacao.estado]">
+                    </span>
+                </td>
                 <td class="py-2 px-4 text-sm text-center space-x-2">
                     <button *ngIf="solicitacao.estado === 'ABERTA'" (click)="efetuarOrcamento(solicitacao)"
                         class="bg-green-500 text-white py-2 px-3 rounded hover:bg-green-600" title="Efetuar Orçamento">
@@ -105,7 +110,57 @@
                 </td>
             </tr>
         </tbody>
+
     </table>
+    <!-- Navegação de Paginação -->
+    <div class="flex space-x-2 mt-4">
+        <!-- Botão de Página Anterior -->
+        <button 
+          (click)="mudarPagina(paginaAtual - 1)" 
+          [disabled]="paginaAtual === 1"
+          class="text-gray-500 hover:text-blue-500">
+          <i class="fa fa-chevron-left"></i>
+        </button>
+      
+        <!-- Primeira Página -->
+        <button 
+          (click)="mudarPagina(1)"
+          [ngClass]="{'bg-blue-500 text-white': paginaAtual === 1, 'text-gray-500': paginaAtual !== 1}"
+          class="px-3 py-1 rounded-lg">
+          1
+        </button>
+      
+        <!-- Reticências à Esquerda -->
+        <span *ngIf="paginaAtual > 3" class="text-gray-500">...</span>
+      
+        <!-- Páginas Próximas da Página Atual -->
+        <button 
+          *ngFor="let page of getPaginasProximas()" 
+          (click)="mudarPagina(page)" 
+          [ngClass]="{'bg-blue-500 text-white': paginaAtual === page, 'text-gray-500': paginaAtual !== page}"
+          class="px-3 py-1 rounded-lg">
+          {{ page }}
+        </button>
+      
+        <!-- Reticências à Direita -->
+        <span *ngIf="paginaAtual < totalPaginas - 2" class="text-gray-500">...</span>
+      
+        <!-- Última Página -->
+        <button 
+          (click)="mudarPagina(totalPaginas)"
+          [ngClass]="{'bg-blue-500 text-white': paginaAtual === totalPaginas, 'text-gray-500': paginaAtual !== totalPaginas}"
+          class="px-3 py-1 rounded-lg">
+          {{ totalPaginas }}
+        </button>
+      
+        <!-- Botão de Página Próxima -->
+        <button 
+          (click)="mudarPagina(paginaAtual + 1)" 
+          [disabled]="paginaAtual === totalPaginas"
+          class="text-gray-500 hover:text-blue-500">
+          <i class="fa fa-chevron-right"></i>
+        </button>
+      </div>
 </div>
 
 <!-- Modals -->

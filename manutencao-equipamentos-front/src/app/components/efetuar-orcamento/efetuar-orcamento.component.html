@@ -15,6 +15,11 @@
       <label class="block text-sm font-medium text-gray-600">Data e Hora da Solicitação</label>
       <p class="mt-1 text-gray-800">{{ solicitacao?.dataHora | date: 'short' }}</p>
     </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-600">Descrição do Defeito</label>
+      <p class="mt-1 text-gray-800">{{ solicitacao?.descricaoDefeito }}</p>
+    </div>
     
     <div class="my-6">
       <label for="valorOrcamento" class="block text-sm font-medium text-gray-600">Valor do Orçamento</label>

@@ -18,6 +18,8 @@ export class EfetuarOrcamentoComponent {
   valorOrcamento: number | null = null;
 
   confirmarOrcamento() {
+    console.log(this.solicitacao)
+
     if (this.valorOrcamento && this.solicitacao) {
       // Aqui registramos o orçamento com o valor fornecido, o funcionário logado, a data e hora
       const orcamento = {

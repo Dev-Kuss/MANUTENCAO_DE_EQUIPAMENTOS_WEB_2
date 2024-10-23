@@ -35,11 +35,12 @@
     <!-- Botões de ação -->
     <div class="flex justify-end gap-2.5 mt-6">
         <!-- Exemplo de botões, você pode ajustar conforme necessário -->
-        <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md">
-            Ação 1
-        </button>
-        <button class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md shadow-md">
-            Ação 2
+        <button 
+            *ngIf="solicitacao?.estado === 'REJEITADA'"
+            class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md"
+            (click)="solicitacao && resgatarServico(solicitacao)"
+        >
+            Resgatar Serviço
         </button>
     </div>
 </div>

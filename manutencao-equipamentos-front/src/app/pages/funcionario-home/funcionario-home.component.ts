@@ -24,6 +24,7 @@ import { EfetuarManutencaoComponent } from '../../components/efetuar-manutencao/
 import { FinalizarSolicitacaoComponent } from '../../components/finalizar-solicitacao/finalizar-solicitacao.component';
 
 import { Solicitacao } from '../../models/solicitacao.model';
+import { solicitacoes } from '../../seeds/solicitacoes-seed';
 
 @Component({
   selector: 'app-funcionario-home',
@@ -42,6 +43,12 @@ import { Solicitacao } from '../../models/solicitacao.model';
   ]
 })
 export class FuncionarioHomeComponent {
+  // Número da página atual
+  paginaAtual: number = 1;
+
+  // Número máximo de itens por página
+  itensPorPagina: number = 10;
+
   // Icons
   faEye = faEye;
   faFileInvoiceDollar = faFileInvoiceDollar;
@@ -65,137 +72,19 @@ export class FuncionarioHomeComponent {
   listaFuncionarios: string[] = ['João Silva', 'Maria Santos', 'Pedro Oliveira', 'Carlos Souza'];
   funcionarioLogado = 'João Silva';
 
-  solicitacoes: Solicitacao[] = [
-    {
-      dataHora: new Date('2024-10-22T10:30:00'),
-      nomeCliente: 'Lucas Oliveira',
-      descricaoEquipamento: 'Monitor Samsung 24"',
-      estado: 'ABERTA',
-      historico: [],
-      destinoRedirecionamento: 'Carlos Souza',
-      categoria: 'Monitor'
-    },
-    {
-      dataHora: new Date('2024-10-22T08:15:00'),
-      nomeCliente: 'Ana Lima',
-      descricaoEquipamento: 'MacBook Pro 2021',
-      estado: 'ABERTA',
-      historico: [],
-      destinoRedirecionamento: 'João Silva',
-      categoria: 'Notebook'
-    },
-    {
-      dataHora: new Date('2024-10-21T13:45:00'),
-      nomeCliente: 'Pedro Costa',
-      descricaoEquipamento: 'Impressora HP LaserJet P1005',
-      estado: 'ORÇADA',
-      historico: [],
-      destinoRedirecionamento: 'Maria Santos',
-      precoOrcado: 200,
-      categoria: 'Impressora'
-    },
-    {
-      dataHora: new Date('2024-10-20T11:00:00'),
-      nomeCliente: 'Camila Dias',
-      descricaoEquipamento: 'Desktop Dell OptiPlex 3070',
-      estado: 'APROVADA',
-      historico: [],
-      destinoRedirecionamento: 'João Silva',
-      precoOrcado: 850,
-      categoria: 'Desktop'
-    },
-    {
-      dataHora: new Date('2024-10-19T15:30:00'),
-      nomeCliente: 'Renata Souza',
-      descricaoEquipamento: 'Notebook Lenovo Ideapad 3',
-      estado: 'PAGA',
-      historico: [],
-      destinoRedirecionamento: 'Pedro Oliveira',
-      precoOrcado: 900,
-      categoria: 'Notebook'
-    },
-    {
-      dataHora: new Date('2024-09-15T09:15:00'),
-      nomeCliente: 'Claudio Martins',
-      descricaoEquipamento: 'Impressora Epson EcoTank L3150',
-      estado: 'FINALIZADA',
-      historico: [],
-      destinoRedirecionamento: 'Outro Funcionario',
-      precoOrcado: 450,
-      categoria: 'Impressora'
-    },
-    {
-      dataHora: new Date('2024-09-10T17:45:00'),
-      nomeCliente: 'Bruna Rocha',
-      descricaoEquipamento: 'Monitor LG UltraWide 34"',
-      estado: 'APROVADA',
-      historico: [],
-      destinoRedirecionamento: 'Carlos Souza',
-      precoOrcado: 500,
-      categoria: 'Monitor'
-    },
-    {
-      dataHora: new Date('2024-09-05T14:30:00'),
-      nomeCliente: 'Felipe Almeida',
-      descricaoEquipamento: 'Desktop HP ProDesk 400 G5',
-      estado: 'REJEITADA',
-      historico: [],
-      destinoRedirecionamento: 'Outro Funcionario',
-      precoOrcado: 800,
-      categoria: 'Desktop'
-    },
-    {
-      dataHora: new Date('2024-08-25T12:00:00'),
-      nomeCliente: 'Fernanda Lima',
-      descricaoEquipamento: 'Notebook Dell Inspiron 14',
-      estado: 'FINALIZADA',
-      historico: [],
-      destinoRedirecionamento: 'João Silva',
-      precoOrcado: 950,
-      categoria: 'Notebook'
-    },
-    {
-      dataHora: new Date('2024-08-10T16:15:00'),
-      nomeCliente: 'Gabriel Sousa',
-      descricaoEquipamento: 'Impressora Brother DCP-L2540DW',
-      estado: 'PAGA',
-      historico: [],
-      destinoRedirecionamento: 'Maria Santos',
-      precoOrcado: 400,
-      categoria: 'Impressora'
-    },
-    {
-      dataHora: new Date('2024-07-30T10:00:00'),
-      nomeCliente: 'Rafael Figueiredo',
-      descricaoEquipamento: 'Monitor Philips 27"',
-      estado: 'AGUARDANDO PAGAMENTO',
-      historico: [],
-      destinoRedirecionamento: 'Carlos Souza',
-      precoOrcado: 350,
-      categoria: 'Monitor'
-    },
-    {
-      dataHora: new Date('2024-07-15T09:30:00'),
-      nomeCliente: 'Isabela Gomes',
-      descricaoEquipamento: 'Desktop Lenovo ThinkCentre M720',
-      estado: 'REDIRECIONADA',
-      historico: [],
-      destinoRedirecionamento: 'Pedro Oliveira',
-      precoOrcado: 750,
-      categoria: 'Desktop'
-    }
-  ];
+  solicitacoes: Solicitacao[] = [...solicitacoes];
+
 
   // Colors mapping
   estadoCores: any = {
-    'ABERTA': 'gray',
-    'ORÇADA': 'brown',
-    'REJEITADA': 'red',
-    'APROVADA': 'yellow',
-    'REDIRECIONADA': 'purple',
-    'AGUARDANDO PAGAMENTO': 'blue',
-    'PAGA': 'orange',
-    'FINALIZADA': 'green'
+    'ABERTA': 'bg-gray-500',
+    'ORÇADA': 'bg-brown-500',
+    'REJEITADA': 'bg-red-500',
+    'APROVADA': 'bg-yellow-500',
+    'REDIRECIONADA': 'bg-purple-500',
+    'AGUARDANDO PAGAMENTO': 'bg-blue-500',
+    'PAGA': 'bg-orange-500',
+    'FINALIZADA': 'bg-green-500'
   };
 
   filtroSelecionado: string = 'TODAS';
@@ -203,6 +92,42 @@ export class FuncionarioHomeComponent {
   dataFim: Date | null = null;
 
   solicitacoesFiltradas: Solicitacao[] = [...this.solicitacoes];
+
+  get totalPaginas(): number {
+    return Math.ceil(this.solicitacoesFiltradas.length / this.itensPorPagina);
+  }
+
+  getPaginasProximas(): number[] {
+    const paginas = [];
+    const startPage = Math.max(2, this.paginaAtual - 1);
+    const endPage = Math.min(this.totalPaginas - 1, this.paginaAtual + 1);
+
+    for (let i = startPage; i <= endPage; i++) {
+      paginas.push(i);
+    }
+    return paginas;
+  }
+
+  get solicitacoesPaginadas(): Solicitacao[] {
+    const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
+    const fim = inicio + this.itensPorPagina;
+    return this.solicitacoesFiltradas.slice(inicio, fim);
+  }
+
+  // Método para mudar a página
+  mudarPagina(numeroPagina: number) {
+    this.paginaAtual = numeroPagina;
+  }
+
+  // Verifica se pode avançar para a próxima página
+  proximaPagina(): boolean {
+    return this.paginaAtual < Math.ceil(this.solicitacoesFiltradas.length / this.itensPorPagina);
+  }
+
+  // Verifica se pode voltar para a página anterior
+  paginaAnterior(): boolean {
+    return this.paginaAtual > 1;
+  }
 
   // Methods to open modals
   abrirOrcamentoModal(solicitacao: Solicitacao) {
@@ -307,12 +232,12 @@ export class FuncionarioHomeComponent {
   gerarRelatorioReceitas() {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
-  
+
     // Centralizando o título
     doc.text('Relatório de Receitas por Período', pageWidth / 2, 10, { align: 'center' });
-  
+
     const solicitacoesFiltradas = this.filtrarSolicitacoesPorData();
-  
+
     const groupedByDate = solicitacoesFiltradas.reduce((acc, curr) => {
       // Apenas incluir se precoOrcado existir
       if (curr.precoOrcado !== undefined) {
@@ -322,9 +247,9 @@ export class FuncionarioHomeComponent {
       }
       return acc;
     }, {} as { [key: string]: Solicitacao[] });
-  
+
     const dataTable: any[] = [];
-  
+
     for (const [date, solicitacoes] of Object.entries(groupedByDate)) {
       const totalDia = solicitacoes.reduce((sum, s) => sum + (s.precoOrcado ?? 0), 0); // Usando precoOrcado
       solicitacoes.forEach(solicitacao => {
@@ -332,12 +257,12 @@ export class FuncionarioHomeComponent {
       });
       dataTable.push([`${date} - Total`, '', '', `R$ ${totalDia}`]); // Adicionando R$
     }
-  
+
     (doc as any).autoTable({
       head: [['Data', 'Cliente', 'Descrição', 'Valor']],
       body: dataTable,
     });
-  
+
     doc.save('relatorio-receitas-periodo.pdf');
   }
 
@@ -345,10 +270,10 @@ export class FuncionarioHomeComponent {
   gerarRelatorioReceitasPorCategoria() {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
-  
+
     // Centralizando o título
     doc.text('Relatório de Receitas por Categoria', pageWidth / 2, 10, { align: 'center' });
-  
+
     const groupedByCategory = this.solicitacoes.reduce((acc, curr) => {
       // Apenas incluir se precoOrcado existir
       if (curr.precoOrcado !== undefined) {
@@ -358,9 +283,9 @@ export class FuncionarioHomeComponent {
       }
       return acc;
     }, {} as { [key: string]: Solicitacao[] });
-  
+
     const dataTable: any[] = [];
-  
+
     for (const [categoria, solicitacoes] of Object.entries(groupedByCategory)) {
       const totalCategoria = solicitacoes.reduce((sum, s) => sum + (s.precoOrcado ?? 0), 0); // Usando precoOrcado
       solicitacoes.forEach(solicitacao => {
@@ -368,12 +293,12 @@ export class FuncionarioHomeComponent {
       });
       dataTable.push([`${categoria} - Total`, '', '', `R$ ${totalCategoria}`]); // Adicionando R$
     }
-  
+
     (doc as any).autoTable({
       head: [['Categoria', 'Cliente', 'Descrição', 'Valor']],
       body: dataTable,
     });
-  
+
     doc.save('relatorio-receitas-categoria.pdf');
   }
 }

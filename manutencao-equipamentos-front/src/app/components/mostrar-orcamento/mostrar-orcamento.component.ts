@@ -26,7 +26,7 @@ export class MostrarOrcamentoComponent {
   constructor(
     private mostrarOrcamentoService: MostrarOrcamentoService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     if (this.solicitacao) {
@@ -36,27 +36,20 @@ export class MostrarOrcamentoComponent {
 
   aprovarServico() {
     if (this.solicitacao) {
-      this.mostrarOrcamentoService.aprovarSolicitacao(this.solicitacao);
+      this.solicitacao.estado = 'ARRUMADA';
+      console.log('Serviço aprovado:', this.solicitacao);
 
-      if(this.precoOrcado) {
-        alert(`Serviço Aprovado no Valor R$ ${this.precoOrcado.toFixed(2)}`);
+      if (this.solicitacao.precoOrcado !== undefined) {
+        alert(`Serviço Aprovado no Valor R$ ${this.solicitacao.precoOrcado.toFixed(2)}`);
       }
-
-      this.router.navigate(['/cliente-home']).then(() => {
-        window.location.reload();
-      });
     }
   }
 
   rejeitarServico() {
     if (this.solicitacao) {
-      this.mostrarOrcamentoService.rejeitarSolicitacao(this.solicitacao);
-      
+      this.solicitacao.estado = 'REJEITADA';
+      console.log('Serviço rejeitado:', this.solicitacao);
       alert('Serviço Rejeitado.');
-
-      // this.router.navigate(['/cliente-home']).then(() => {
-      //   window.location.reload(); 
-      // });
     }
   }
 }
