@@ -1,58 +1,60 @@
 package com.tads.me.security;
 
-import com.tads.me.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    private UserService userService;
+    public SecurityConfig(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Bean
-    public AuthenticationManager authenticationManager() {
-        return authentication -> {
-            // Dummy authentication logic
-            return new UsernamePasswordAuthenticationToken(authentication.getName(), authentication.getCredentials());
-        };
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)  // Desativa CSRF para evitar problemas em desenvolvimento
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Libera todas as rotas relacionadas ao Swagger
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
-                        // Permite acesso público ao endpoint de login
                         .requestMatchers("/auth/login").permitAll()
-                        // Permite acesso público a outras rotas, se necessário
-                        .requestMatchers("/public/**").permitAll()
-                        // Qualquer outra rota precisa de autenticação
+                        .requestMatchers("/cliente/create").permitAll()  // Permitir acesso público ao endpoint de criação de cliente
                         .anyRequest().authenticated()
                 )
-                .formLogin(AbstractHttpConfigurer::disable)  // Desabilita o formulário de login
-                .logout(LogoutConfigurer::permitAll);
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(logout -> logout.permitAll());
 
         return http.build();
-    }
-
-    // Define um codificador de senhas
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
