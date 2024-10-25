@@ -4,7 +4,7 @@ CREATE TABLE historico_solicitacao (
                                        data_hora TIMESTAMP NOT NULL,
                                        estado_anterior VARCHAR(50),
                                        estado_atual VARCHAR(50) NOT NULL,
-                                       id_funcionario BIGINT NOT NULL,
+                                       id_funcionario UUID NOT NULL,
                                        FOREIGN KEY (id_solicitacao) REFERENCES solicitacao(id_solicitacao),
                                        FOREIGN KEY (id_funcionario) REFERENCES funcionario(id)
 );

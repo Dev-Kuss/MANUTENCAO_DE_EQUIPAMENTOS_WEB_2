@@ -1,15 +1,13 @@
 CREATE TABLE cliente (
-                         id UUID PRIMARY KEY NOT NULL,
-                         cpf VARCHAR(11) NOT NULL UNIQUE,
+                         id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+                         cpf VARCHAR(255) NOT NULL,
                          nome VARCHAR(255) NOT NULL,
-                         telefone VARCHAR(20) NOT NULL,
-                         cep VARCHAR(20) NOT NULL,
-                         logradouro VARCHAR(255) NOT NULL,
-                         numero VARCHAR(10) NOT NULL,
+                         telefone VARCHAR(255),
+                         cep VARCHAR(255),
+                         logradouro VARCHAR(255),
+                         numero VARCHAR(255),
                          complemento VARCHAR(255),
-                         bairro VARCHAR(255) NOT NULL,
-                         cidade VARCHAR(255) NOT NULL,
-                         estado VARCHAR(50) NOT NULL,
-                         user_id UUID NOT NULL,
-                         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                         bairro VARCHAR(255),
+                         cidade VARCHAR(255),
+                         estado VARCHAR(255)
 );

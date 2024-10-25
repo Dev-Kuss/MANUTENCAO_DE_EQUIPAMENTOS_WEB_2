@@ -32,7 +32,7 @@ public class FuncionarioService {
             existingFuncionario.setNome(data.nome());
             existingFuncionario.setEmail(data.email());
             existingFuncionario.setDataNascimento(data.dataNascimento());
-            existingFuncionario.setPasswordHash(data.senha());  // Atualizando o hash da senha corretamente
+            existingFuncionario.setPasswordHash(data.senha());
             repository.save(existingFuncionario);
             return Optional.of(existingFuncionario);
         }
