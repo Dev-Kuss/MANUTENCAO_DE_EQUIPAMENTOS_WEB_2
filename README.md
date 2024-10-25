@@ -1,6 +1,3 @@
-Para atualizar o `README.md` com base nos arquivos fornecidos, vou integrar as informações obtidas dos arquivos `pom.xml`, `package.json`, `docker-compose.yml`, e `Dockerfile`.
-
-Aqui está uma sugestão para o conteúdo atualizado do `README.md`:
 
 ---
 
@@ -102,4 +99,3 @@ Este projeto é parte de um curso acadêmico e não possui uma licença aberta p
 
 ---
 
-Essa estrutura de `README.md` oferece uma visão completa do projeto e inclui as tecnologias utilizadas, a estrutura do projeto e os comandos principais para desenvolvimento e execução. Se houver alguma outra especificação ou ajuste que você gostaria de incluir, posso auxiliar.
