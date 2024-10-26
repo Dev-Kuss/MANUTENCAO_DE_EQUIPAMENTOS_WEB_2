@@ -5,10 +5,12 @@ import com.tads.me.dto.ClienteRequestDTO;
 import com.tads.me.entity.User;
 import com.tads.me.repository.ClienteRepository;
 import com.tads.me.repository.UserRepository;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.mail.javamail.JavaMailSender;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -24,6 +26,9 @@ public class ClienteService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private JavaMailSender mailSender;
+
     @Transactional(readOnly = true)
     public boolean cpfExists(String cpf) {
         return repository.findByCpf(cpf).isPresent();
@@ -35,6 +40,11 @@ public class ClienteService {
     }
 
     @Transactional
+    public String gerarSenhaAleatoria() {
+        return RandomStringUtils.randomNumeric(4);
+    }
+
+    @Transactional
     public Cliente createCliente(ClienteRequestDTO data) throws NoSuchAlgorithmException {
         if (cpfExists(data.cpf()) || emailExists(data.email())) {
             throw new IllegalArgumentException("CPF ou Email já cadastrado.");
@@ -43,8 +53,9 @@ public class ClienteService {
         User newUser = new User();
         newUser.setEmail(data.email());
 
+        String senhaOriginal = data.senha() != null ? data.senha() : gerarSenhaAleatoria();
         String salt = gerarSalt();
-        String passwordHash = hashSenhaComSalt(data.senha(), salt);
+        String passwordHash = hashSenhaComSalt(senhaOriginal, salt);
 
         newUser.setPasswordHash(passwordHash);
         newUser.setPasswordSalt(salt);
@@ -53,7 +64,24 @@ public class ClienteService {
 
         Cliente newCliente = new Cliente(data, newUser);
         newCliente.setId(newUser.getId());
-        return repository.save(newCliente);
+        repository.save(newCliente);
+
+        enviarEmailComSenha(data.nome(),data.email(), senhaOriginal);
+
+        return newCliente;
+    }
+
+    @Transactional
+    public void enviarEmailComSenha(String nome, String emailDestino, String senha) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(emailDestino);
+            message.setSubject("Sua senha de acesso ao sistema");
+            message.setText("Olá " + nome +",\n\nSeu cadastro foi realizado com sucesso! Sua senha de acesso é: " + senha + "\n\nPor favor, mantenha-a em segurança.");
+            mailSender.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

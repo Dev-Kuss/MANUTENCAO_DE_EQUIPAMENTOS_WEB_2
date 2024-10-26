@@ -29,9 +29,9 @@ public class UserService implements UserDetailsService {
 
     public User saveUser(User user) {
         if (user.getPasswordHash() != null) {
-            // Gera o hash da senha com o salt incorporado automaticamente
-            String encryptedPassword = passwordEncoder.encode(user.getPasswordHash());
-            user.setPasswordHash(encryptedPassword);
+            // Codifica a senha antes de salvar
+            String encodedPassword = passwordEncoder.encode(user.getPasswordHash());
+            user.setPasswordHash(encodedPassword);
         }
         return userRepository.save(user);
     }

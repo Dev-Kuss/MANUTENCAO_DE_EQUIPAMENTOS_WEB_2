@@ -3,7 +3,6 @@ package com.tads.me.controller;
 import com.tads.me.entity.Cliente;
 import com.tads.me.dto.ClienteRequestDTO;
 import com.tads.me.dto.ClienteResponseDTO;
-import com.tads.me.entity.User;
 import com.tads.me.repository.ClienteRepository;
 import com.tads.me.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -33,14 +30,9 @@ class ClienteController {
     @Autowired
     ClienteRepository repository;
 
-    @Autowired
-    private JavaMailSender mailSender;
-
     @PostMapping("/create")
     public ResponseEntity<ClienteResponseDTO> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
-        Cliente newCliente = this.clienteService.createCliente(data);  // Remove a necessidade de User diretamente
-        enviarEmailComSenha(data.email(), data.senha());
-
+        Cliente newCliente = this.clienteService.createCliente(data);
         ClienteResponseDTO clienteResponseDTO = new ClienteResponseDTO(newCliente);
 
         URI location = ServletUriComponentsBuilder
@@ -50,18 +42,6 @@ class ClienteController {
                 .toUri();
 
         return ResponseEntity.created(location).body(clienteResponseDTO);
-    }
-
-    private void enviarEmailComSenha(String emailDestino, String senha) {
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(emailDestino);
-            message.setSubject("Sua senha de acesso ao sistema");
-            message.setText("Olá,\n\nSeu cadastro foi realizado com sucesso! Sua senha de acesso é: " + senha + "\n\nPor favor, mantenha-a em segurança.");
-            mailSender.send(message);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @GetMapping("/read-all")
