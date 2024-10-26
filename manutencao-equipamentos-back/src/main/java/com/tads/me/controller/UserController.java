@@ -28,7 +28,6 @@ public class UserController {
         User user = new User();
         user.setEmail(userRequestDTO.email());
         user.setPasswordHash(passwordEncoder.encode(userRequestDTO.passwordHash()));
-        user.setPasswordSalt(passwordEncoder.encode(userRequestDTO.passwordSalt()));
         user.setRoles(userRequestDTO.roles());
 
         User savedUser = userService.saveUser(user);

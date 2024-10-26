@@ -3,18 +3,29 @@ package com.tads.me.entity;
 import com.tads.me.dto.ClienteRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "cliente")
-@EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Cliente extends User {
+public class Cliente {
+
+    @Id
+    @Column(updatable = false, nullable = false, columnDefinition = "CHAR(36)")
+    private UUID id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     private String cpf;
+    private String email;
     private String nome;
     private String telefone;
     private String cep;
@@ -27,9 +38,8 @@ public class Cliente extends User {
 
 
     public Cliente(ClienteRequestDTO data, User user) {
-        this.nome = data.nome();
         this.cpf = data.cpf();
-        this.setEmail(data.email());
+        this.nome = data.nome();
         this.telefone = data.telefone();
         this.cep = data.cep();
         this.logradouro = data.logradouro();
@@ -38,7 +48,6 @@ public class Cliente extends User {
         this.bairro = data.bairro();
         this.cidade = data.cidade();
         this.estado = data.estado();
-        this.setPasswordHash(user.getPasswordHash());
-        this.setPasswordSalt(user.getPasswordSalt());
+        this.user = user;
     }
 }

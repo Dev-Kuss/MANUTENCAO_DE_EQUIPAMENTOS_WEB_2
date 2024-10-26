@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ class FuncionarioController {
 
     @PreAuthorize("hasRole('ADMIN')")  // Apenas administradores podem criar funcionários
     @PostMapping("/create")
-    public ResponseEntity<Funcionario> create(@RequestBody FuncionarioRequestDTO data, @AuthenticationPrincipal User authenticatedUser) {
+    public ResponseEntity<Funcionario> create(@RequestBody FuncionarioRequestDTO data, @AuthenticationPrincipal User authenticatedUser) throws NoSuchAlgorithmException {
         Funcionario newFuncionario = this.funcionarioService.createFuncionario(data, authenticatedUser);  // Passar o usuário autenticado
         return ResponseEntity.ok(newFuncionario);
     }
@@ -64,7 +65,7 @@ class FuncionarioController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<Funcionario> updateFuncionario(@PathVariable Long id, @RequestBody FuncionarioRequestDTO data) {
+    public ResponseEntity<Funcionario> updateFuncionario(@PathVariable Long id, @RequestBody FuncionarioRequestDTO data) throws NoSuchAlgorithmException {
         Optional<Funcionario> funcionarioOptional = this.funcionarioService.updateFuncionario(id, data);
 
         return funcionarioOptional.map(ResponseEntity::ok)
