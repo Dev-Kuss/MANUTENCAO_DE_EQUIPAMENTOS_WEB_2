@@ -6,7 +6,6 @@ import com.tads.me.entity.User;
 import com.tads.me.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,11 +22,17 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
 
+
+
     @PostMapping("/create")
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
         User user = new User();
         user.setEmail(userRequestDTO.email());
-        user.setPasswordHash(passwordEncoder.encode(userRequestDTO.passwordHash()));
+        user.setPasswordHashSalt(passwordEncoder.encode(userRequestDTO.passwordHashSalt()));
+
+        System.out.println("Password encoder in use: " + passwordEncoder.getClass().getName());
+
+
         user.setRoles(userRequestDTO.roles());
 
         User savedUser = userService.saveUser(user);

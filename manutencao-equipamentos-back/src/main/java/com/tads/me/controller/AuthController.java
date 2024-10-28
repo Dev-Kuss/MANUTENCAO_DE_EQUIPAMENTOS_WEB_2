@@ -10,70 +10,48 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    public AuthController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
-        try {
-            // Autentica o usuário com email e senha
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.email(),
-                            loginRequest.password()
-                    )
-            );
+        // Autentica o usuário e cria o objeto Authentication
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password())
+        );
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Define o contexto de autenticação
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Busca o usuário autenticado pelo email
-            Optional<User> optionalUser = userService.findByEmail(loginRequest.email());
-            if (optionalUser.isEmpty()) {
-                return ResponseEntity.status(404).build(); // Retorna 404 se o usuário não for encontrado
-            }
+        // Gera o token usando o objeto Authentication
+        String token = jwtTokenProvider.generateToken(authentication);
 
-            User user = optionalUser.get();  // Obtém o User do Optional
+        // Carrega o usuário autenticado e seus dados
+        User user = userService.findByEmail(loginRequest.email()).orElseThrow();
 
-            // Gera o token JWT
-            String token = jwtTokenProvider.generateToken(authentication);
+        // Cria o LoginResponseDTO com os parâmetros corretos
+        LoginResponseDTO response = new LoginResponseDTO(
+                user.getId(),                      // UUID do usuário
+                user.getEmail(),                   // Email do usuário
+                new ArrayList<>(user.getRoles()),  // Converte Set<String> para List<String>
+                token                              // Token gerado
+        );
 
-            // Converte o Set<String> de roles para List<String>
-            List<String> roles = user.getRoles().stream().toList();
-
-            // Cria a resposta com os dados do usuário e o token
-            LoginResponseDTO response = new LoginResponseDTO(user.getId(), user.getEmail(), roles, token);
-
-            return ResponseEntity.ok(response);
-
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(401).build(); // Retorna 401 se a autenticação falhar
-        }
+        return ResponseEntity.ok(response);
     }
 }

@@ -4,7 +4,7 @@ import java.util.Set;
 
 public record UserRequestDTO(
         String email,
-        String passwordHash,
+        String passwordHashSalt,
         Set<String> roles // Exemplo: ADMIN, USER
 ) {
 }

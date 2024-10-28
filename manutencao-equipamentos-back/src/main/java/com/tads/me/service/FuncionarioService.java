@@ -4,6 +4,8 @@ import com.tads.me.entity.Funcionario;
 import com.tads.me.dto.FuncionarioRequestDTO;
 import com.tads.me.entity.User;
 import com.tads.me.repository.FuncionarioRepository;
+import com.tads.me.repository.UserRepository;
+import com.tads.me.security.SHA256PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,47 +15,55 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+
+import static com.tads.me.util.GerarSenhaAleatoria.gerarSenhaAleatoria;
 
 @Service
 public class FuncionarioService {
 
     @Autowired
-    private FuncionarioRepository repository;
+    private FuncionarioRepository funcionarioRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private SHA256PasswordEncoder passwordEncoder;
 
     @Transactional
     public Funcionario createFuncionario(FuncionarioRequestDTO data, User user) throws NoSuchAlgorithmException {
-        // Gera salt e hash para a senha
-        String salt = gerarSalt();
-        String passwordHash = hashSenhaComSalt(data.senha(), salt);
 
-        // Define o hash e o salt no objeto User associado ao Funcionario
-        user.setPasswordHash(passwordHash);
-        user.setPasswordSalt(salt);
+        String senhaOriginal = data.senha() != null ? data.senha() : gerarSenhaAleatoria();
+        String passwordHashSalt = passwordEncoder.encode(senhaOriginal); // Inclui o salt
+
+        User newUser = new User();
+        newUser.setPasswordHashSalt(passwordHashSalt);
+        newUser.setRoles(new HashSet<>(Set.of("FUNCIONARIO")));
+        userRepository.save(newUser);
 
         // Cria o Funcionario usando o construtor com FuncionarioRequestDTO e User
         Funcionario newFuncionario = new Funcionario(data, user);
-        repository.save(newFuncionario);
+        funcionarioRepository.save(newFuncionario);
         return newFuncionario;
     }
 
     @Transactional
     public Optional<Funcionario> updateFuncionario(Long id, FuncionarioRequestDTO data) throws NoSuchAlgorithmException {
-        Optional<Funcionario> funcionarioOptional = repository.findById(id);
+        Optional<Funcionario> funcionarioOptional = funcionarioRepository.findById(id);
         if (funcionarioOptional.isPresent()) {
             Funcionario existingFuncionario = funcionarioOptional.get();
             existingFuncionario.setNome(data.nome());
             existingFuncionario.setEmail(data.email());
             existingFuncionario.setDataNascimento(data.dataNascimento());
 
-            // Gera novo salt e hash para a senha atualizada
-            String salt = gerarSalt();
-            String passwordHash = hashSenhaComSalt(data.senha(), salt);
+            String senhaOriginal = data.senha() != null ? data.senha() : gerarSenhaAleatoria();
+            String passwordHashSalt = passwordEncoder.encode(senhaOriginal);
+            existingFuncionario.getUser().setPasswordHashSalt(passwordHashSalt);
 
-            existingFuncionario.getUser().setPasswordHash(passwordHash);
-            existingFuncionario.getUser().setPasswordSalt(salt);
-
-            repository.save(existingFuncionario);
+            funcionarioRepository.save(existingFuncionario);
             return Optional.of(existingFuncionario);
         }
         return Optional.empty();
@@ -74,9 +84,4 @@ public class FuncionarioService {
         return Base64.getEncoder().encodeToString(hash);
     }
 
-    @Transactional
-    public boolean validarSenha(String senha, Funcionario funcionario) throws NoSuchAlgorithmException {
-        String hashSenhaFornecida = hashSenhaComSalt(senha, funcionario.getUser().getPasswordSalt());
-        return hashSenhaFornecida.equals(funcionario.getUser().getPasswordHash());
-    }
 }

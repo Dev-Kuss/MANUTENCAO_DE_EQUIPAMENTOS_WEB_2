@@ -1,14 +1,17 @@
 package com.tads.me.security;
 
+import com.tads.me.entity.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 @Configuration
 public class PasswordEncoderConfig {
 
     @Bean
-    public PasswordEncoder sha256PasswordEncoder() {
+    public SHA256PasswordEncoder sha256PasswordEncoder() {
         return new SHA256PasswordEncoder();
     }
 }
+

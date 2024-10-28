@@ -5,17 +5,16 @@ import com.tads.me.dto.ClienteRequestDTO;
 import com.tads.me.entity.User;
 import com.tads.me.repository.ClienteRepository;
 import com.tads.me.repository.UserRepository;
-import org.apache.commons.lang3.RandomStringUtils;
+import com.tads.me.security.SHA256PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.mail.javamail.JavaMailSender;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.*;
+
+import static com.tads.me.util.GerarSenhaAleatoria.gerarSenhaAleatoria;
 
 @Service
 public class ClienteService {
@@ -29,6 +28,9 @@ public class ClienteService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private SHA256PasswordEncoder passwordEncoder;
+
     @Transactional(readOnly = true)
     public boolean cpfExists(String cpf) {
         return repository.findByCpf(cpf).isPresent();
@@ -40,12 +42,7 @@ public class ClienteService {
     }
 
     @Transactional
-    public String gerarSenhaAleatoria() {
-        return RandomStringUtils.randomNumeric(4);
-    }
-
-    @Transactional
-    public Cliente createCliente(ClienteRequestDTO data) throws NoSuchAlgorithmException {
+    public Cliente createCliente(ClienteRequestDTO data) {
         if (cpfExists(data.cpf()) || emailExists(data.email())) {
             throw new IllegalArgumentException("CPF ou Email já cadastrado.");
         }
@@ -54,11 +51,9 @@ public class ClienteService {
         newUser.setEmail(data.email());
 
         String senhaOriginal = data.senha() != null ? data.senha() : gerarSenhaAleatoria();
-        String salt = gerarSalt();
-        String passwordHash = hashSenhaComSalt(senhaOriginal, salt);
+        String passwordHashSalt = passwordEncoder.encode(senhaOriginal); // Inclui o salt
 
-        newUser.setPasswordHash(passwordHash);
-        newUser.setPasswordSalt(salt);
+        newUser.setPasswordHashSalt(passwordHashSalt);
         newUser.setRoles(new HashSet<>(Set.of("CLIENTE")));
         userRepository.save(newUser);
 
@@ -66,7 +61,7 @@ public class ClienteService {
         newCliente.setId(newUser.getId());
         repository.save(newCliente);
 
-        enviarEmailComSenha(data.nome(),data.email(), senhaOriginal);
+        enviarEmailComSenha(data.nome(), data.email(), senhaOriginal);
 
         return newCliente;
     }
@@ -112,24 +107,4 @@ public class ClienteService {
         return Optional.empty();
     }
 
-    @Transactional
-    public String gerarSalt() {
-        byte[] salt = new byte[16];
-        new SecureRandom().nextBytes(salt);
-        return Base64.getEncoder().encodeToString(salt);
-    }
-
-    @Transactional
-    public String hashSenhaComSalt(String senha, String salt) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        String passwordHashSalt = senha + salt;
-        byte[] hash = md.digest(passwordHashSalt.getBytes(StandardCharsets.UTF_8));
-        return Base64.getEncoder().encodeToString(hash);
-    }
-
-    @Transactional
-    public boolean validarSenha(String senha, Cliente cliente) throws NoSuchAlgorithmException {
-        String hashSenhaFornecida = hashSenhaComSalt(senha, cliente.getUser().getPasswordSalt());  // Corrigido para acessar o salt do User
-        return hashSenhaFornecida.equals(cliente.getUser().getPasswordHash());
-    }
 }
