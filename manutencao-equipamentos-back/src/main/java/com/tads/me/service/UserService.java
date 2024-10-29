@@ -6,16 +6,16 @@ import com.tads.me.repository.UserRepository;
 import com.tads.me.security.SHA256PasswordEncoder;
 import com.tads.me.util.EnviarEmailComSenha;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.tads.me.util.GerarSenhaAleatoria.gerarSenhaAleatoria;
 
@@ -70,11 +70,16 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o e-mail: " + username));
 
-        // Constrói um UserDetails com o email, senha e uma lista vazia de permissões
+        // Converte as roles de String para GrantedAuthority
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                .collect(Collectors.toList());
+
+        // Retorna o UserDetails com as roles associadas
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPasswordHashSalt(),
-                new ArrayList<>() // Configure as permissões conforme necessário
+                authorities
         );
     }
 }
