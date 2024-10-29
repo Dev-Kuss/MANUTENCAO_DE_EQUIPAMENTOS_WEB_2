@@ -5,6 +5,7 @@ import com.tads.me.dto.CategoriaEquipamentoRequestDTO;
 import com.tads.me.dto.CategoriaEquipamentoResponseDTO;
 import com.tads.me.repository.CategoriaEquipamentoRepository;
 import com.tads.me.service.CategoriaEquipamentoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/categoria-equipamento")
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Categoria Equipamento", description = "Gerenciamento das categorias de equipamentos")
 public class CategoriaEquipamentoController {
 
     @Autowired
@@ -24,8 +33,14 @@ public class CategoriaEquipamentoController {
     @Autowired
     private CategoriaEquipamentoRepository repository;
 
+    @Operation(summary = "Cria uma nova categoria de equipamento", description = "Cria uma nova categoria de equipamento com as informações fornecidas.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Categoria criada com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @PostMapping("/create")
-    public ResponseEntity<CategoriaEquipamento> create(@RequestBody CategoriaEquipamentoRequestDTO categoriaEquipamentoRequestDTO) {
+    public ResponseEntity<CategoriaEquipamento> create(
+            @Parameter(description = "Dados para criar uma nova categoria") @RequestBody CategoriaEquipamentoRequestDTO categoriaEquipamentoRequestDTO) {
         try {
             CategoriaEquipamento categoriaEquipamento = categoriaEquipamentoService.createCategoria(categoriaEquipamentoRequestDTO);
             return ResponseEntity.ok(categoriaEquipamento);
@@ -35,6 +50,12 @@ public class CategoriaEquipamentoController {
         }
     }
 
+    @Operation(summary = "Lista todas as categorias", description = "Retorna uma lista de todas as categorias de equipamentos.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de categorias retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Nenhuma categoria encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @GetMapping("/read-all")
     public ResponseEntity<List<CategoriaEquipamentoResponseDTO>> listarCategorias() {
         try {
@@ -49,16 +70,31 @@ public class CategoriaEquipamentoController {
         }
     }
 
+    @Operation(summary = "Busca uma categoria pelo ID", description = "Retorna os dados da categoria de equipamento correspondente ao ID informado.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Categoria encontrada"),
+            @ApiResponse(responseCode = "404", description = "Categoria não encontrada")
+    })
     @GetMapping("/read/{id}")
-    public ResponseEntity<CategoriaEquipamento> getById(@PathVariable("id") Long id) {
+    public ResponseEntity<CategoriaEquipamento> getById(
+            @Parameter(description = "ID da categoria a ser buscada") @PathVariable("id") Long id) {
         Optional<CategoriaEquipamento> categoriaEquipamentoOptional = categoriaEquipamentoService.getById(id);
         return categoriaEquipamentoOptional
                 .map(categoriaEquipamento -> new ResponseEntity<>(categoriaEquipamento, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @Operation(summary = "Atualiza uma categoria existente", description = "Atualiza as informações da categoria de equipamento para o ID especificado.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Categoria atualizada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Categoria não encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<CategoriaEquipamento> updateCategoria(@PathVariable("id") Long id, @RequestBody CategoriaEquipamentoRequestDTO categoriaEquipamentoRequestDTO) {
+    public ResponseEntity<CategoriaEquipamento> updateCategoria(
+            @Parameter(description = "ID da categoria a ser atualizada") @PathVariable("id") Long id,
+            @Parameter(description = "Dados atualizados para a categoria") @RequestBody CategoriaEquipamentoRequestDTO categoriaEquipamentoRequestDTO) {
         try {
             Optional<CategoriaEquipamento> updatedCategoriaEquipamento = categoriaEquipamentoService.updateCategoria(id, categoriaEquipamentoRequestDTO);
             if (updatedCategoriaEquipamento.isPresent()) {
@@ -71,8 +107,16 @@ public class CategoriaEquipamentoController {
         }
     }
 
+    @Operation(summary = "Exclui uma categoria", description = "Exclui a categoria de equipamento correspondente ao ID informado.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Categoria excluída com sucesso"),
+            @ApiResponse(responseCode = "417", description = "Falha ao excluir a categoria"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<HttpStatus> delete(
+            @Parameter(description = "ID da categoria a ser excluída") @PathVariable("id") Long id) {
         try {
             repository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -80,5 +124,4 @@ public class CategoriaEquipamentoController {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
     }
-    
 }

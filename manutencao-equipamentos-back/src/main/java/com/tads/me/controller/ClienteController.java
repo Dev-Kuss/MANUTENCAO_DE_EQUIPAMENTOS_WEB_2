@@ -5,6 +5,7 @@ import com.tads.me.dto.ClienteRequestDTO;
 import com.tads.me.dto.ClienteResponseDTO;
 import com.tads.me.repository.ClienteRepository;
 import com.tads.me.service.ClienteService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,14 @@ import java.util.Optional;
 import java.util.UUID;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Cliente", description = "Gerenciamento de Clientes")
 @RequestMapping("/cliente")
 class ClienteController {
 
@@ -34,6 +39,10 @@ class ClienteController {
     ClienteRepository repository;
 
     @Operation(summary = "Cria um novo cliente", description = "Endpoint público para criar um cliente.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @PostMapping("/create")
     public ResponseEntity<ClienteResponseDTO> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
         Cliente newCliente = this.clienteService.createCliente(data);
@@ -49,8 +58,11 @@ class ClienteController {
     }
 
     @Operation(summary = "Lista todos os clientes", description = "Endpoint público para listar todos os clientes.")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('USER')")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de clientes retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Nenhum cliente encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @GetMapping("/read-all")
     public ResponseEntity<List<ClienteResponseDTO>> getAll() {
         try {
@@ -70,9 +82,12 @@ class ClienteController {
         }
     }
 
-    @Operation(summary = "Obtém cliente por ID", description = "Acesso restrito a ADMIN e USER.")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @Operation(summary = "Obtém cliente por ID", description = "Acesso restrito a ADMIN.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @GetMapping("/read/{id}")
     public ResponseEntity<Cliente> getById(@PathVariable UUID id) {
         return clienteService.getClienteById(id)
@@ -81,8 +96,12 @@ class ClienteController {
     }
 
     @Operation(summary = "Atualiza um cliente", description = "Acesso restrito a ADMIN.")
-    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @PutMapping("/update/{id}")
     public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody ClienteRequestDTO data) {
         Optional<Cliente> clienteOptional = this.clienteService.updateCliente(id, data);
@@ -91,8 +110,11 @@ class ClienteController {
     }
 
     @Operation(summary = "Exclui um cliente", description = "Acesso restrito a ADMIN.")
-    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Cliente excluído com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
         try {
