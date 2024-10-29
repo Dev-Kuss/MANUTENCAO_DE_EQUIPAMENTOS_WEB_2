@@ -11,9 +11,9 @@ VALUES ('71adaa53-990a-486c-ad1c-265eae6f3a7f', 'maria@empresa.com', '5f4dcc3b5a
 
 -- Associação de usuários com suas roles na tabela user_roles
 INSERT INTO user_roles (user_id, role)
-VALUES ('71adaa53-990a-486c-ad1c-265eae6f3a7f', 'FUNCIONARIO'), -- Maria
-       ('382aad32-bd4e-4b2d-bffe-d10379e3e1c2', 'FUNCIONARIO'), -- Mário
-       ('22f111c2-2fbb-40a7-a11b-39c9e4f8d321', 'CLIENTE'),     -- João
-       ('c7eae989-5f2e-41df-8121-799e5c9b5e52', 'CLIENTE'),     -- José
-       ('d4c89b5a-8a0d-4383-aeb6-c8cb5f6d8ea1', 'CLIENTE'),     -- Joana
-       ('ad8f7685-9d9e-4f4e-88b8-bf9c7d812fbb', 'CLIENTE'); -- Joaquina
+VALUES ('71adaa53-990a-486c-ad1c-265eae6f3a7f', 'ADMIN'), -- Maria
+       ('382aad32-bd4e-4b2d-bffe-d10379e3e1c2', 'ADMIN'), -- Mário
+       ('22f111c2-2fbb-40a7-a11b-39c9e4f8d321', 'USER'),     -- João
+       ('c7eae989-5f2e-41df-8121-799e5c9b5e52', 'USER'),     -- José
+       ('d4c89b5a-8a0d-4383-aeb6-c8cb5f6d8ea1', 'USER'),     -- Joana
+       ('ad8f7685-9d9e-4f4e-88b8-bf9c7d812fbb', 'USER'); -- Joaquina

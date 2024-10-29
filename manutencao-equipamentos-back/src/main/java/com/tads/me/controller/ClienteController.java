@@ -18,6 +18,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -30,6 +33,7 @@ class ClienteController {
     @Autowired
     ClienteRepository repository;
 
+    @Operation(summary = "Cria um novo cliente", description = "Endpoint público para criar um cliente.")
     @PostMapping("/create")
     public ResponseEntity<ClienteResponseDTO> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
         Cliente newCliente = this.clienteService.createCliente(data);
@@ -44,6 +48,9 @@ class ClienteController {
         return ResponseEntity.created(location).body(clienteResponseDTO);
     }
 
+    @Operation(summary = "Lista todos os clientes", description = "Endpoint público para listar todos os clientes.")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/read-all")
     public ResponseEntity<List<ClienteResponseDTO>> getAll() {
         try {
@@ -63,7 +70,9 @@ class ClienteController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")  // Protegendo com base nas roles
+    @Operation(summary = "Obtém cliente por ID", description = "Acesso restrito a ADMIN e USER.")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/read/{id}")
     public ResponseEntity<Cliente> getById(@PathVariable UUID id) {
         return clienteService.getClienteById(id)
@@ -71,7 +80,8 @@ class ClienteController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
+    @Operation(summary = "Atualiza um cliente", description = "Acesso restrito a ADMIN.")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody ClienteRequestDTO data) {
@@ -80,6 +90,8 @@ class ClienteController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    @Operation(summary = "Exclui um cliente", description = "Acesso restrito a ADMIN.")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {

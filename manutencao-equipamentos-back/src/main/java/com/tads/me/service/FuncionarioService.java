@@ -41,7 +41,7 @@ public class FuncionarioService {
 
         User newUser = new User();
         newUser.setPasswordHashSalt(passwordHashSalt);
-        newUser.setRoles(new HashSet<>(Set.of("FUNCIONARIO")));
+        newUser.setRoles(new HashSet<>(Set.of("ADMIN")));
         userRepository.save(newUser);
 
         // Cria o Funcionario usando o construtor com FuncionarioRequestDTO e User
@@ -67,21 +67,6 @@ public class FuncionarioService {
             return Optional.of(existingFuncionario);
         }
         return Optional.empty();
-    }
-
-    // Gera um salt aleatório
-    private String gerarSalt() {
-        byte[] salt = new byte[16];
-        new SecureRandom().nextBytes(salt);
-        return Base64.getEncoder().encodeToString(salt);
-    }
-
-    // Hash com salt para a senha
-    private String hashSenhaComSalt(String senha, String salt) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        String senhaComSalt = senha + salt;
-        byte[] hash = md.digest(senhaComSalt.getBytes(StandardCharsets.UTF_8));
-        return Base64.getEncoder().encodeToString(hash);
     }
 
 }
