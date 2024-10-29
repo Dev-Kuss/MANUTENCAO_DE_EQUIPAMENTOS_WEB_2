@@ -12,11 +12,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.Optional;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
 @RestController
@@ -29,9 +31,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Operation(summary = "Cria um novo usuário", description = "Endpoint para criar um novo usuário com as informações fornecidas.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuário criado com sucesso"),
@@ -40,16 +39,16 @@ public class UserController {
     })
     @PostMapping("/create")
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
-        User user = new User();
-        user.setEmail(userRequestDTO.email());
-        user.setPasswordHashSalt(passwordEncoder.encode(userRequestDTO.passwordHashSalt()));
+        User newUser = this.userService.createUser(userRequestDTO);
+        UserResponseDTO userResponseDTO = new UserResponseDTO(newUser);
 
-        System.out.println("Password encoder in use: " + passwordEncoder.getClass().getName());
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newUser.getId())
+                .toUri();
 
-        user.setRoles(userRequestDTO.roles());
-
-        User savedUser = userService.saveUser(user);
-        return ResponseEntity.ok(new UserResponseDTO(savedUser));
+        return ResponseEntity.created(location).body(userResponseDTO);
     }
 
     @Operation(summary = "Encontra usuário por email", description = "Busca um usuário pelo seu endereço de email.")

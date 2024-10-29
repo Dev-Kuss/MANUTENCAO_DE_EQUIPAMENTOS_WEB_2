@@ -6,12 +6,11 @@ import com.tads.me.entity.User;
 import com.tads.me.repository.ClienteRepository;
 import com.tads.me.repository.UserRepository;
 import com.tads.me.security.SHA256PasswordEncoder;
+import com.tads.me.util.EnviarEmailComSenha;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.mail.javamail.JavaMailSender;
-import java.security.NoSuchAlgorithmException;
+
 import java.util.*;
 
 import static com.tads.me.util.GerarSenhaAleatoria.gerarSenhaAleatoria;
@@ -26,10 +25,10 @@ public class ClienteService {
     private UserRepository userRepository;
 
     @Autowired
-    private JavaMailSender mailSender;
+    private SHA256PasswordEncoder passwordEncoder;
 
     @Autowired
-    private SHA256PasswordEncoder passwordEncoder;
+    private EnviarEmailComSenha enviarEmailComSenha;
 
     @Transactional(readOnly = true)
     public boolean cpfExists(String cpf) {
@@ -61,24 +60,10 @@ public class ClienteService {
         newCliente.setId(newUser.getId());
         repository.save(newCliente);
 
-        enviarEmailComSenha(data.nome(), data.email(), senhaOriginal);
+        enviarEmailComSenha.enviarEmailComSenha(data.nome(), data.email(), senhaOriginal);
 
         return newCliente;
     }
-
-    @Transactional
-    public void enviarEmailComSenha(String nome, String emailDestino, String senha) {
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(emailDestino);
-            message.setSubject("Sua senha de acesso ao sistema");
-            message.setText("Olá " + nome +",\n\nSeu cadastro foi realizado com sucesso! Sua senha de acesso é: " + senha + "\n\nPor favor, mantenha-a em segurança.");
-            mailSender.send(message);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @Transactional
     public Optional<Cliente> getClienteById(UUID id) {
