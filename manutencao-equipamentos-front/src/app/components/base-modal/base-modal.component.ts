@@ -11,12 +11,7 @@ export class BaseModalComponent {
   @Input() isOpen = false;
   @Output() onClose = new EventEmitter<void>();
 
-  openModal() {
-    this.isOpen = true;
-  }
-
   closeModal() {
-    this.isOpen = false;
     this.onClose.emit();
   }
 }

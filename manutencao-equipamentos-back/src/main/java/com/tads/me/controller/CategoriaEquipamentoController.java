@@ -7,6 +7,7 @@ import com.tads.me.repository.CategoriaEquipamentoRepository;
 import com.tads.me.service.CategoriaEquipamentoService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -110,16 +111,19 @@ public class CategoriaEquipamentoController {
     @Operation(summary = "Exclui uma categoria", description = "Exclui a categoria de equipamento correspondente ao ID informado.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Categoria excluída com sucesso"),
+            @ApiResponse(responseCode = "409", description = "Categoria em uso, considere inativá-la"),
             @ApiResponse(responseCode = "417", description = "Falha ao excluir a categoria"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> delete(
+    public ResponseEntity<String> delete(
             @Parameter(description = "ID da categoria a ser excluída") @PathVariable("id") Long id) {
         try {
             repository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Não é possível excluir a categoria porque ela está em uso. Considere inativá-la.");
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }

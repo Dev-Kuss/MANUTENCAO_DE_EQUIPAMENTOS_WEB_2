@@ -55,7 +55,6 @@ public class SolicitacaoController {
             @ApiResponse(responseCode = "204", description = "Nenhuma solicitação encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/read-all")
     public ResponseEntity<List<SolicitacaoResponseDTO>> listarSolicitacoes() {
         try {
