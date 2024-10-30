@@ -1,1 +1,196 @@
-<p>funcionario-home works!</p>
+<div class="bg-gradient-to-b from-blue-700 to-blue-500 px-4 py-8 lg:px-14 pb-36">
+    <nav class="max-w-screen-2xl mx-auto flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-4">
+            <img src="assets/logo.svg" alt="Logo" class="h-7 w-7">
+            <span class="font-semibold text-white text-2xl ml-2.5">Manutenção</span>
+        </div>
+
+        <ul class="flex items-center space-x-8">
+            <li><a routerLink="/funcionario-home" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Página
+                    Inicial</a></li>
+            <li><a routerLink="/categorias-crud"
+                    class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Categorias</a></li>
+            <li><a routerLink="/funcionario-crud"
+                    class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Funcionários</a></li>
+        </ul>
+
+        <div class="flex items-center space-x-4">
+            <div class="bg-pink-500 h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold">
+                F
+            </div>
+        </div>
+    </nav>
+    <div class="max-w-screen-2xl mx-auto flex flex-col justify-between mt-10">
+        <h1 class="text-2xl lg:text-4xl text-white font-medium">Bem-vindo(a) de volta, Funcionário!</h1>
+        <p class="text-sm lg:text-base text-[#89b6fd]">Gerencie as solicitações dos clientes</p>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="-mt-32 max-w-screen-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <!-- Filters -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-4xl font-semibold text-gray-700 mt-2">Solicitações</h2>
+        <div class="flex-row space-x-2">
+            <button (click)="gerarRelatorioReceitas()"
+                class="bg-black text-white font-medium py-2 px-4 rounded-md shadow-md">
+                Relatório de Receitas
+            </button>
+            <button (click)="gerarRelatorioReceitasPorCategoria()"
+                class="bg-black text-white font-medium py-2 px-4 rounded-md shadow-md">
+                Relatório de Receitas/Categoria
+            </button>
+        </div>
+    </div>
+
+    <!-- Date Filters -->
+    <div class="flex justify-between mb-4">
+        <div class="flex space-x-4">
+            <input type="date" [(ngModel)]="dataInicio" class="border rounded-md px-4 py-2" placeholder="Data Início">
+            <input type="date" [(ngModel)]="dataFim" class="border rounded-md px-4 py-2" placeholder="Data Fim">
+            <button (click)="atualizarFiltro('PERIODO')"
+                class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md shadow-md">
+                Filtrar
+            </button>
+        </div>
+        <div class="flex space-x-4">
+            <label class="inline-flex items-center">
+                <input type="radio" name="filtro" value="HOJE" class="form-radio h-5 w-5 text-blue-600"
+                    (change)="atualizarFiltro('HOJE')">
+                <span class="ml-2 text-gray-700">Hoje</span>
+            </label>
+            <label class="inline-flex items-center">
+                <input type="radio" name="filtro" value="TODAS" class="form-radio h-5 w-5 text-blue-600"
+                    (change)="atualizarFiltro('TODAS')">
+                <span class="ml-2 text-gray-700">TODAS</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Solicitation List -->
+    <table class="min-w-full bg-white border border-gray-200 rounded">
+        <thead>
+            <tr>
+                <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Data/Hora</th>
+                <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Cliente</th>
+                <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Descrição</th>
+                <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Estado</th>
+                <th class="py-2 px-4 text-center text-sm font-semibold text-gray-600">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let solicitacao of solicitacoesPaginadas" class="border-t h-12">
+                <td class="py-2 px-4 text-sm">{{ solicitacao.dataHora | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td class="py-2 px-4 text-sm">{{ solicitacao.nomeCliente }}</td>
+                <td class="py-2 px-4 text-sm">{{ solicitacao.descricaoEquipamento | slice: 0:30 }}</td>
+                <td class="py-2 px-4 text-sm">
+                    <span class="inline-block align-middle">
+                        {{ solicitacao.estado }}
+                    </span>
+                    <span class="inline-block w-2 h-2 rounded-full align-middle ml-2 mb-1"
+                        [ngClass]="estadoCores[solicitacao.estado]">
+                    </span>
+                </td>
+                <td class="py-2 px-4 text-sm text-center space-x-2">
+                    <button *ngIf="solicitacao.estado === 'ABERTA'" (click)="efetuarOrcamento(solicitacao)"
+                        class="bg-green-500 text-white py-2 px-3 rounded hover:bg-green-600" title="Efetuar Orçamento">
+                        <fa-icon [icon]="faFileInvoiceDollar"></fa-icon>
+                    </button>
+                    <button
+                        *ngIf="solicitacao.estado === 'APROVADA' || (solicitacao.estado === 'REDIRECIONADA' && solicitacao.destinoRedirecionamento === funcionarioLogado)"
+                        (click)="efetuarManutencao(solicitacao)"
+                        class="bg-blue-500 text-white py-2 px-3 rounded hover:bg-blue-600" title="Efetuar Manutenção">
+                        <fa-icon [icon]="faWrench"></fa-icon>
+                    </button>
+                    <button *ngIf="solicitacao.estado === 'PAGA'" (click)="finalizarSolicitacao(solicitacao)"
+                        class="bg-purple-500 text-white py-2 px-3 rounded hover:bg-purple-600"
+                        title="Finalizar Solicitação">
+                        <fa-icon [icon]="faCheckCircle"></fa-icon>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+    <!-- Navegação de Paginação -->
+    <div class="flex space-x-2 mt-4">
+        <!-- Botão de Página Anterior -->
+        <button 
+          (click)="mudarPagina(paginaAtual - 1)" 
+          [disabled]="paginaAtual === 1"
+          class="text-gray-500 hover:text-blue-500">
+          <i class="fa fa-chevron-left"></i>
+        </button>
+      
+        <!-- Primeira Página -->
+        <button 
+          (click)="mudarPagina(1)"
+          [ngClass]="{'bg-blue-500 text-white': paginaAtual === 1, 'text-gray-500': paginaAtual !== 1}"
+          class="px-3 py-1 rounded-lg">
+          1
+        </button>
+      
+        <!-- Reticências à Esquerda -->
+        <span *ngIf="paginaAtual > 3" class="text-gray-500">...</span>
+      
+        <!-- Páginas Próximas da Página Atual -->
+        <button 
+          *ngFor="let page of getPaginasProximas()" 
+          (click)="mudarPagina(page)" 
+          [ngClass]="{'bg-blue-500 text-white': paginaAtual === page, 'text-gray-500': paginaAtual !== page}"
+          class="px-3 py-1 rounded-lg">
+          {{ page }}
+        </button>
+      
+        <!-- Reticências à Direita -->
+        <span *ngIf="paginaAtual < totalPaginas - 2" class="text-gray-500">...</span>
+      
+        <!-- Última Página -->
+        <button 
+          (click)="mudarPagina(totalPaginas)"
+          [ngClass]="{'bg-blue-500 text-white': paginaAtual === totalPaginas, 'text-gray-500': paginaAtual !== totalPaginas}"
+          class="px-3 py-1 rounded-lg">
+          {{ totalPaginas }}
+        </button>
+      
+        <!-- Botão de Página Próxima -->
+        <button 
+          (click)="mudarPagina(paginaAtual + 1)" 
+          [disabled]="paginaAtual === totalPaginas"
+          class="text-gray-500 hover:text-blue-500">
+          <i class="fa fa-chevron-right"></i>
+        </button>
+      </div>
+</div>
+
+<!-- Modals -->
+<app-base-modal [isOpen]="isOrcamentoModalOpen" (onClose)="fecharOrcamentoModal()">
+    <ng-container modal-header>
+        <h2 class="text-2xl font-semibold text-gray-700">Efetuar Orçamento</h2>
+    </ng-container>
+    <ng-container modal-body>
+        <app-efetuar-orcamento [solicitacao]="solicitacaoSelecionada"
+            (close)="fecharOrcamentoModal()"></app-efetuar-orcamento>
+    </ng-container>
+</app-base-modal>
+
+<app-base-modal [isOpen]="isManutencaoModalOpen" (onClose)="fecharManutencaoModal()">
+    <ng-container modal-header>
+        <h2 class="text-2xl font-semibold text-gray-700">Efetuar Manutenção</h2>
+    </ng-container>
+    <ng-container modal-body>
+        <app-efetuar-manutencao [solicitacao]="solicitacaoSelecionada" [funcionarios]="listaFuncionarios"
+            [funcionarioLogado]="funcionarioLogado" (close)="fecharManutencaoModal()">
+        </app-efetuar-manutencao>
+    </ng-container>
+</app-base-modal>
+
+<app-base-modal [isOpen]="isFinalizarModalOpen" (onClose)="fecharFinalizarModal()">
+    <ng-container modal-header>
+        <h2 class="text-2xl font-semibold text-gray-700">Finalizar Solicitação</h2>
+    </ng-container>
+    <ng-container modal-body>
+        <app-finalizar-solicitacao [solicitacao]="solicitacaoSelecionada"
+            (close)="fecharFinalizarModal()"></app-finalizar-solicitacao>
+    </ng-container>
+</app-base-modal>

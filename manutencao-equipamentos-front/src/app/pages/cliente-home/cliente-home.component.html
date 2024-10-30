@@ -6,20 +6,6 @@
             <span class="font-semibold text-white text-2xl ml-2.5">Manutenção</span>
         </div>
 
-        <ul class="hidden lg:flex items-center space-x-8">
-            <li><a href="#" class="px-4 py-2 hover:rounded text-white text-sm hover:bg-white/20 hover:text-white">Página
-                    Inicial</a></li>
-            <li><a href="#"
-                    class="px-4 py-2 hover:rounded text-white text-sm hover:bg-white/20 hover:text-white">Solicitações</a>
-            </li>
-            <li><a href="#"
-                    class="px-4 py-2 hover:rounded text-white text-sm hover:bg-white/20 hover:text-white">Orçamentos</a>
-            </li>
-            <li><a href="#"
-                    class="px-4 py-2 hover:rounded text-white text-sm hover:bg-white/20 hover:text-white">Serviços</a>
-            </li>
-        </ul>
-
         <div class="flex items-center space-x-4">
             <div class="bg-pink-500 h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold">
                 L
@@ -31,7 +17,7 @@
         <p class="text-sm lg:text-base text-[#89b6fd]">Veja as suas solicitações recentes</p>
     </div>
 </div>
-<div class="-mt-32 max-w-screen-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+<div class="-mt-24 max-w-screen-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-4xl font-semibold text-gray-700 mt-2">Minhas Solicitações</h2>
         <button (click)="abrirManutencaoModal()"
@@ -51,7 +37,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let solicitacao of solicitacoes" class="border-t">
-                <td class="py-2 px-4 text-sm">{{ solicitacao.dataHora | date: 'short' }}</td>
+                <td class="py-2 px-4 text-sm">{{ solicitacao.dataHora | date: 'dd/MM/yyyy HH:mm' }}</td>
                 <td class="py-2 px-4 text-sm">{{ solicitacao.descricaoEquipamento | slice:0:30 }}</td>
                 <td class="py-2 px-4 text-sm">{{ solicitacao.estado }}</td>
                 <td class="py-2 px-4 text-sm text-center space-x-2">

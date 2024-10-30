@@ -1,0 +1,110 @@
+<div class="bg-gradient-to-b from-blue-700 to-blue-500 px-4 py-8 lg:px-14 pb-36">
+    <nav class="max-w-screen-2xl mx-auto flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-4">
+            <img src="assets/logo.svg" alt="Logo" class="h-7 w-7">
+            <span class="font-semibold text-white text-2xl ml-2.5">Manutenção</span>
+        </div>
+        <ul class="flex items-center space-x-8">
+            <li><a routerLink="/funcionario-home" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Página
+                    Inicial</a></li>
+            <li><a routerLink="/categorias-crud"
+                    class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Categorias</a></li>
+            <li><a routerLink="/funcionario-crud"
+                    class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Funcionários</a></li>
+        </ul>
+        <div class="flex items-center space-x-4">
+            <div class="bg-pink-500 h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold">F
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-screen-2xl mx-auto flex flex-col justify-between mt-10">
+        <h1 class="text-2xl lg:text-4xl text-white font-medium">Bem-vindo(a) ao Gerenciamento de Funcionários</h1>
+        <p class="text-sm lg:text-base text-[#89b6fd]">Gerencie os dados dos funcionários da empresa</p>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="-mt-32 max-w-screen-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <!-- Botão para adicionar novo funcionário -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-4xl font-semibold text-gray-700 mt-2">Funcionários</h2>
+        <button (click)="abrirModalFuncionario()"
+            class="bg-black text-white font-medium py-2 px-4 rounded-md shadow-md">Adicionar Funcionário</button>
+    </div>
+
+    <!-- Tabela de Funcionários -->
+    <table class="min-w-full bg-white border border-gray-200 rounded">
+        <thead>
+            <tr>
+                <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Nome</th>
+                <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">E-mail</th>
+                <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Data de Nascimento</th>
+                <th class="py-2 px-4 text-center text-sm font-semibold text-gray-600">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let funcionario of funcionarios" class="border-t">
+                <td class="py-2 px-4 text-sm">{{ funcionario.nome }}</td>
+                <td class="py-2 px-4 text-sm">{{ funcionario.email }}</td>
+                <td class="py-2 px-4 text-sm">{{ funcionario.dataNascimento | date }}</td>
+                <td class="py-2 px-4 text-sm text-center space-x-2">
+                    <button (click)="editarFuncionario(funcionario)"
+                        class="bg-blue-500 text-white py-2 px-3 rounded hover:bg-blue-600 w-10 h-10">
+                        <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+                    <button (click)="removerFuncionario(funcionario)"
+                        class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 w-10 h-10"
+                        [disabled]="funcionarios.length === 1 || funcionarioLogado === funcionario.email">
+                        <fa-icon [icon]="faTrash"></fa-icon>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal para inserir/editar funcionário -->
+<app-base-modal [isOpen]="isFuncionarioModalOpen" (onClose)="fecharModalFuncionario()">
+    <ng-container modal-header>
+        <h2 class="text-2xl font-semibold text-gray-700">{{ funcionarioSelecionado?.email ? 'Editar Funcionário' :
+            'Adicionar Funcionário' }}</h2>
+    </ng-container>
+    <ng-container modal-body>
+        <form *ngIf="funcionarioSelecionado" (ngSubmit)="salvarFuncionario()">
+            <form *ngIf="funcionarioSelecionado" (ngSubmit)="salvarFuncionario()" class="space-y-2">
+                <label for="nome" class="block text-sm font-medium text-gray-600">Nome</label>
+                <input id="nome" [(ngModel)]="funcionarioSelecionado.nome" name="nome" type="text"
+                    placeholder="Digite o nome"
+                    class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    required>
+
+                <label for="email" class="block text-sm font-medium text-gray-600">E-mail</label>
+                <input id="email" [(ngModel)]="funcionarioSelecionado.email" name="email" type="email"
+                    placeholder="Digite o e-mail"
+                    class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    required>
+
+                <label for="dataNascimento" class="block text-sm font-medium text-gray-600">Data de Nascimento</label>
+                <input id="dataNascimento" [(ngModel)]="funcionarioSelecionado.dataNascimento" name="dataNascimento"
+                    type="date"
+                    class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    required>
+
+                <label for="senha" class="block text-sm font-medium text-gray-600">Senha</label>
+                <input id="senha" [(ngModel)]="funcionarioSelecionado.senha" name="senha" type="password"
+                    placeholder="Digite a senha"
+                    class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    required>
+
+                <div class="flex justify-end mt-4">
+                    <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md">
+                        {{ funcionarioSelecionado.email ? 'Salvar' : 'Adicionar' }}
+                    </button>
+                </div>
+            </form>
+
+        </form>
+    </ng-container>
+</app-base-modal>

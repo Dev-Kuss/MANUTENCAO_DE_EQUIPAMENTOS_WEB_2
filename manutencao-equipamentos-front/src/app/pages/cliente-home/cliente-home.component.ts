@@ -1,5 +1,3 @@
-// cliente-home.component.ts
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';  
 import { RouterModule } from '@angular/router';  
@@ -8,12 +6,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye, faFileInvoiceDollar, faUndoAlt, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
 
 import { BaseModalComponent } from '../../components/base-modal/base-modal.component';
-import { SolicitarManutencaoComponent } from "../../components/solicitar-manutencao-form/solicitar-manutencao.component";
-import { MostrarOrcamentoComponent } from '../../components/mostrar-orcamento-form/mostrar-orcamento.component';
+import { SolicitarManutencaoComponent } from "../../components/solicitar-manutencao/solicitar-manutencao.component";
+import { MostrarOrcamentoComponent } from '../../components/mostrar-orcamento/mostrar-orcamento.component';
 import { VisualizarServicoComponent } from '../../components/visualizar-servico/visualizar-servico.component';
 import { PagarServicoComponent } from '../../components/pagar-servico/pagar-servico.component';
-
-import { MostrarOrcamentoService } from '../../services/mostrar-orcamento.service';
 
 import { Solicitacao } from '../../models/solicitacao.model';
 
@@ -146,17 +142,12 @@ export class ClienteHomeComponent {
   ];
   categorias = ['Notebook', 'Desktop', 'Impressora', 'Mouse', 'Teclado']; 
   
-  constructor(
-    private mostrarOrcamentoService: MostrarOrcamentoService,
-  ) {}
-
   abrirManutencaoModal() {
     this.isManutencaoModalOpen = true;
   }
 
   fecharManutencaoModal() {
     this.isManutencaoModalOpen = false;
-    console.log(this.isManutencaoModalOpen)
   }
 
   abrirOrcamentoModal(solicitacao: Solicitacao) {
