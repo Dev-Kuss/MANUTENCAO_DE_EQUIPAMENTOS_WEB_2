@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';  
-import { RouterModule } from '@angular/router';  
-import { ReactiveFormsModule } from '@angular/forms';  
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye, faFileInvoiceDollar, faUndoAlt, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,25 +12,25 @@ import { VisualizarServicoComponent } from '../../components/visualizar-servico/
 import { PagarServicoComponent } from '../../components/pagar-servico/pagar-servico.component';
 
 import { Solicitacao } from '../../models/solicitacao.model';
+import { SolicitacaoService } from '../../services/solicitacao.service';
 
 @Component({
   selector: 'app-cliente-home',
   templateUrl: './cliente-home.component.html',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterModule, 
-    ReactiveFormsModule, 
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
     FontAwesomeModule,
-    BaseModalComponent, 
-    SolicitarManutencaoComponent, 
+    BaseModalComponent,
+    SolicitarManutencaoComponent,
     MostrarOrcamentoComponent,
     VisualizarServicoComponent,
     PagarServicoComponent
   ]
 })
-
-export class ClienteHomeComponent {
+export class ClienteHomeComponent implements OnInit {
   // Icons
   faEye = faEye;
   faFileInvoiceDollar = faFileInvoiceDollar;
@@ -43,152 +43,74 @@ export class ClienteHomeComponent {
   isPagamentoModalOpen = false;
 
   solicitacaoSelecionada: Solicitacao | null = null;
-  solicitacoes: Solicitacao[] = [
-    {
-      dataHora: new Date('2024-09-28T12:00:00'),
-      descricaoEquipamento: 'Televisão',
-      estado: 'ARRUMADA',
-      precoOrcado: 382.0,
-      historico: [
-        {
-          dataHora: new Date('2024-09-28T12:00:00'),
-          descricao: 'Solicitação criada pelo cliente.',
-          funcionario: 'Cliente',
-        },
-        {
-          dataHora: new Date('2024-09-29T09:00:00'),
-          descricao: 'Serviço concluído e aguardando pagamento.',
-          funcionario: 'Técnico Ana',
-        },
-      ],
-    },
-    {
-      dataHora: new Date('2024-09-25T10:30:00'),
-      descricaoEquipamento: 'Máquina de Lavar',
-      estado: 'ORÇADA',
-      precoOrcado: 300.0,
-      historico: [
-        {
-          dataHora: new Date('2024-09-24T14:45:00'),
-          descricao: 'Solicitação criada pelo cliente.',
-          funcionario: 'Cliente',
-        },
-      ],
-    },
-    {
-      dataHora: new Date('2024-09-24T14:45:00'),
-      descricaoEquipamento: 'Computador',
-      estado: 'APROVADA',
-      historico: [
-        {
-          dataHora: new Date('2024-09-25T11:00:00'),
-          descricao: 'Diagnóstico realizado.',
-          funcionario: 'Técnico Pedro',
-        },
-        {
-          dataHora: new Date('2024-09-26T16:30:00'),
-          descricao: 'Reparo em andamento.',
-          funcionario: 'Técnico Pedro',
-        },
-      ],
-    },
-    {
-      dataHora: new Date('2024-09-23T09:20:00'),
-      descricaoEquipamento: 'Micro-ondas',
-      estado: 'REJEITADA',
-      historico: [
-        {
-          dataHora: new Date('2024-09-25T11:00:00'),
-          descricao: 'Diagnóstico realizado.',
-          funcionario: 'Técnico Pedro',
-        },
-      ],
-    },
-    {
-      dataHora: new Date('2024-09-22T16:00:00'),
-      descricaoEquipamento: 'Refrigerador',
-      estado: 'ARRUMADA',
-      precoOrcado: 300.0,
-      historico: [
-        {
-          dataHora: new Date('2024-09-26T16:30:00'),
-          descricao: 'Reparo em andamento.',
-          funcionario: 'Técnico Pedro',
-        },
-      ],
-    },
-    {
-      dataHora: new Date('2024-09-24T14:45:00'),
-      descricaoEquipamento: 'Computador',
-      estado: 'APROVADA',
-      historico: [
-        {
-          dataHora: new Date('2024-09-24T14:45:00'),
-          descricao: 'Solicitação criada pelo cliente.',
-          funcionario: 'Cliente',
-        },
-        {
-          dataHora: new Date('2024-09-25T11:00:00'),
-          descricao: 'Diagnóstico realizado.',
-          funcionario: 'Técnico Pedro',
-        },
-        {
-          dataHora: new Date('2024-09-26T16:30:00'),
-          descricao: 'Reparo em andamento.',
-          funcionario: 'Técnico Pedro',
-        },
-      ],
-    },
-  ];
-  categorias = ['Notebook', 'Desktop', 'Impressora', 'Mouse', 'Teclado']; 
-  
-  abrirManutencaoModal() {
+  solicitacoes: Solicitacao[] = [];
+  categorias = ['Notebook', 'Desktop', 'Impressora', 'Mouse', 'Teclado'];
+
+  constructor(private solicitacaoService: SolicitacaoService) {}
+
+  ngOnInit(): void {
+    this.carregarSolicitacoes();
+  }
+
+  // Método para carregar as solicitações do back-end
+  carregarSolicitacoes(): void {
+    this.solicitacaoService.getSolicitacoes().subscribe(
+      (solicitacoes) => {
+        this.solicitacoes = solicitacoes;
+      },
+      (error) => {
+        console.error('Erro ao carregar solicitações:', error);
+      }
+    );
+  }
+
+  abrirManutencaoModal(): void {
     this.isManutencaoModalOpen = true;
   }
 
-  fecharManutencaoModal() {
+  fecharManutencaoModal(): void {
     this.isManutencaoModalOpen = false;
   }
 
-  abrirOrcamentoModal(solicitacao: Solicitacao) {
+  abrirOrcamentoModal(solicitacao: Solicitacao): void {
     this.solicitacaoSelecionada = solicitacao;
     this.isOrcamentoModalOpen = true;
   }
 
-  fecharOrcamentoModal() {
+  fecharOrcamentoModal(): void {
     this.isOrcamentoModalOpen = false;
   }
 
-  abrirVisualizarModal(solicitacao: Solicitacao) {
+  abrirVisualizarModal(solicitacao: Solicitacao): void {
     this.solicitacaoSelecionada = solicitacao;
-    this.isVisualizarModalOpen  = true;
+    this.isVisualizarModalOpen = true;
   }
 
-  fecharVisualizarModal() {
-    this.isVisualizarModalOpen  = false;
+  fecharVisualizarModal(): void {
+    this.isVisualizarModalOpen = false;
   }
 
-  abrirPagamentoModal(solicitacao: Solicitacao) {
+  abrirPagamentoModal(solicitacao: Solicitacao): void {
     this.solicitacaoSelecionada = solicitacao;
     this.isPagamentoModalOpen = true;
   }
 
-  fecharPagamentoModal() {
+  fecharPagamentoModal(): void {
     this.isPagamentoModalOpen = false;
   }
-  
-  visualizarServico(solicitacao: Solicitacao) {
+
+  visualizarServico(solicitacao: Solicitacao): void {
     console.log(`Visualizando solicitação: ${solicitacao.descricaoEquipamento}`);
-    this.abrirVisualizarModal(solicitacao)
+    this.abrirVisualizarModal(solicitacao);
     // TODO: Navegar para a página de visualização da solicitação (RF008)
   }
 
-  resgatarServico(solicitacao: Solicitacao) {
-    const previousEstado = solicitacao.estado
-    solicitacao.estado = 'APROVADA'
+  resgatarServico(solicitacao: Solicitacao): void {
+    const previousEstado = solicitacao.estado;
+    solicitacao.estado = 'APROVADA';
 
     if (!solicitacao.historico) {
-      solicitacao.historico = []
+      solicitacao.historico = [];
     }
 
     solicitacao.historico.push({
@@ -200,12 +122,12 @@ export class ClienteHomeComponent {
     alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');
   }
 
-  pagarServico() {
+  pagarServico(): void {
     console.log('Pagar Serviço');
     // TODO: Implementar lógica para RF010
   }
 
-  onPagamentoConfirmado() {
+  onPagamentoConfirmado(): void {
     this.fecharPagamentoModal();
     // Optional: Additional actions after payment confirmation
   }

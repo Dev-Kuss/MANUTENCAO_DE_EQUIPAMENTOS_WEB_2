@@ -1,17 +1,20 @@
 import { Routes } from '@angular/router';
-import { AutocadastroComponent } from './pages/autocadastro/autocadastro.component';
-import { LoginComponent } from './pages/login/login.component';
-import { ClienteHomeComponent } from './pages/cliente-home/cliente-home.component';
-import { FuncionarioHomeComponent } from './pages/funcionario-home/funcionario-home.component';
-import { CategoriasCrudComponent } from './pages/categorias-crud/categorias-crud.component';
-import { FuncionarioCrudComponent } from './pages/funcionarios-crud/funcionarios-crud.component';
+import { AutocadastroComponent } from './pages/autocadastro';
+import { LoginComponent } from './pages/login';
+import { ClienteHomeComponent } from './pages/cliente-home';
+import { FuncionarioHomeComponent } from './pages/funcionario-home';
+import { CategoriasCrudComponent } from './pages/categorias-crud';
+import { FuncionarioCrudComponent } from './pages/funcionarios-crud';
+import { authGuard } from './services/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'cliente-home', component: ClienteHomeComponent },
-  { path: 'funcionario-home', component: FuncionarioHomeComponent },
-  { path: 'categorias-crud', component: CategoriasCrudComponent },
-  { path: 'funcionario-crud', component: FuncionarioCrudComponent },
   { path: 'autocadastro', component: AutocadastroComponent },
+
+  // Rotas protegidas pelo authGuard
+  { path: 'cliente-home', component: ClienteHomeComponent, canActivate: [authGuard] },
+  { path: 'funcionario-home', component: FuncionarioHomeComponent, canActivate: [authGuard] },
+  { path: 'categorias-crud', component: CategoriasCrudComponent, canActivate: [authGuard] },
+  { path: 'funcionario-crud', component: FuncionarioCrudComponent, canActivate: [authGuard] },
 ];
