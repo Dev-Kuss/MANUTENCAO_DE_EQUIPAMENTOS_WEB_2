@@ -5,6 +5,13 @@ public record ClienteRequestDTO(
         String cpf,
         String email,
         String telefone,
-        String senha
+        String senha,
+        String cep,
+        String logradouro,
+        String numero,
+        String complemento,
+        String bairro,
+        String cidade,
+        String estado
 ) {
 }

@@ -1,11 +1,9 @@
-INSERT INTO cliente (nome, cpf, email, telefone, senha_hash, salt, endereco_id)
-VALUES ('João', '123.456.789-00', 'joao@example.com', '(41) 99999-9999', 'kh+OiIjKk7mNtRNRPhDoqB5wmrvaXGOyH8Yy8BMnR8k=',
-        '4p0ko0E8N8sUif5YUff2kQ==', 1),
-       ('Maria', '987.654.321-00', 'maria@example.com', '(41) 88888-8888',
-        'Jr3T5PZrF5MskwoN00YTMIbadX199+ipbxDWUamThGo=', 'UhWHpO+zolVmNVSPiA8sjQ==', 2),
-       ('José', '741.852.963-00', 'jose@example.com', '(41) 77777-7777', 'Mj6/P1vme5Yc/9Km3bccga27a2uCEnx0I1NzHlUMZbA=',
-        'i9ShmmmmJNoHWg/5EkzYnA==', 3),
-       ('Joana', '852.963.741-00', 'joana@example.com', '(41) 66666-6666',
-        'Ph9tzKs9c4peIJ/x1MDwH/b8V/5na6n8x213udVXAUI=', 'l1+hMFwDNRJ+wXRmwsqDhg==', 4),
-       ('Joaquina', '963.741.852-00', 'joaquina@example.com', '(41) 55555-5555',
-        'G1Vlz3KC+Gz3gmWlxcSKy3K1CmFfjc/liynX1xKKH5I=', '4QvywIgCeoC3UxUZ1NkhZw==', 5);
+INSERT INTO cliente (id, nome, cpf, telefone, cep, logradouro, numero, complemento, bairro, cidade, estado)
+VALUES ('22f111c2-2fbb-40a7-a11b-39c9e4f8d321', 'João', '12345678900', '(11) 91234-5678', '12345-678', 'Rua A', '123',
+        '', 'Bairro X', 'Cidade Y', 'Estado Z'),
+       ('c7eae989-5f2e-41df-8121-799e5c9b5e52', 'José', '98765432100', '(11) 99876-5432', '12345-679', 'Rua B', '456',
+        '', 'Bairro Y', 'Cidade Z', 'Estado X'),
+       ('d4c89b5a-8a0d-4383-aeb6-c8cb5f6d8ea1', 'Joana', '12345678911', '(11) 91234-5679', '12345-680', 'Rua C', '789',
+        '', 'Bairro Z', 'Cidade X', 'Estado Y'),
+       ('ad8f7685-9d9e-4f4e-88b8-bf9c7d812fbb', 'Joaquina', '98765432111', '(11) 99876-5433', '12345-681', 'Rua D',
+        '101', '', 'Bairro W', 'Cidade W', 'Estado W');

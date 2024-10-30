@@ -1,21 +1,93 @@
 INSERT INTO solicitacao (data_hora, descricao_equipamento, estado, id_categoria, id_cliente)
-VALUES ('2024-01-01 10:00:00', 'Notebook Lenovo', 'ABERTA', 1, 1),
-       ('2024-01-02 11:00:00', 'Desktop Dell', 'ORÇADA', 2, 2),
-       ('2024-01-03 09:30:00', 'Impressora HP', 'APROVADA', 3, 3),
-       ('2024-01-04 14:15:00', 'Mouse Logitech', 'REJEITADA', 4, 4),
-       ('2024-01-05 08:45:00', 'Teclado Microsoft', 'AGUARDANDO PAGAMENTO', 5, 1),
-       ('2024-01-06 12:30:00', 'Notebook Acer', 'PAGA', 1, 2),
-       ('2024-01-07 15:30:00', 'Desktop Asus', 'FINALIZADA', 2, 3),
-       ('2024-01-08 16:45:00', 'Impressora Canon', 'ABERTA', 3, 4),
-       ('2024-01-09 17:00:00', 'Mouse Razer', 'ORÇADA', 4, 1),
-       ('2024-01-10 10:20:00', 'Teclado Corsair', 'APROVADA', 5, 2),
-       ('2024-01-11 13:40:00', 'Notebook HP', 'REJEITADA', 1, 3),
-       ('2024-01-12 08:10:00', 'Desktop Lenovo', 'AGUARDANDO PAGAMENTO', 2, 4),
-       ('2024-01-13 11:50:00', 'Impressora Epson', 'PAGA', 3, 1),
-       ('2024-01-14 09:15:00', 'Mouse Apple', 'FINALIZADA', 4, 2),
-       ('2024-01-15 14:55:00', 'Teclado Dell', 'ABERTA', 5, 3),
-       ('2024-01-16 16:05:00', 'Notebook Asus', 'ORÇADA', 1, 4),
-       ('2024-01-17 18:30:00', 'Desktop HP', 'APROVADA', 2, 1),
-       ('2024-01-18 13:25:00', 'Impressora Samsung', 'REJEITADA', 3, 2),
-       ('2024-01-19 12:40:00', 'Mouse Microsoft', 'AGUARDANDO PAGAMENTO', 4, 3),
-       ('2024-01-20 11:20:00', 'Teclado HP', 'PAGA', 5, 4);
+VALUES
+    (NOW() - INTERVAL '20 days', 'Notebook Acer', 'Pendente',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Notebook'),
+     (SELECT id FROM cliente WHERE nome = 'João')),
+
+    (NOW() - INTERVAL '15 days', 'Teclado Microsoft', 'Em andamento',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Teclado'),
+     (SELECT id FROM cliente WHERE nome = 'João')),
+
+    (NOW() - INTERVAL '12 days', 'Desktop HP', 'Finalizado',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Desktop'),
+     (SELECT id FROM cliente WHERE nome = 'João')),
+
+    (NOW() - INTERVAL '10 days', 'Impressora Epson', 'Pendente',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Impressora'),
+     (SELECT id FROM cliente WHERE nome = 'João'));
+
+-- Solicitações de José
+INSERT INTO solicitacao (data_hora, descricao_equipamento, estado, id_categoria, id_cliente)
+VALUES
+    (NOW() - INTERVAL '19 days', 'Desktop Dell', 'Em andamento',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Desktop'),
+     (SELECT id FROM cliente WHERE nome = 'José')),
+
+    (NOW() - INTERVAL '14 days', 'Notebook Lenovo', 'Finalizado',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Notebook'),
+     (SELECT id FROM cliente WHERE nome = 'José')),
+
+    (NOW() - INTERVAL '9 days', 'Mouse Microsoft', 'Em andamento',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Mouse'),
+     (SELECT id FROM cliente WHERE nome = 'José')),
+
+    (NOW() - INTERVAL '7 days', 'Teclado Corsair', 'Pendente',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Teclado'),
+     (SELECT id FROM cliente WHERE nome = 'José'));
+
+-- Solicitações de Joana
+INSERT INTO solicitacao (data_hora, descricao_equipamento, estado, id_categoria, id_cliente)
+VALUES
+    (NOW() - INTERVAL '18 days', 'Impressora HP', 'Finalizado',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Impressora'),
+     (SELECT id FROM cliente WHERE nome = 'Joana')),
+
+    (NOW() - INTERVAL '13 days', 'Mouse Logitech', 'Pendente',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Mouse'),
+     (SELECT id FROM cliente WHERE nome = 'Joana')),
+
+    (NOW() - INTERVAL '8 days', 'Notebook Dell', 'Em andamento',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Notebook'),
+     (SELECT id FROM cliente WHERE nome = 'Joana')),
+
+    (NOW() - INTERVAL '5 days', 'Teclado Logitech', 'Pendente',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Teclado'),
+     (SELECT id FROM cliente WHERE nome = 'Joana'));
+
+-- Solicitações de Joaquina
+INSERT INTO solicitacao (data_hora, descricao_equipamento, estado, id_categoria, id_cliente)
+VALUES
+    (NOW() - INTERVAL '17 days', 'Mouse Logitech', 'Pendente',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Mouse'),
+     (SELECT id FROM cliente WHERE nome = 'Joaquina')),
+
+    (NOW() - INTERVAL '16 days', 'Notebook HP', 'Finalizado',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Notebook'),
+     (SELECT id FROM cliente WHERE nome = 'Joaquina')),
+
+    (NOW() - INTERVAL '11 days', 'Teclado Razer', 'Pendente',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Teclado'),
+     (SELECT id FROM cliente WHERE nome = 'Joaquina')),
+
+    (NOW() - INTERVAL '6 days', 'Desktop Lenovo', 'Finalizado',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Desktop'),
+     (SELECT id FROM cliente WHERE nome = 'Joaquina'));
+
+-- Solicitações adicionais
+INSERT INTO solicitacao (data_hora, descricao_equipamento, estado, id_categoria, id_cliente)
+VALUES
+    (NOW() - INTERVAL '4 days', 'Impressora Canon', 'Em andamento',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Impressora'),
+     (SELECT id FROM cliente WHERE nome = 'João')),
+
+    (NOW() - INTERVAL '3 days', 'Desktop Asus', 'Pendente',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Desktop'),
+     (SELECT id FROM cliente WHERE nome = 'José')),
+
+    (NOW() - INTERVAL '2 days', 'Notebook Samsung', 'Finalizado',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Notebook'),
+     (SELECT id FROM cliente WHERE nome = 'Joana')),
+
+    (NOW() - INTERVAL '1 day', 'Mouse Apple', 'Pendente',
+     (SELECT id FROM categoria_equipamento WHERE nome_categoria = 'Mouse'),
+     (SELECT id FROM cliente WHERE nome = 'Joaquina'));

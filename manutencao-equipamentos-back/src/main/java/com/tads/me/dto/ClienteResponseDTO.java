@@ -1,14 +1,22 @@
 package com.tads.me.dto;
 
 import com.tads.me.entity.Cliente;
-import com.tads.me.entity.Endereco;
+
+import java.util.UUID;
 
 public record ClienteResponseDTO(
-        Long id,
+        UUID id,
         String nome,
         String cpf,
         String email,
-        Endereco endereco
+        String telefone,
+        String cep,
+        String logradouro,
+        String numero,
+        String complemento,
+        String bairro,
+        String cidade,
+        String estado
 ) {
     public ClienteResponseDTO(Cliente cliente) {
         this(
@@ -16,7 +24,14 @@ public record ClienteResponseDTO(
                 cliente.getNome(),
                 cliente.getCpf(),
                 cliente.getEmail(),
-                cliente.getEndereco()
+                cliente.getTelefone(),
+                cliente.getCep(),
+                cliente.getLogradouro(),
+                cliente.getNumero(),
+                cliente.getComplemento(),
+                cliente.getBairro(),
+                cliente.getCidade(),
+                cliente.getEstado()
         );
     }
 }

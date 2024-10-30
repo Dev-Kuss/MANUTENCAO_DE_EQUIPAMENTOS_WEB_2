@@ -3,12 +3,13 @@ package com.tads.me.entity;
 import com.tads.me.dto.FuncionarioRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
+@Entity
 @Table(name = "funcionario")
-@Entity(name = "funcionario")
-@EqualsAndHashCode(of = "id")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,25 +18,23 @@ import java.time.LocalDate;
 public class Funcionario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @Column(updatable = false, nullable = false, columnDefinition = "CHAR(36)")
+    private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     private String email;
-
-    @Column(nullable = false)
     private String nome;
-
-    @Column(nullable = false)
+    private String telefone;
     private LocalDate dataNascimento;
 
-    @Column(nullable = false)
-    private String senha;
 
-    public Funcionario(FuncionarioRequestDTO data) {
-        this.email = data.email();
+    public Funcionario(FuncionarioRequestDTO data, User user) {
         this.nome = data.nome();
+        this.telefone = data.telefone();
         this.dataNascimento = data.dataNascimento();
-        this.senha = data.senha();
+        this.user = user;
     }
 }

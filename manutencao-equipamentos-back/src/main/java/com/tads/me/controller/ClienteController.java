@@ -5,19 +5,30 @@ import com.tads.me.dto.ClienteRequestDTO;
 import com.tads.me.dto.ClienteResponseDTO;
 import com.tads.me.repository.ClienteRepository;
 import com.tads.me.service.ClienteService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Cliente", description = "Gerenciamento de Clientes")
 @RequestMapping("/cliente")
 class ClienteController {
 
@@ -27,33 +38,31 @@ class ClienteController {
     @Autowired
     ClienteRepository repository;
 
-    @Autowired
-    private JavaMailSender mailSender;
-
+    @Operation(summary = "Cria um novo cliente", description = "Endpoint público para criar um cliente.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @PostMapping("/create")
-    public ResponseEntity<Cliente> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
-        // Cria o cliente
+    public ResponseEntity<ClienteResponseDTO> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
         Cliente newCliente = this.clienteService.createCliente(data);
+        ClienteResponseDTO clienteResponseDTO = new ClienteResponseDTO(newCliente);
 
-        // Enviar e-mail com a senha
-        enviarEmailComSenha(data.email(), data.senha());
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newCliente.getId())
+                .toUri();
 
-        return ResponseEntity.ok(newCliente);
+        return ResponseEntity.created(location).body(clienteResponseDTO);
     }
 
-    private void enviarEmailComSenha(String emailDestino, String senha) {
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(emailDestino);
-            message.setSubject("Sua senha de acesso ao sistema");
-            message.setText("Olá,\n\nSeu cadastro foi realizado com sucesso! Sua senha de acesso é: " + senha + "\n\nPor favor, mantenha-a em segurança.");
-            // Envia o e-mail
-            mailSender.send(message);
-        } catch (Exception e) {
-            e.printStackTrace();  // You can replace this with proper logging if necessary
-        }
-    }
-
+    @Operation(summary = "Lista todos os clientes", description = "Endpoint público para listar todos os clientes.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de clientes retornada com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Nenhum cliente encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @GetMapping("/read-all")
     public ResponseEntity<List<ClienteResponseDTO>> getAll() {
         try {
@@ -73,14 +82,26 @@ class ClienteController {
         }
     }
 
+    @Operation(summary = "Obtém cliente por ID", description = "Acesso restrito a ADMIN.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @GetMapping("/read/{id}")
-    public ResponseEntity<Cliente> getById(@PathVariable("id") Long id) {
-        Optional<Cliente> existingItemOptional = repository.findById(id);
-
-        return existingItemOptional.map(cliente -> new ResponseEntity<>(cliente, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Cliente> getById(@PathVariable UUID id) {
+        return clienteService.getClienteById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Atualiza um cliente", description = "Acesso restrito a ADMIN.")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @PutMapping("/update/{id}")
     public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody ClienteRequestDTO data) {
         Optional<Cliente> clienteOptional = this.clienteService.updateCliente(id, data);
@@ -88,6 +109,12 @@ class ClienteController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    @Operation(summary = "Exclui um cliente", description = "Acesso restrito a ADMIN.")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Cliente excluído com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
         try {

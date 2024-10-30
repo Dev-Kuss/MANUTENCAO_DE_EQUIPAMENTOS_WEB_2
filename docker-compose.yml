@@ -16,6 +16,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+      - "5005:5005"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ManutencaoEquipamentos
     depends_on:
@@ -37,13 +38,6 @@ services:
     networks:
       - app-network
 
-#  mailhog:
-#    image: mailhog/mailhog
-#    ports:
-#      - "8025:8025"  # Web UI
-#      - "1025:1025"  # SMTP server
-#    networks:
-#      - app-network
 networks:
   app-network:
     driver: bridge

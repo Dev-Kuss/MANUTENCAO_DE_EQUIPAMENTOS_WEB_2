@@ -1,14 +1,14 @@
 package com.tads.me.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tads.me.dto.ClienteRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+import java.util.UUID;
+
+@Entity
 @Table(name = "cliente")
-@Entity(name = "cliente")
-@EqualsAndHashCode(of = "id")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,24 +17,37 @@ import lombok.*;
 public class Cliente {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(updatable = false, nullable = false, columnDefinition = "CHAR(36)")
+    private UUID id;
 
-    private String nome;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     private String cpf;
     private String email;
+    private String nome;
     private String telefone;
-    private String senhaHash;
-    private String salt;
+    private String cep;
+    private String logradouro;
+    private String numero;
+    private String complemento;
+    private String bairro;
+    private String cidade;
+    private String estado;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "endereco_id")
-    private Endereco endereco;
 
-    public Cliente(ClienteRequestDTO data) {
-        this.nome = data.nome();
+    public Cliente(ClienteRequestDTO data, User user) {
         this.cpf = data.cpf();
-        this.email = data.email();
+        this.nome = data.nome();
         this.telefone = data.telefone();
+        this.cep = data.cep();
+        this.logradouro = data.logradouro();
+        this.numero = data.numero();
+        this.complemento = data.complemento();
+        this.bairro = data.bairro();
+        this.cidade = data.cidade();
+        this.estado = data.estado();
+        this.user = user;
     }
 }

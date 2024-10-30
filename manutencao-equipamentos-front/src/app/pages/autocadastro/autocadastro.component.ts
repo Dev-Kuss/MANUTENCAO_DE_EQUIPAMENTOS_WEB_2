@@ -31,22 +31,25 @@ export class AutocadastroComponent {
 
   onSubmit() {
     if (this.autocadastroForm.valid) {
-      // Gera uma senha aleatória de 4 números
       const senhaAleatoria = Math.floor(1000 + Math.random() * 9000);
       const formData = {
         ...this.autocadastroForm.value,
-        senha: senhaAleatoria // Adiciona a senha gerada aos dados do formulário
+        senha: senhaAleatoria
       };
 
-      // Enviar uma solicitação POST para o backend para criar um novo cliente
       this.http.post(`${this.apiUrl}/create`, formData).subscribe({
         next: (response) => {
           console.log('Formulário enviado com sucesso:', response);
-          alert('Auto cadastro realizado com sucesso! Sua senha foi enviada para o e-mail : ' + formData.email);
+          alert('Auto cadastro realizado com sucesso! Sua senha foi enviada para o e-mail: ' + formData.email);
         },
         error: (error) => {
-          console.error('Erro ao enviar formulário:', error);
-          alert('Ocorreu um erro ao realizar o autocadastro. Por favor, tente novamente.');
+          if (error.status === 409) {
+            console.error('Erro: Cliente já cadastrado.', error);
+            alert("Já existe um Cliente cadastrado com o CPF:" + formData.cpf + " Por favor, verifique os dados e tente novamente.");
+          } else {
+            console.error('Erro ao enviar formulário:', error);
+            alert('Ocorreu um erro ao realizar o autocadastro. Por favor, tente novamente.');
+          }
         }
       });
     } else {
@@ -54,7 +57,6 @@ export class AutocadastroComponent {
     }
   }
 
-  // TODO: substituir pela API ViaCEP
   buscarCEP() {
     const cep = this.autocadastroForm.get('cep')?.value;
 
