@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { BaseModalComponent } from '../../components/base-modal/base-modal.component';
@@ -16,15 +16,16 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
     CommonModule,
     RouterModule,
     FormsModule,
+    ReactiveFormsModule,
     FontAwesomeModule,
     BaseModalComponent
   ]
 })
 
-export class CategoriasCrudComponent {
+export class CategoriasCrudComponent implements OnInit {
   faEdit = faEdit;
   faTrash = faTrash;
-
+  
   categorias: Categoria[] = [
     { id: 1, nome: 'Notebook' },
     { id: 2, nome: 'Impressora' },
@@ -38,46 +39,57 @@ export class CategoriasCrudComponent {
     { id: 10, nome: 'Roteador' }
   ];
 
-  // Categoria selecionada para edição/adicionar
+  categoriaForm: FormGroup;
   categoriaSelecionada: Categoria | null = null;
   isCategoriaModalOpen = false;
 
-  // Abre o modal para adicionar ou editar
+  constructor(private fb: FormBuilder) {
+    this.categoriaForm = this.fb.group({
+      nome: ['', [Validators.required, Validators.minLength(3)]]
+    });
+  }
+
+  ngOnInit(): void {}
+
   abrirModalCategoria(categoria?: Categoria) {
     const nextId = this.categorias.length > 0 ? Math.max(...this.categorias.map(c => c.id)) + 1 : 1;
     this.categoriaSelecionada = categoria ? { ...categoria } : { id: nextId, nome: '' };
+    
+    // Set form control values based on the selected category
+    this.categoriaForm.patchValue({ nome: this.categoriaSelecionada.nome });
+    
     this.isCategoriaModalOpen = true;
   }
 
-  // Fecha o modal
   fecharModalCategoria() {
     this.isCategoriaModalOpen = false;
+    this.categoriaForm.reset(); // Reset the form
   }
 
-  // Salva ou edita uma categoria
   salvarCategoria() {
-    if (this.categoriaSelecionada) {
-      const index = this.categorias.findIndex(cat => cat.id === this.categoriaSelecionada!.id);
+    if (this.categoriaForm.valid) {
+      if (this.categoriaSelecionada) {
+        const index = this.categorias.findIndex(cat => cat.id === this.categoriaSelecionada!.id);
 
-      if (index !== -1) {
-        // Atualiza categoria existente
-        this.categorias[index] = { ...this.categoriaSelecionada };
-      } else {
-        // Adiciona nova categoria
-        this.categorias.push({ ...this.categoriaSelecionada });
+        if (index !== -1) {
+          // Update existing category
+          this.categorias[index] = { id: this.categoriaSelecionada.id, nome: this.categoriaForm.value.nome };
+        } else {
+          // Add new category
+          this.categorias.push({ id: this.categoriaSelecionada.id, nome: this.categoriaForm.value.nome });
+        }
       }
-    }
 
-    // Fecha o modal após salvar
-    this.fecharModalCategoria();
+      this.fecharModalCategoria();
+    } else {
+      console.log('Formulário inválido');
+    }
   }
 
-  // Carrega a categoria para edição
   editarCategoria(categoria: Categoria) {
     this.abrirModalCategoria(categoria);
   }
 
-  // Remove a categoria pelo id
   removerCategoria(categoria: Categoria) {
     const confirmacao = window.confirm(`Tem certeza de que deseja remover a categoria "${categoria.nome}"?`);
     

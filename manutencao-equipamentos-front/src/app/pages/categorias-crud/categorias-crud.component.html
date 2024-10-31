@@ -58,10 +58,20 @@
         <h2 class="text-2xl font-semibold text-gray-700">{{ categoriaSelecionada?.id ? 'Editar Categoria' : 'Adicionar Categoria' }}</h2>
     </ng-container>
     <ng-container modal-body>
-        <form *ngIf="categoriaSelecionada" (ngSubmit)="salvarCategoria()">
-            <input type="text" [(ngModel)]="categoriaSelecionada.nome" name="nome" class="border rounded-md w-full px-4 py-2 mt-2" placeholder="Nome da Categoria" required>
+        <form [formGroup]="categoriaForm" (ngSubmit)="salvarCategoria()">
+            <label for="nome" class="block text-sm font-medium text-gray-600">Nome da Categoria</label>
+            <input type="text" id="nome" formControlName="nome" class="border rounded-md w-full px-4 py-2 mt-2"
+                   placeholder="Nome da Categoria" required>
+            <div *ngIf="categoriaForm.get('nome')?.invalid && categoriaForm.get('nome')?.touched" class="text-red-500 text-xs mt-1">
+                <span *ngIf="categoriaForm.get('nome')?.errors?.['required']">Nome é obrigatório.</span>
+                <span *ngIf="categoriaForm.get('nome')?.errors?.['minlength']">Nome deve ter ao menos 3 caracteres.</span>
+            </div>
+
             <div class="flex justify-end mt-4">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md">{{ categoriaSelecionada.id ? 'Salvar' : 'Adicionar' }}</button>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md" 
+                        [disabled]="categoriaForm.invalid">
+                  {{ categoriaSelecionada?.id ? 'Salvar' : 'Adicionar' }}
+                </button>
             </div>
         </form>
     </ng-container>
