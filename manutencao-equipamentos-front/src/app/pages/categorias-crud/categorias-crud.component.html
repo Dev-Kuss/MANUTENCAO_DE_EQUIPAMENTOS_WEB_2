@@ -56,21 +56,29 @@
 <!-- Modal para inserir/editar categoria -->
 <app-base-modal [isOpen]="isCategoriaModalOpen" (onClose)="fecharModalCategoria()">
   <ng-container modal-header>
-    <h2 class="text-2xl font-semibold text-gray-700">{{ categoriaSelecionada?.id ? 'Editar Categoria' : 'Adicionar Categoria' }}</h2>
+    <h2 class="text-2xl font-semibold text-gray-700">
+      {{ categoriaSelecionada?.id ? 'Editar Categoria' : 'Adicionar Categoria' }}
+    </h2>
   </ng-container>
   <ng-container modal-body>
     <form *ngIf="categoriaSelecionada" (ngSubmit)="salvarCategoria()">
-      <input type="text" [(ngModel)]="categoriaSelecionada.nome_categoria" name="nome" class="border rounded-md w-full px-4 py-2 mt-2" placeholder="Nome da Categoria" required>
+      <input
+        type="text"
+        [(ngModel)]="categoriaSelecionada.nome_categoria"
+        name="nome"
+        class="border rounded-md w-full px-4 py-2 mt-2"
+        placeholder="Nome da Categoria"
+        required
+      />
 
-      <!-- Controle Deslizante para Ativar/Inativar Categoria -->
-      <div class="flex items-center mt-4">
+      <!-- Controle Deslizante para Ativar/Inativar Categoria, visível apenas no modo de edição -->
+      <div *ngIf="categoriaSelecionada.id" class="flex items-center mt-4">
         <label class="text-gray-700 mr-2">Ativo:</label>
         <label class="switch">
-          <input type="checkbox" [(ngModel)]="categoriaSelecionada.ativo" name="ativo">
+          <input type="checkbox" [(ngModel)]="categoriaSelecionada.ativo" name="ativo" />
           <span class="slider"></span>
         </label>
       </div>
-
       <div class="flex justify-end mt-4">
         <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md">{{ categoriaSelecionada.id ? 'Salvar' : 'Adicionar' }}</button>
       </div>
