@@ -31,7 +31,13 @@ export class LoginComponent {
         () => {
           console.log('Login bem-sucedido!');
           this.loginError = false;
-          this.router.navigate(['/cliente-home']); // Redireciona para a página de perfil ou dashboard
+
+          if (JSON.parse(<string>localStorage.getItem('roles')).includes('ADMIN')) {
+            this.router.navigate(['/funcionario-home']); // Redireciona para a página de perfil ou dashboard
+          }
+          else {
+            this.router.navigate(['/cliente-home']); // Redireciona para a página de perfil ou dashboard
+          }
         },
           (error: any) => {
           console.log('Erro de autenticação:', error);

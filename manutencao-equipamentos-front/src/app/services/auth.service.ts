@@ -18,10 +18,8 @@ export class AuthService {
 
     return this.http.post<any>(this.apiUrl, body, { headers }).pipe(
       tap(response => {
-        // Armazena o token JWT no Local Storage
-        if (response.token) {
-          localStorage.setItem('token', response.token);
-        }
+        response.token ? localStorage.setItem('token', response.token) : null;
+        response.roles ? localStorage.setItem('roles', JSON.stringify(response.roles)) : null;
       })
     );
   }

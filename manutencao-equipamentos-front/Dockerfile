@@ -18,6 +18,8 @@ COPY . .
 
 # Expose the port Angular uses
 EXPOSE 8081
+EXPOSE 9229
 
 # Set the default command to serve the Angular app
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "8081"]
+CMD ["node", "--inspect=0.0.0.0:9229", "node_modules/@angular/cli/bin/ng", "serve", "--host", "0.0.0.0", "--port", "8081"]
+
