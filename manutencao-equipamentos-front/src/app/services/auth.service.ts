@@ -18,6 +18,7 @@ export class AuthService {
 
     return this.http.post<any>(this.apiUrl, body, { headers }).pipe(
       tap(response => {
+        response.token ? localStorage.setItem('nome', response.nome) : null;
         response.token ? localStorage.setItem('token', response.token) : null;
         response.roles ? localStorage.setItem('roles', JSON.stringify(response.roles)) : null;
       })
@@ -26,7 +27,9 @@ export class AuthService {
 
   // Método para fazer logout e remover o token
   logout(): void {
-    localStorage.removeItem('token'); // Remove o token do Local Storage
+    localStorage.removeItem('token');
+    localStorage.removeItem('nome');  // Limpa o nome no logout
+    localStorage.removeItem('roles');
   }
 
   // Método para obter o token armazenado
@@ -39,5 +42,9 @@ export class AuthService {
     const token = this.getToken();
     // Verifica se o token existe
     return !!token;
+  }
+
+  getNomeUsuario(): string | null {
+    return localStorage.getItem('nome');
   }
 }

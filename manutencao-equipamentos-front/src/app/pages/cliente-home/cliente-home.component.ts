@@ -13,6 +13,7 @@ import { PagarServicoComponent } from '../../components/pagar-servico/pagar-serv
 
 import { Solicitacao } from '../../models/solicitacao.model';
 import { SolicitacaoService } from '../../services/solicitacao.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-cliente-home',
@@ -44,12 +45,16 @@ export class ClienteHomeComponent implements OnInit {
 
   solicitacaoSelecionada: Solicitacao | null = null;
   solicitacoes: Solicitacao[] = [];
-  categorias = ['Notebook', 'Desktop', 'Impressora', 'Mouse', 'Teclado'];
+  nomeUsuario: string | null = '';
 
-  constructor(private solicitacaoService: SolicitacaoService) {}
+  constructor(
+    private authService: AuthService,
+    private solicitacaoService: SolicitacaoService
+  ) {}
 
   ngOnInit(): void {
     this.carregarSolicitacoes();
+    this.nomeUsuario = this.authService.getNomeUsuario(); // Obtém o nome do usuário do AuthService
   }
 
   // Método para carregar as solicitações do back-end
