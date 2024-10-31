@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Solicitacao, Historico } from '../../models/solicitacao.model';
 
@@ -10,31 +10,40 @@ import { Solicitacao, Historico } from '../../models/solicitacao.model';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
-
-export class EfetuarManutencaoComponent {
+export class EfetuarManutencaoComponent implements OnInit {
   @Input() solicitacao: Solicitacao | null = null;
-  @Input() funcionarios: string[] = []; // Lista de funcionários disponível
-  @Input() funcionarioLogado: string = ''; // Funcionário logado no sistema
+  @Input() funcionarios: string[] = []; 
+  @Input() funcionarioLogado: string = '';
 
-  descricaoManutencao: string = '';
-  orientacoesCliente: string = '';
-  funcionarioDestino: string | null = null;
+  manutencaoForm: FormGroup;
+  redirecionamentoForm: FormGroup;
+  
+  abaSelecionada: string = 'manutencao'; 
 
-  // Variável para controlar a aba selecionada
-  abaSelecionada: string = 'manutencao'; // 'manutencao' ou 'redirecionar'
+  constructor(private fb: FormBuilder) {
+    this.manutencaoForm = this.fb.group({
+      descricaoManutencao: ['', [Validators.required, Validators.minLength(10)]],
+      orientacoesCliente: ['']
+    });
+
+    this.redirecionamentoForm = this.fb.group({
+      funcionarioDestino: ['', [Validators.required]]
+    });
+  }
+
+  ngOnInit(): void {}
 
   confirmarManutencao() {
-    if (this.solicitacao && this.descricaoManutencao) {
-      // Atualiza o estado da solicitação para "AGUARDANDO PAGAMENTO"
+    if (this.solicitacao && this.manutencaoForm.valid) {
       this.solicitacao.estado = 'AGUARDANDO PAGAMENTO';
 
-      // Adiciona o histórico da manutenção
       const historico: Historico = {
         dataHora: new Date(),
-        descricao: `Manutenção realizada: ${this.descricaoManutencao}. Orientações: ${this.orientacoesCliente}`,
+        descricao: `Manutenção realizada: ${this.manutencaoForm.value.descricaoManutencao}. Orientações: ${this.manutencaoForm.value.orientacoesCliente}`,
         funcionario: this.funcionarioLogado
       };
       this.solicitacao.historico?.push(historico);
@@ -44,14 +53,12 @@ export class EfetuarManutencaoComponent {
   }
 
   confirmarRedirecionamento() {
-    if (this.solicitacao && this.funcionarioDestino && this.funcionarioDestino !== this.funcionarioLogado) {
-      // Atualiza o estado da solicitação para REDIRECIONADA
+    if (this.solicitacao && this.redirecionamentoForm.valid && this.redirecionamentoForm.value.funcionarioDestino !== this.funcionarioLogado) {
       this.solicitacao.estado = 'REDIRECIONADA';
 
-      // Adiciona o histórico do redirecionamento
       const historico: Historico = {
         dataHora: new Date(),
-        descricao: `Solicitação redirecionada de ${this.funcionarioLogado} para ${this.funcionarioDestino}`,
+        descricao: `Solicitação redirecionada de ${this.funcionarioLogado} para ${this.redirecionamentoForm.value.funcionarioDestino}`,
         funcionario: this.funcionarioLogado
       };
       this.solicitacao.historico?.push(historico);
