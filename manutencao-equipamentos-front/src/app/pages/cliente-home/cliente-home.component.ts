@@ -13,6 +13,7 @@ import { PagarServicoComponent } from '../../components/pagar-servico/pagar-serv
 
 import { Solicitacao } from '../../models/solicitacao.model';
 import { SolicitacaoService } from '../../services/solicitacao.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-cliente-home',
@@ -44,73 +45,72 @@ export class ClienteHomeComponent implements OnInit {
 
   solicitacaoSelecionada: Solicitacao | null = null;
   solicitacoes: Solicitacao[] = [];
-  categorias = ['Notebook', 'Desktop', 'Impressora', 'Mouse', 'Teclado'];
+  nomeUsuario: string | null = '';
 
-  // Injeta o serviço de solicitação no componente
-  constructor(private solicitacaoService: SolicitacaoService) {}
+  constructor(
+    private authService: AuthService,
+    private solicitacaoService: SolicitacaoService
+  ) {}
 
-  // Carrega as solicitações ao inicializar o componente
-  ngOnInit() {
-    this.loadSolicitacoes();
+  ngOnInit(): void {
+    this.carregarSolicitacoes();
+    this.nomeUsuario = this.authService.getNomeUsuario(); // Obtém o nome do usuário do AuthService
   }
 
-  // Método para carregar solicitações do backend
-  loadSolicitacoes() {
-    this.solicitacaoService.listarSolicitacoes().subscribe(
-      (data) => {
-        this.solicitacoes = data;
+  // Método para carregar as solicitações do back-end
+  carregarSolicitacoes(): void {
+    this.solicitacaoService.getSolicitacoes().subscribe(
+      (solicitacoes) => {
+        this.solicitacoes = solicitacoes;
       },
       (error) => {
-        console.error("Erro ao carregar solicitações:", error);
+        console.error('Erro ao carregar solicitações:', error);
       }
     );
   }
 
-  // Métodos de abertura e fechamento de modais
-  abrirManutencaoModal() {
+  abrirManutencaoModal(): void {
     this.isManutencaoModalOpen = true;
   }
 
-  fecharManutencaoModal() {
+  fecharManutencaoModal(): void {
     this.isManutencaoModalOpen = false;
   }
 
-  abrirOrcamentoModal(solicitacao: Solicitacao) {
+  abrirOrcamentoModal(solicitacao: Solicitacao): void {
     this.solicitacaoSelecionada = solicitacao;
     this.isOrcamentoModalOpen = true;
   }
 
-  fecharOrcamentoModal() {
+  fecharOrcamentoModal(): void {
     this.isOrcamentoModalOpen = false;
   }
 
-  abrirVisualizarModal(solicitacao: Solicitacao) {
+  abrirVisualizarModal(solicitacao: Solicitacao): void {
     this.solicitacaoSelecionada = solicitacao;
-    this.isVisualizarModalOpen  = true;
+    this.isVisualizarModalOpen = true;
   }
 
-  fecharVisualizarModal() {
-    this.isVisualizarModalOpen  = false;
+  fecharVisualizarModal(): void {
+    this.isVisualizarModalOpen = false;
   }
 
-  abrirPagamentoModal(solicitacao: Solicitacao) {
+  abrirPagamentoModal(solicitacao: Solicitacao): void {
     this.solicitacaoSelecionada = solicitacao;
     this.isPagamentoModalOpen = true;
   }
 
-  fecharPagamentoModal() {
+  fecharPagamentoModal(): void {
     this.isPagamentoModalOpen = false;
   }
 
-  // Método de visualização do serviço
-  visualizarServico(solicitacao: Solicitacao) {
+  visualizarServico(solicitacao: Solicitacao): void {
     console.log(`Visualizando solicitação: ${solicitacao.descricaoEquipamento}`);
     this.abrirVisualizarModal(solicitacao);
     // TODO: Navegar para a página de visualização da solicitação (RF008)
   }
 
-  // Atualiza o estado de uma solicitação e salva a mudança no backend
-  resgatarServico(solicitacao: Solicitacao) {
+  resgatarServico(solicitacao: Solicitacao): void {
     const previousEstado = solicitacao.estado;
     solicitacao.estado = 'APROVADA';
 
@@ -124,24 +124,15 @@ export class ClienteHomeComponent implements OnInit {
       funcionario: 'Cliente',
     });
 
-    this.solicitacaoService.updateSolicitacao(solicitacao.id!, solicitacao).subscribe(
-      () => {
-        alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');
-        this.loadSolicitacoes(); // Recarrega a lista de solicitações atualizada
-      },
-      (error) => {
-        console.error('Erro ao atualizar a solicitação:', error);
-      }
-    );
+    alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');
   }
 
-  // Método para pagamento do serviço
-  pagarServico() {
+  pagarServico(): void {
     console.log('Pagar Serviço');
     // TODO: Implementar lógica para RF010
   }
 
-  onPagamentoConfirmado() {
+  onPagamentoConfirmado(): void {
     this.fecharPagamentoModal();
     // Optional: Additional actions after payment confirmation
   }

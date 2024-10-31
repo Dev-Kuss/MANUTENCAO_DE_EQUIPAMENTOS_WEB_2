@@ -7,4 +7,5 @@ import lombok.Data;
 public class CategoriaEquipamentoRequestDTO {
 
     private String nome_categoria;
+    private boolean ativo;
 }

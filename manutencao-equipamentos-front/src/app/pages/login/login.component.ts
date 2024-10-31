@@ -24,6 +24,7 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
+      let nome = this.loginForm.get('nome')?.value;
       const email = this.loginForm.get('email')?.value;
       const senha = this.loginForm.get('senha')?.value;
 
@@ -31,7 +32,15 @@ export class LoginComponent {
         () => {
           console.log('Login bem-sucedido!');
           this.loginError = false;
-          this.router.navigate(['/cliente-home']); // Redireciona para a página de perfil ou dashboard
+
+          nome = localStorage.getItem('nome');
+
+          if (JSON.parse(<string>localStorage.getItem('roles')).includes('ADMIN')) {
+            this.router.navigate(['/funcionario-home']); // Redireciona para a página de perfil ou dashboard
+          }
+          else {
+            this.router.navigate(['/cliente-home']); // Redireciona para a página de perfil ou dashboard
+          }
         },
           (error: any) => {
           console.log('Erro de autenticação:', error);

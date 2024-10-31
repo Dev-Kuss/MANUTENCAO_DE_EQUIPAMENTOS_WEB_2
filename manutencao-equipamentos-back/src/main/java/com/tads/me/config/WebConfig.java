@@ -9,10 +9,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8081") // Defina a origem específica
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true); // Permitir credenciais (necessário para JWT)
+        registry.addMapping("/**")  // Aplica o CORS a todas as rotas
+                .allowedOrigins("http://localhost:8081")  // Permite apenas o front-end no localhost:8081
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Permite métodos HTTP específicos
+                .allowedHeaders("*")  // Permite todos os cabeçalhos
+                .exposedHeaders("Authorization")  // Expõe cabeçalhos específicos, se necessário
+                .allowCredentials(true);  // Permite o envio de credenciais, se necessário
     }
 }

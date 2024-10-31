@@ -40,6 +40,7 @@ public class FuncionarioService {
         String passwordHashSalt = passwordEncoder.encode(senhaOriginal); // Inclui o salt
 
         User newUser = new User();
+        newUser.setNome(data.nome());
         newUser.setPasswordHashSalt(passwordHashSalt);
         newUser.setRoles(new HashSet<>(Set.of("ADMIN")));
         userRepository.save(newUser);
