@@ -5,7 +5,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { CategoriaService } from '../../services/categoria.service';
 import { Categoria } from '../../models/categorias.model';
-import { BaseModalComponent } from '../../components/base-modal/base-modal.component'; // Certifique-se de que o caminho está correto
+import { BaseModalComponent } from '../../components/base-modal/base-modal.component';
+import {RouterLink} from "@angular/router"; // Certifique-se de que o caminho está correto
 
 
 @Component({
@@ -16,7 +17,8 @@ import { BaseModalComponent } from '../../components/base-modal/base-modal.compo
     CommonModule,
     FormsModule,
     FontAwesomeModule,
-    BaseModalComponent
+    BaseModalComponent,
+    RouterLink
   ]
 })
 export class CategoriasCrudComponent implements OnInit {
