@@ -61,6 +61,7 @@ public class AuthController {
         // Cria o LoginResponseDTO com os parâmetros corretos
         LoginResponseDTO response = new LoginResponseDTO(
                 user.getId(),                      // UUID do usuário
+                user.getNome(),
                 user.getEmail(),                   // Email do usuário
                 new ArrayList<>(user.getRoles()),  // Converte Set<String> para List<String>
                 token                              // Token gerado

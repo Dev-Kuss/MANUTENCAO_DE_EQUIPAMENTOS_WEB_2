@@ -32,6 +32,7 @@ public class CategoriaEquipamentoService {
         if (categoriaOptional.isPresent()) {
             CategoriaEquipamento existingCategoria = categoriaOptional.get();
             existingCategoria.setNome_categoria(data.getNome_categoria());
+            existingCategoria.setAtivo(data.isAtivo());
             repository.save(existingCategoria);
             return Optional.of(existingCategoria);
         }

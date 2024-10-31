@@ -20,7 +20,11 @@ public class CategoriaEquipamento {
     @Column(nullable = false)
     private String nome_categoria;
 
+    @Column(name = "ativo", nullable = false)
+    private boolean ativo = true;
+
     public CategoriaEquipamento(CategoriaEquipamentoRequestDTO data){
         this.nome_categoria = data.getNome_categoria();
+        this.ativo = data.isAtivo();
     }
 }

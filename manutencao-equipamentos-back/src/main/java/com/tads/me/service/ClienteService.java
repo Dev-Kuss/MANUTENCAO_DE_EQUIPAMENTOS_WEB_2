@@ -47,6 +47,7 @@ public class ClienteService {
         }
 
         User newUser = new User();
+        newUser.setNome(data.nome());
         newUser.setEmail(data.email());
 
         String senhaOriginal = data.senha() != null ? data.senha() : gerarSenhaAleatoria();

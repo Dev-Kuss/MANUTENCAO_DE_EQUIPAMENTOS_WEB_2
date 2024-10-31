@@ -7,10 +7,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -31,19 +32,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (jwt != null && tokenProvider.validateToken(jwt)) {
             // Extrai o nome de usuário e roles do token
             String username = tokenProvider.getUsernameFromJWT(jwt);
-            List<String> roles = tokenProvider.getRolesFromJWT(jwt); // Adicione um método para extrair roles
+            List<String> roles = tokenProvider.getRolesFromJWT(jwt);
 
-            // Converte as roles em GrantedAuthority
-            List<SimpleGrantedAuthority> authorities = roles.stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
-
-            // Cria a autenticação com as authorities extraídas do token
+            // Converte as roles em GrantedAuthority e configura o contexto de segurança
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    username, null, authorities);
+                    username, null, roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            // Define a autenticação no contexto de segurança
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

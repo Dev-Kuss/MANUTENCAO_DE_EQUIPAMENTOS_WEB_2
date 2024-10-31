@@ -1,6 +1,9 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -8,12 +11,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
 })
-
 export class LoginComponent {
   loginForm: FormGroup;
-  loginError = false; 
+  loginError = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       senha: ['', [Validators.required, Validators.minLength(4)]],
@@ -22,18 +24,29 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
+      let nome = this.loginForm.get('nome')?.value;
       const email = this.loginForm.get('email')?.value;
       const senha = this.loginForm.get('senha')?.value;
 
-      // Exemplo de validação estática (substituir por chamada à API ou serviço real)
-      if (email === 'user@example.com' && senha === '1234') {
-        // Redirecionar para a página do perfil do usuário com base no e-mail
-        console.log('Login bem-sucedido!');
-        this.loginError = false;
-      } else {
-        // Exibir mensagem de erro
-        this.loginError = true;
-      }
+      this.authService.login(email, senha).subscribe(
+        () => {
+          console.log('Login bem-sucedido!');
+          this.loginError = false;
+
+          nome = localStorage.getItem('nome');
+
+          if (JSON.parse(<string>localStorage.getItem('roles')).includes('ADMIN')) {
+            this.router.navigate(['/funcionario-home']); // Redireciona para a página de perfil ou dashboard
+          }
+          else {
+            this.router.navigate(['/cliente-home']); // Redireciona para a página de perfil ou dashboard
+          }
+        },
+          (error: any) => {
+          console.log('Erro de autenticação:', error);
+          this.loginError = true;
+        }
+      );
     }
   }
 }

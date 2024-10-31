@@ -22,6 +22,9 @@ public class User {
     @GeneratedValue(generator = "UUID")
     private UUID id;
 
+    @Column
+    private String nome;
+
     @Column(nullable = false, unique = true)
     private String email;
 

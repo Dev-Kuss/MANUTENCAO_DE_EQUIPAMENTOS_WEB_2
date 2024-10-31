@@ -30,7 +30,7 @@ public class Solicitacao {
     @JoinColumn(name = "id_categoria", nullable = false)
     private CategoriaEquipamento categoria;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 }

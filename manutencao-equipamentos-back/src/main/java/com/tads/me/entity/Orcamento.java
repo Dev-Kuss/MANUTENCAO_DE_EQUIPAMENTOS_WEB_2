@@ -18,7 +18,7 @@ public class Orcamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_solicitacao", nullable = false)
     private Solicitacao solicitacao;
 
@@ -28,7 +28,7 @@ public class Orcamento {
     @Column(nullable = false)
     private LocalDateTime dataHora;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_funcionario", nullable = false)
     private Funcionario funcionario;
 }
