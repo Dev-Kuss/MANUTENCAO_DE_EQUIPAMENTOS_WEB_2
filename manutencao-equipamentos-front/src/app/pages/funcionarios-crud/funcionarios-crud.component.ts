@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { BaseModalComponent } from '../../components/base-modal/base-modal.component';
@@ -16,11 +16,12 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
     CommonModule,
     RouterModule,
     FormsModule,
+    ReactiveFormsModule,
     FontAwesomeModule,
     BaseModalComponent
   ]
 })
-export class FuncionarioCrudComponent {
+export class FuncionarioCrudComponent implements OnInit {
   faEdit = faEdit;
   faTrash = faTrash;
   isFuncionarioModalOpen = false;
@@ -30,13 +31,25 @@ export class FuncionarioCrudComponent {
     { id: 2, nome: 'Maria Silva', email: 'maria@empresa.com', dataNascimento: '1990-10-16', senha: 'senha123' },  
   ];
 
-  funcionarioSelecionado: Funcionario | null = null
+  funcionarioForm: FormGroup;
+  funcionarioSelecionado: Funcionario | null = null;
   funcionarioLogado = 'joao@empresa.com';
 
+  constructor(private fb: FormBuilder) {
+    this.funcionarioForm = this.fb.group({
+      nome: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      dataNascimento: ['', [Validators.required]],
+      senha: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
+
+  ngOnInit(): void {}
+
   abrirModalFuncionario() {
-    // Cria um novo funcionário vazio com id incremental para novos
     const nextId = this.funcionarios.length > 0 ? Math.max(...this.funcionarios.map(f => f.id)) + 1 : 1;
     this.funcionarioSelecionado = { id: nextId, nome: '', email: '', dataNascimento: '', senha: '' };
+    this.funcionarioForm.reset(); // Limpa o formulário para novos funcionários
     this.isFuncionarioModalOpen = true;
   }
 
@@ -45,29 +58,38 @@ export class FuncionarioCrudComponent {
   }
 
   salvarFuncionario() {
-    if (this.funcionarioSelecionado) {
-      const index = this.funcionarios.findIndex(func => func.id === this.funcionarioSelecionado!.id);
+    if (this.funcionarioForm.valid) {
+      const { nome, email, dataNascimento, senha } = this.funcionarioForm.value;
+      const novoFuncionario = {
+        id: this.funcionarioSelecionado?.id || 0,
+        nome,
+        email,
+        dataNascimento,
+        senha
+      };
 
+      const index = this.funcionarios.findIndex(func => func.id === novoFuncionario.id);
       if (index !== -1) {
-        this.funcionarios[index] = { ...this.funcionarioSelecionado };
+        this.funcionarios[index] = novoFuncionario;
       } else {
-        this.funcionarios.push({ ...this.funcionarioSelecionado });
+        this.funcionarios.push(novoFuncionario);
       }
+      this.fecharModalFuncionario();
+    } else {
+      console.log('Formulário inválido');
     }
-
-    // Fecha o modal após salvar
-    this.fecharModalFuncionario();
   }
 
   editarFuncionario(funcionario: Funcionario) {
     this.funcionarioSelecionado = { ...funcionario };
+    this.funcionarioForm.patchValue(funcionario); // Carrega os dados para edição
     this.isFuncionarioModalOpen = true;
   }
 
   removerFuncionario(funcionario: Funcionario) {
     const confirmacao = window.confirm(`Tem certeza de que deseja remover o funcionário "${funcionario.nome}"?`);
     
-    if(confirmacao) {
+    if (confirmacao) {
       this.funcionarios = this.funcionarios.filter(func => func.id !== funcionario.id);
     }
   }

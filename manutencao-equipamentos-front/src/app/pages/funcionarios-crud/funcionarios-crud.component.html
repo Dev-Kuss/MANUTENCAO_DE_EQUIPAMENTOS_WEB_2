@@ -71,40 +71,56 @@
             'Adicionar Funcionário' }}</h2>
     </ng-container>
     <ng-container modal-body>
-        <form *ngIf="funcionarioSelecionado" (ngSubmit)="salvarFuncionario()">
-            <form *ngIf="funcionarioSelecionado" (ngSubmit)="salvarFuncionario()" class="space-y-2">
-                <label for="nome" class="block text-sm font-medium text-gray-600">Nome</label>
-                <input id="nome" [(ngModel)]="funcionarioSelecionado.nome" name="nome" type="text"
-                    placeholder="Digite o nome"
-                    class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    required>
+        <form [formGroup]="funcionarioForm" (ngSubmit)="salvarFuncionario()" class="space-y-4">
 
-                <label for="email" class="block text-sm font-medium text-gray-600">E-mail</label>
-                <input id="email" [(ngModel)]="funcionarioSelecionado.email" name="email" type="email"
-                    placeholder="Digite o e-mail"
-                    class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    required>
+            <!-- Nome -->
+            <label for="nome" class="block text-sm font-medium text-gray-600">Nome</label>
+            <input id="nome" formControlName="nome" type="text" placeholder="Digite o nome"
+                class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <div *ngIf="funcionarioForm.get('nome')?.invalid && funcionarioForm.get('nome')?.touched"
+                class="text-red-500 text-xs mt-1">
+                <span *ngIf="funcionarioForm.get('nome')?.errors?.['required']">Nome é obrigatório.</span>
+                <span *ngIf="funcionarioForm.get('nome')?.errors?.['minlength']">Nome deve ter ao menos 3
+                    caracteres.</span>
+            </div>
 
-                <label for="dataNascimento" class="block text-sm font-medium text-gray-600">Data de Nascimento</label>
-                <input id="dataNascimento" [(ngModel)]="funcionarioSelecionado.dataNascimento" name="dataNascimento"
-                    type="date"
-                    class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    required>
+            <!-- Email -->
+            <label for="email" class="block text-sm font-medium text-gray-600">E-mail</label>
+            <input id="email" formControlName="email" type="email" placeholder="Digite o e-mail"
+                class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <div *ngIf="funcionarioForm.get('email')?.invalid && funcionarioForm.get('email')?.touched"
+                class="text-red-500 text-xs mt-1">
+                <span *ngIf="funcionarioForm.get('email')?.errors?.['required']">E-mail é obrigatório.</span>
+                <span *ngIf="funcionarioForm.get('email')?.errors?.['email']">Formato de e-mail inválido.</span>
+            </div>
 
-                <label for="senha" class="block text-sm font-medium text-gray-600">Senha</label>
-                <input id="senha" [(ngModel)]="funcionarioSelecionado.senha" name="senha" type="password"
-                    placeholder="Digite a senha"
-                    class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    required>
+            <!-- Data de Nascimento -->
+            <label for="dataNascimento" class="block text-sm font-medium text-gray-600">Data de Nascimento</label>
+            <input id="dataNascimento" formControlName="dataNascimento" type="date"
+                class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <div *ngIf="funcionarioForm.get('dataNascimento')?.invalid && funcionarioForm.get('dataNascimento')?.touched"
+                class="text-red-500 text-xs mt-1">
+                Data de nascimento é obrigatória.
+            </div>
 
-                <div class="flex justify-end mt-4">
-                    <button type="submit"
-                        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md">
-                        {{ funcionarioSelecionado.email ? 'Salvar' : 'Adicionar' }}
-                    </button>
-                </div>
-            </form>
+            <!-- Senha -->
+            <label for="senha" class="block text-sm font-medium text-gray-600">Senha</label>
+            <input id="senha" formControlName="senha" type="password" placeholder="Digite a senha"
+                class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <div *ngIf="funcionarioForm.get('senha')?.invalid && funcionarioForm.get('senha')?.touched"
+                class="text-red-500 text-xs mt-1">
+                <span *ngIf="funcionarioForm.get('senha')?.errors?.['required']">Senha é obrigatória.</span>
+                <span *ngIf="funcionarioForm.get('senha')?.errors?.['minlength']">Senha deve ter ao menos 6
+                    caracteres.</span>
+            </div>
 
+            <!-- Botão Salvar -->
+            <div class="flex justify-end mt-4">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md"
+                    [disabled]="funcionarioForm.invalid">
+                    {{ funcionarioSelecionado?.email ? 'Salvar' : 'Adicionar' }}
+                </button>
+            </div>
         </form>
     </ng-container>
 </app-base-modal>
