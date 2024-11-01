@@ -50,6 +50,8 @@ public class SolicitacaoService {
             Solicitacao solicitacao = solicitacaoOptional.get();
             solicitacao.setDescricaoEquipamento(data.descricaoEquipamento());
             solicitacao.setEstado(data.estado());
+            solicitacao.setResponsavel(data.responsavel());
+            solicitacao.setCliente(data.cliente());
             repository.save(solicitacao);
             return Optional.of(solicitacao);
         }

@@ -6,6 +6,7 @@ import com.tads.me.entity.Cliente;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.tads.me.entity.Funcionario;
 import com.tads.me.entity.Solicitacao;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -15,7 +16,8 @@ public record SolicitacaoResponseDTO(
         String descricaoEquipamento,
         String estado,
         CategoriaEquipamento categoria,
-        Cliente cliente
+        Cliente cliente,
+        Funcionario responsavel
 ) {
     public SolicitacaoResponseDTO(Solicitacao solicitacao) {
         this(
@@ -24,7 +26,8 @@ public record SolicitacaoResponseDTO(
                 solicitacao.getDescricaoEquipamento(),
                 solicitacao.getEstado(),
                 solicitacao.getCategoria(),
-                solicitacao.getCliente()
+                solicitacao.getCliente(),
+                solicitacao.getResponsavel()
         );
     }
 }

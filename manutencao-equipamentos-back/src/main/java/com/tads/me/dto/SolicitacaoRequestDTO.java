@@ -1,5 +1,8 @@
 package com.tads.me.dto;
 
+import com.tads.me.entity.Cliente;
+import com.tads.me.entity.Funcionario;
+
 import java.time.LocalDateTime;
 
 public record SolicitacaoRequestDTO(
@@ -7,5 +10,6 @@ public record SolicitacaoRequestDTO(
         String descricaoEquipamento,
         String estado,
         Long idCategoria,
-        Long idCliente
+        Cliente cliente,
+        Funcionario responsavel
 ) {}

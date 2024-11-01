@@ -33,4 +33,8 @@ public class Solicitacao {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_responsavel")
+    private Funcionario responsavel;
 }
