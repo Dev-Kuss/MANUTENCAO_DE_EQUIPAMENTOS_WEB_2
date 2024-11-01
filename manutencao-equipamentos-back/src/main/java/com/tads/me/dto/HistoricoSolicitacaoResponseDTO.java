@@ -1,13 +1,11 @@
 package com.tads.me.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tads.me.entity.HistoricoSolicitacao;
 import com.tads.me.entity.Solicitacao;
 import com.tads.me.entity.Funcionario;
 
 import java.time.LocalDateTime;
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public record HistoricoSolicitacaoResponseDTO(
         Long id,
         Solicitacao solicitacao,

@@ -1,5 +1,6 @@
 package com.tads.me.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +18,7 @@ public class HistoricoSolicitacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_solicitacao", nullable = false)
     private Solicitacao solicitacao;
 
@@ -30,7 +31,7 @@ public class HistoricoSolicitacao {
     @Column(nullable = false, length = 50)
     private String estadoAtual;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_funcionario", nullable = false)
     private Funcionario funcionario;
 }
