@@ -11,11 +11,11 @@ export class SolicitacaoService {
 
   constructor(private http: HttpClient) {}
 
-  getSolicitacoes(): Observable<Solicitacao[]> {
-    return this.http.get<Solicitacao[]>(`${this.apiUrl}/read-all`);
+  getSolicitacoes(usuarioId: string | null): Observable<Solicitacao[]> {
+    return this.http.get<Solicitacao[]>(`${this.apiUrl}/read-all?usuarioId=${usuarioId}`);
   }
 
-  getSolicitacaoById(id: number): Observable<Solicitacao> {
+  getSolicitacaoById(id: string): Observable<Solicitacao> {
     return this.http.get<Solicitacao>(`${this.apiUrl}/read/${id}`);
   }
 

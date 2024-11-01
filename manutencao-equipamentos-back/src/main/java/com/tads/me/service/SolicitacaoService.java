@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,5 +54,15 @@ public class SolicitacaoService {
             return Optional.of(solicitacao);
         }
         return Optional.empty();
+    }
+
+    public List<SolicitacaoResponseDTO> listarSolicitacoesPorUsuario(UUID usuarioId) {
+        // Obtém a lista de Solicitacao do repositório
+        List<Solicitacao> solicitacoes = repository.findByClienteId(usuarioId);
+
+        // Converte cada Solicitacao para SolicitacaoResponseDTO usando o construtor do record
+        return solicitacoes.stream()
+                .map(SolicitacaoResponseDTO::new)
+                .collect(Collectors.toList());
     }
 }

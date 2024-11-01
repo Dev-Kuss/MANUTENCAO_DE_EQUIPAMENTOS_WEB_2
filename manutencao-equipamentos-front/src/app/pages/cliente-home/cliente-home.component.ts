@@ -53,13 +53,17 @@ export class ClienteHomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.carregarSolicitacoes();
+    const usuarioId = this.authService.getId(); // Supondo que este método exista
+
+    this.carregarSolicitacoes(usuarioId);
     this.nomeUsuario = this.authService.getNomeUsuario(); // Obtém o nome do usuário do AuthService
+
+
   }
 
   // Método para carregar as solicitações do back-end
-  carregarSolicitacoes(): void {
-    this.solicitacaoService.getSolicitacoes().subscribe(
+  carregarSolicitacoes(usuarioId: string | null): void {
+    this.solicitacaoService.getSolicitacoes(usuarioId).subscribe(
       (solicitacoes) => {
         this.solicitacoes = solicitacoes;
       },

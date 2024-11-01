@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -56,9 +57,18 @@ public class SolicitacaoController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping("/read-all")
-    public ResponseEntity<List<SolicitacaoResponseDTO>> listarSolicitacoes() {
+    public ResponseEntity<List<SolicitacaoResponseDTO>> listarSolicitacoes(
+            @RequestParam(value = "usuarioId", required = false) UUID usuarioId) {
         try {
-            List<SolicitacaoResponseDTO> solicitacoes = solicitacaoService.listarSolicitacoes();
+            List<SolicitacaoResponseDTO> solicitacoes;
+
+            // Se usuarioId for fornecido, buscar solicitações do usuário
+            if (usuarioId != null) {
+                solicitacoes = solicitacaoService.listarSolicitacoesPorUsuario(usuarioId);
+            } else {
+                solicitacoes = solicitacaoService.listarSolicitacoes();
+            }
+
             if (solicitacoes.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
