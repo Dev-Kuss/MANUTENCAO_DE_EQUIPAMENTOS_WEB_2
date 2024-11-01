@@ -54,7 +54,7 @@ public class ClienteService {
         String passwordHashSalt = passwordEncoder.encode(senhaOriginal); // Inclui o salt
 
         newUser.setPasswordHashSalt(passwordHashSalt);
-        newUser.setRoles(new HashSet<>(Set.of("USER")));
+        newUser.setRoles(new HashSet<>(Set.of("CLIENT")));
         userRepository.save(newUser);
 
         Cliente newCliente = new Cliente(data, newUser);

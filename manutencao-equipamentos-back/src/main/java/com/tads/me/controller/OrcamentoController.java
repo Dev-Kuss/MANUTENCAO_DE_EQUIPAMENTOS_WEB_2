@@ -90,7 +90,7 @@ public class OrcamentoController {
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Orcamento> updateOrcamento(@PathVariable("id") Long id, @RequestBody OrcamentoRequestDTO orcamentoRequestDTO) {
         try {
@@ -111,7 +111,7 @@ public class OrcamentoController {
             @ApiResponse(responseCode = "404", description = "Orçamento não encontrado para exclusão"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") Long id) {
         try {

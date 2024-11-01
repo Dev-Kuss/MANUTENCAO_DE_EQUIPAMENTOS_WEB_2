@@ -42,7 +42,7 @@ public class FuncionarioService {
         User newUser = new User();
         newUser.setNome(data.nome());
         newUser.setPasswordHashSalt(passwordHashSalt);
-        newUser.setRoles(new HashSet<>(Set.of("ADMIN")));
+        newUser.setRoles(new HashSet<>(Set.of("EMPLOYEE")));
         userRepository.save(newUser);
 
         // Cria o Funcionario usando o construtor com FuncionarioRequestDTO e User

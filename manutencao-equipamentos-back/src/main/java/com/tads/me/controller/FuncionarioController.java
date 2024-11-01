@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/funcionario")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
 @Tag(name = "Funcionário", description = "Gerenciamento de Funcionários")
 class FuncionarioController {
 

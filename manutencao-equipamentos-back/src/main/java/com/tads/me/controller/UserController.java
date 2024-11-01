@@ -23,7 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @SecurityRequirement(name = "bearerAuth")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
 @Tag(name = "Usuário", description = "Gerenciamento de Usuários")
 @RequestMapping("/users")
 public class UserController {

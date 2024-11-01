@@ -55,7 +55,6 @@ public class SolicitacaoController {
             @ApiResponse(responseCode = "204", description = "Nenhuma solicitação encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/read-all")
     public ResponseEntity<List<SolicitacaoResponseDTO>> listarSolicitacoes() {
         try {
@@ -91,7 +90,7 @@ public class SolicitacaoController {
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Solicitacao> updateSolicitacao(@PathVariable("id") Long id, @RequestBody SolicitacaoRequestDTO solicitacaoRequestDTO) {
         try {
@@ -112,7 +111,7 @@ public class SolicitacaoController {
             @ApiResponse(responseCode = "404", description = "Solicitação não encontrada para exclusão"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") Long id) {
         try {

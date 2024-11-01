@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,9 +22,11 @@ import { BaseModalComponent } from '../../components/base-modal/base-modal.compo
 import { EfetuarOrcamentoComponent } from '../../components/efetuar-orcamento/efetuar-orcamento.component';
 import { EfetuarManutencaoComponent } from '../../components/efetuar-manutencao/efetuar-manutencao.component';
 import { FinalizarSolicitacaoComponent } from '../../components/finalizar-solicitacao/finalizar-solicitacao.component';
+import { AuthService } from '../../services/auth.service';
 
 import { Solicitacao } from '../../models/solicitacao.model';
 import { solicitacoes } from '../../seeds/solicitacoes-seed';
+import {SolicitacaoService} from "../../services/solicitacao.service";
 
 @Component({
   selector: 'app-funcionario-home',
@@ -42,7 +44,7 @@ import { solicitacoes } from '../../seeds/solicitacoes-seed';
     FinalizarSolicitacaoComponent
   ]
 })
-export class FuncionarioHomeComponent {
+export class FuncionarioHomeComponent implements OnInit{
   // Número da página atual
   paginaAtual: number = 1;
 
@@ -60,6 +62,7 @@ export class FuncionarioHomeComponent {
   faUserPlus = faUserPlus;
   faFilePdf = faFilePdf;
   faCheckCircle = faCheckCircle
+  nomeUsuario: string | null = '';
 
   // Modals
   isOrcamentoModalOpen = false;
@@ -92,6 +95,14 @@ export class FuncionarioHomeComponent {
   dataFim: Date | null = null;
 
   solicitacoesFiltradas: Solicitacao[] = [...this.solicitacoes];
+
+  constructor(
+    private authService: AuthService,
+  ) {}
+
+  ngOnInit(): void {
+    this.nomeUsuario = this.authService.getNomeUsuario(); // Obtém o nome do usuário do AuthService
+  }
 
   get totalPaginas(): number {
     return Math.ceil(this.solicitacoesFiltradas.length / this.itensPorPagina);
