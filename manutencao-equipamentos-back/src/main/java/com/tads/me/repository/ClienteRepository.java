@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ClienteRepository extends JpaRepository<Cliente, Long> {
+public interface ClienteRepository extends JpaRepository<Cliente, UUID> {
     Optional<Cliente> findByCpf(String cpf);
     boolean existsByEmail(String email);
     Optional<Cliente> findById(UUID id);

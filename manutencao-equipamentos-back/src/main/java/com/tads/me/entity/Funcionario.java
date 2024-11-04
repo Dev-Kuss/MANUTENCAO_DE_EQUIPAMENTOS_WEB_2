@@ -3,8 +3,6 @@ package com.tads.me.entity;
 import com.tads.me.dto.FuncionarioRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-
 import java.time.LocalDate;
 import java.util.UUID;
 

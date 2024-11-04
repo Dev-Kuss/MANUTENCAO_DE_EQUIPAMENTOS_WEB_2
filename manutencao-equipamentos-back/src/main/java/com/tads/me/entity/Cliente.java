@@ -3,7 +3,6 @@ package com.tads.me.entity;
 import com.tads.me.dto.ClienteRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
 

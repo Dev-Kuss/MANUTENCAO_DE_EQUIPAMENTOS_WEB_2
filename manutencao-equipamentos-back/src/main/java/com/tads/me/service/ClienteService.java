@@ -72,7 +72,7 @@ public class ClienteService {
     }
 
     @Transactional
-    public Optional<Cliente> updateCliente(Long id, ClienteRequestDTO data) {
+    public Optional<Cliente> updateCliente(UUID id, ClienteRequestDTO data) {
         Optional<Cliente> clienteOptional = repository.findById(id);
         if (clienteOptional.isPresent()) {
             Cliente existingCliente = clienteOptional.get();
