@@ -10,6 +10,8 @@ import { SolicitarManutencaoComponent } from "../../components/solicitar-manuten
 import { MostrarOrcamentoComponent } from '../../components/mostrar-orcamento/mostrar-orcamento.component';
 import { VisualizarServicoComponent } from '../../components/visualizar-servico/visualizar-servico.component';
 import { PagarServicoComponent } from '../../components/pagar-servico/pagar-servico.component';
+import { HistoricoSolicitacaoService } from '../../services/historico-solicitacao.service';
+
 
 import { Solicitacao } from '../../models/solicitacao.model';
 import { SolicitacaoService } from '../../services/solicitacao.service';

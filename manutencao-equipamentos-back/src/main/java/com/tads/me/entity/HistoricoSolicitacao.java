@@ -17,20 +17,21 @@ public class HistoricoSolicitacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_solicitacao", nullable = false)
-    private Solicitacao solicitacao;
-
     @Column(nullable = false)
     private LocalDateTime dataHora;
 
-    @Column(length = 50)
-    private String estadoAnterior;
+    @Column(nullable = false)
+    private String descricao;
 
-    @Column(nullable = false, length = 50)
-    private String estadoAtual;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_solicitacao", nullable = false)
+    private Solicitacao solicitacao;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_funcionario", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_funcionario")
     private Funcionario funcionario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_cliente")
+    private Cliente cliente;
 }

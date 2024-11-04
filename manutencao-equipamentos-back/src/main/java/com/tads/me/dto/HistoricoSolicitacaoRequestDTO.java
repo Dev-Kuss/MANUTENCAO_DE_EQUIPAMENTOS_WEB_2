@@ -1,11 +1,10 @@
 package com.tads.me.dto;
 
-import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record HistoricoSolicitacaoRequestDTO(
-        Long idSolicitacao,
-        LocalDateTime dataHora,
-        String estadoAnterior,
-        String estadoAtual,
-        Long idFuncionario
+    String descricao,
+    UUID idFuncionario,
+    UUID idCliente,
+    Long solicitacaoId
 ) {}

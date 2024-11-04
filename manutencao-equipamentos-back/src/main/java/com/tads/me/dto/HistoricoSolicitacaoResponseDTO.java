@@ -8,20 +8,20 @@ import java.time.LocalDateTime;
 
 public record HistoricoSolicitacaoResponseDTO(
         Long id,
-        Solicitacao solicitacao,
         LocalDateTime dataHora,
-        String estadoAnterior,
-        String estadoAtual,
-        Funcionario funcionario
+        String descricao,
+        String nomeFuncionario,
+        String nomeCliente,
+        Long solicitacaoId
 ) {
     public HistoricoSolicitacaoResponseDTO(HistoricoSolicitacao historico) {
         this(
                 historico.getId(),
-                historico.getSolicitacao(),
                 historico.getDataHora(),
-                historico.getEstadoAnterior(),
-                historico.getEstadoAtual(),
-                historico.getFuncionario()
+                historico.getDescricao(),
+                historico.getFuncionario().getNome(),
+                historico.getSolicitacao().getCliente().getNome(),
+                historico.getSolicitacao().getId_solicitacao()
         );
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "solicitacao")
@@ -15,7 +16,8 @@ public class Solicitacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_solicitacao;
+    @Column(name = "id_solicitacao")
+    private Long idSolicitacao;
 
     @Column(nullable = false)
     private LocalDateTime dataHora;
@@ -23,8 +25,17 @@ public class Solicitacao {
     @Column(nullable = false, length = 30)
     private String descricaoEquipamento;
 
+    @Column(length = 255)
+    private String descricaoDefeito;
+
     @Column(nullable = false, length = 50)
     private String estado;
+
+    @Column
+    private LocalDateTime dataPagamento;
+
+    @Column
+    private LocalDateTime dataHoraFinalizacao;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_categoria", nullable = false)
@@ -37,4 +48,10 @@ public class Solicitacao {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_responsavel")
     private Funcionario responsavel;
+
+    @OneToMany(mappedBy = "solicitacao", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<HistoricoSolicitacao> historico;
+
+    @OneToMany(mappedBy = "solicitacao", fetch = FetchType.EAGER)
+    private List<Orcamento> orcamentos;
 }

@@ -8,7 +8,10 @@ import java.time.LocalDateTime;
 public record SolicitacaoRequestDTO(
         LocalDateTime dataHora,
         String descricaoEquipamento,
+        String descricaoDefeito,
         String estado,
+        LocalDateTime dataPagamento,
+        LocalDateTime dataHoraFinalizacao,
         Long idCategoria,
         Cliente cliente,
         Funcionario responsavel
