@@ -49,9 +49,9 @@ public class Solicitacao {
     @JoinColumn(name = "id_responsavel")
     private Funcionario responsavel;
 
-    @OneToMany(mappedBy = "solicitacao", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<HistoricoSolicitacao> historico;
+    @OneToMany(mappedBy = "solicitacao", fetch = FetchType.LAZY)
+    private List<HistoricoSolicitacao> historicos;
 
-    @OneToMany(mappedBy = "solicitacao", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "solicitacao", fetch = FetchType.LAZY)
     private List<Orcamento> orcamentos;
 }

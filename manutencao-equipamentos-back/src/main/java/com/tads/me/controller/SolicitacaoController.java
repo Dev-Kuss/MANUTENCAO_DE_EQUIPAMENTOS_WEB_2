@@ -21,7 +21,7 @@ public class SolicitacaoController {
     private SolicitacaoService solicitacaoService;
 
     @PostMapping("/create")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<SolicitacaoResponseDTO> createSolicitacao(@RequestBody SolicitacaoRequestDTO data) {
         try {
             var solicitacao = solicitacaoService.createSolicitacao(data);
@@ -32,7 +32,7 @@ public class SolicitacaoController {
     }
 
     @GetMapping("/read-all")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<List<SolicitacaoResponseDTO>> getAllSolicitacoes(
             @RequestParam(required = false) UUID usuarioId) {
         try {
@@ -53,7 +53,7 @@ public class SolicitacaoController {
     }
 
     @GetMapping("/read/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<SolicitacaoResponseDTO> getSolicitacaoById(@PathVariable("id") Long id) {
         var solicitacaoData = solicitacaoService.getById(id);
         return solicitacaoData

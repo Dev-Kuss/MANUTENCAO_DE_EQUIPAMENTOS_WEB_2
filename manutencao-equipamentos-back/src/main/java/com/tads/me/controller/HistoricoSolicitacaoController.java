@@ -20,7 +20,7 @@ public class HistoricoSolicitacaoController {
     private HistoricoSolicitacaoService historicoSolicitacaoService;
 
     @PostMapping("/create")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<HistoricoSolicitacaoResponseDTO> createHistorico(@RequestBody HistoricoSolicitacaoRequestDTO data) {
         try {
             var historico = historicoSolicitacaoService.createHistorico(data);
@@ -45,7 +45,7 @@ public class HistoricoSolicitacaoController {
     }
 
     @GetMapping("/read/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<HistoricoSolicitacaoResponseDTO> getHistoricoById(@PathVariable("id") Long id) {
         var historicoData = historicoSolicitacaoService.getById(id);
         return historicoData
@@ -54,7 +54,7 @@ public class HistoricoSolicitacaoController {
     }
 
     @GetMapping("/read-by-solicitacao/{solicitacaoId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<List<HistoricoSolicitacaoResponseDTO>> getHistoricosBySolicitacao(@PathVariable("solicitacaoId") Long solicitacaoId) {
         try {
             List<HistoricoSolicitacaoResponseDTO> historicos = historicoSolicitacaoService.listarHistoricosPorSolicitacao(solicitacaoId);

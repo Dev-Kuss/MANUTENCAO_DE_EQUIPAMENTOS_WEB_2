@@ -1,8 +1,7 @@
 package com.tads.me.dto;
 
 import com.tads.me.entity.HistoricoSolicitacao;
-import com.tads.me.entity.Solicitacao;
-import com.tads.me.entity.Funcionario;
+
 
 import java.time.LocalDateTime;
 
