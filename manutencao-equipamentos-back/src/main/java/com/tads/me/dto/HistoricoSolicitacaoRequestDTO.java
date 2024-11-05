@@ -6,5 +6,5 @@ public record HistoricoSolicitacaoRequestDTO(
     String descricao,
     UUID idFuncionario,
     UUID idCliente,
-    Long solicitacaoId
+    Long idSolicitacao
 ) {}

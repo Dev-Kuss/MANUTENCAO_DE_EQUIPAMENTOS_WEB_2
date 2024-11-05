@@ -21,7 +21,7 @@ public record HistoricoSolicitacaoResponseDTO(
                 historico.getDescricao(),
                 historico.getFuncionario().getNome(),
                 historico.getSolicitacao().getCliente().getNome(),
-                historico.getSolicitacao().getId_solicitacao()
+                historico.getSolicitacao().getIdSolicitacao()
         );
     }
 }

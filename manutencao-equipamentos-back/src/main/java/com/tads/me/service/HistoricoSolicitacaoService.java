@@ -36,7 +36,7 @@ public class HistoricoSolicitacaoService {
 
     @Transactional
     public HistoricoSolicitacaoResponseDTO createHistorico(HistoricoSolicitacaoRequestDTO data) {
-        Solicitacao solicitacao = solicitacaoRepository.findById(data.solicitacaoId())
+        Solicitacao solicitacao = solicitacaoRepository.findById(data.idSolicitacao())
             .orElseThrow(() -> new RuntimeException("Solicitação não encontrada"));
 
         Funcionario funcionario = null;
@@ -71,8 +71,8 @@ public class HistoricoSolicitacaoService {
                 .collect(Collectors.toList());
     }
 
-    public List<HistoricoSolicitacaoResponseDTO> listarHistoricosPorSolicitacao(Long solicitacaoId) {
-        List<HistoricoSolicitacao> historicos = repository.findBySolicitacaoIdOrderByDataHoraDesc(solicitacaoId);
+    public List<HistoricoSolicitacaoResponseDTO> listarHistoricosPorSolicitacao(Long idSolicitacao) {
+        List<HistoricoSolicitacao> historicos = repository.findBySolicitacaoIdSolicitacaoOrderByDataHoraDesc(idSolicitacao);
         return historicos.stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
@@ -90,7 +90,7 @@ public class HistoricoSolicitacaoService {
             historico.getDescricao(),
             historico.getFuncionario() != null ? historico.getFuncionario().getNome() : null,
             historico.getCliente() != null ? historico.getCliente().getNome() : null,
-            historico.getSolicitacao().getId_solicitacao()
+            historico.getSolicitacao().getIdSolicitacao()
         );
     }
 }

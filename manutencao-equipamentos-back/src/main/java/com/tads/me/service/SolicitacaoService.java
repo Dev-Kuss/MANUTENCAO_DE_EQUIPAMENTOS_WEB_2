@@ -113,7 +113,7 @@ public class SolicitacaoService {
 
     private SolicitacaoResponseDTO convertToResponseDTO(Solicitacao solicitacao) {
         return new SolicitacaoResponseDTO(
-            solicitacao.getId_solicitacao(),
+            solicitacao.getIdSolicitacao(),
             solicitacao.getDataHora(),
             solicitacao.getDescricaoEquipamento(),
             solicitacao.getDescricaoDefeito(),
