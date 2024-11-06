@@ -18,7 +18,7 @@ public record HistoricoSolicitacaoResponseDTO(
                 historico.getId(),
                 historico.getDataHora(),
                 historico.getDescricao(),
-                historico.getFuncionario().getNome(),
+                historico.getFuncionario() != null ? historico.getFuncionario().getNome() : null,
                 historico.getSolicitacao().getCliente().getNome(),
                 historico.getSolicitacao().getIdSolicitacao()
         );

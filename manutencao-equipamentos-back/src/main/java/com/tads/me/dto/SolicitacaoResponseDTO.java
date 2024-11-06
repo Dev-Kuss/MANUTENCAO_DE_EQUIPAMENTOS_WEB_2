@@ -37,7 +37,7 @@ public record SolicitacaoResponseDTO(
                 solicitacao.getEstado(),
                 solicitacao.getCliente().getNome(),
                 solicitacao.getCategoria().getNome_categoria(),
-                solicitacao.getResponsavel().getNome(),
+                solicitacao.getResponsavel() != null ? solicitacao.getResponsavel().getNome() : null,
                 solicitacao.getHistoricos().stream().map(HistoricoSolicitacaoResponseDTO::new).collect(Collectors.toList()),
                 solicitacao.getOrcamentos().stream().map(OrcamentoResponseDTO::new).collect(Collectors.toList())
         );

@@ -1,28 +1,27 @@
 package com.tads.me.dto;
 
 import com.tads.me.entity.Orcamento;
-import com.tads.me.entity.Solicitacao;
-import com.tads.me.entity.Funcionario;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 public record OrcamentoResponseDTO(
         Long id,
         String descricao,
-        Solicitacao solicitacao,
+        Long solicitacaoId,
+        String solicitacaoDescricao,
         BigDecimal valor,
         LocalDateTime dataHora,
-        Funcionario funcionario
+        String funcionarioNome
 ) {
     public OrcamentoResponseDTO(Orcamento orcamento) {
         this(
                 orcamento.getId(),
                 orcamento.getDescricao(),
-                orcamento.getSolicitacao(),
+                orcamento.getSolicitacao().getIdSolicitacao(),
+                orcamento.getSolicitacao().getDescricaoEquipamento(),
                 orcamento.getValor(),
                 orcamento.getDataHora(),
-                orcamento.getFuncionario()
+                orcamento.getFuncionario() != null ? orcamento.getFuncionario().getNome() : null
         );
     }
 }
