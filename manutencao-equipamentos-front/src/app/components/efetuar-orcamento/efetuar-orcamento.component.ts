@@ -21,19 +21,22 @@ export class EfetuarOrcamentoComponent {
     console.log(this.solicitacao)
 
     if (this.valorOrcamento && this.solicitacao) {
-      // Aqui registramos o orçamento com o valor fornecido, o funcionário logado, a data e hora
-      const orcamento = {
-        valor: this.valorOrcamento,
-        funcionario: 'Funcionário Logado', // Obtido do contexto de login
-        data: new Date(),
-        solicitacaoId: this.solicitacao.id
-      };
+        const novoOrcamento = {
+            valor: this.valorOrcamento,
+            descricao: 'Orçamento inicial',
+            dataHora: new Date(),
+            aprovado: false
+        };
 
-      this.salvarOrcamento(orcamento);
-      
-      this.solicitacao.estado = 'ORÇADA';
+        if (!this.solicitacao.orcamentos) {
+            this.solicitacao.orcamentos = [];
+        }
+        
+        this.solicitacao.orcamentos.push(novoOrcamento);
+        this.solicitacao.estado = 'ORÇADA';
 
-      console.log('Orçamento registrado com sucesso:', orcamento);
+        console.log('Orçamento registrado com sucesso:', novoOrcamento);
+        this.salvarOrcamento(novoOrcamento);
     }
   }
 

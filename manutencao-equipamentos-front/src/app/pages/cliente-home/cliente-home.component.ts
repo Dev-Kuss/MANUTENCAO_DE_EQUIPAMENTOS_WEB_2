@@ -120,14 +120,17 @@ export class ClienteHomeComponent implements OnInit {
     const previousEstado = solicitacao.estado;
     solicitacao.estado = 'APROVADA';
 
-    if (!solicitacao.historico) {
-      solicitacao.historico = [];
+    if (!solicitacao.historicos) {
+      solicitacao.historicos = [];
     }
 
-    solicitacao.historico.push({
+    solicitacao.historicos.push({
       dataHora: new Date(),
       descricao: `Solicitação passou de ${previousEstado} para APROVADA.`,
-      funcionario: 'Cliente',
+      funcionario: {
+        idFuncionario: 0, // or appropriate ID for client
+        nome: 'Cliente'
+      }
     });
 
     alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');

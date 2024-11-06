@@ -15,7 +15,9 @@
     <div class="my-6">
       <p class="text-lg font-semibold text-gray-800">
         <strong>Valor a Pagar:</strong>
-        <span class="text-xl text-pink-600 ml-2">{{ solicitacao?.precoOrcado | currency:'BRL' }}</span>
+        <span class="text-xl text-pink-600 ml-2">
+          {{ solicitacao?.orcamentos?.[solicitacao?.orcamentos?.length ?? 0 - 1]?.valor ?? 0 | currency:'BRL' }}
+        </span>
       </p>
     </div>
     <div class="flex justify-end gap-2.5 mt-6">

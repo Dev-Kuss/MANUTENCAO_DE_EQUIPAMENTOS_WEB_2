@@ -1,4 +1,4 @@
 {
     "editor.definitionLinkOpensInPeek": true,
-    "java.compile.nullAnalysis.mode": "automatic"
+    "java.compile.nullAnalysis.mode": "disabled"
 }

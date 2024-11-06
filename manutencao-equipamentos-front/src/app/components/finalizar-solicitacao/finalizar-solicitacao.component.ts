@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { Solicitacao, Historico } from '../../models/solicitacao.model';
+import { Solicitacao, HistoricoSolicitacao } from '../../models/solicitacao.model';
 
 @Component({
   selector: 'app-finalizar-solicitacao',
@@ -21,12 +21,15 @@ export class FinalizarSolicitacaoComponent {
     if (this.solicitacao) {
       this.solicitacao.estado = 'FINALIZADA';
 
-      const historico: Historico = {
+      const historico: HistoricoSolicitacao = {
         dataHora: new Date(),
         descricao: `Solicitação finalizada por ${this.funcionarioLogado}`,
-        funcionario: this.funcionarioLogado
+        funcionario: {
+          idFuncionario: 1, // Ajuste conforme necessário
+          nome: this.funcionarioLogado
+        }
       };
-      this.solicitacao.historico?.push(historico);
+      this.solicitacao.historicos?.push(historico);
       this.solicitacao.dataHoraFinalizacao = new Date();
 
       console.log('Solicitação finalizada com sucesso:', this.solicitacao);

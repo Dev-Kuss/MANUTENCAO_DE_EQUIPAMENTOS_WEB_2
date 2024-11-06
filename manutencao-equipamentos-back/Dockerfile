@@ -2,18 +2,17 @@
 FROM maven:3.9.4-eclipse-temurin-21 as builder
 WORKDIR /app
 
-COPY .. .
+# Copiar apenas o pom.xml primeiro
+COPY pom.xml .
 
-RUN mvn clean install -DskipTests
+# Baixar dependências
+RUN mvn dependency:go-offline
 
-# Etapa de runtime usando Eclipse Temurin JDK 21
-FROM eclipse-temurin:21-jdk-alpine
-WORKDIR /app
-
-COPY --from=builder /app/target/*.jar app.jar
+# Não precisamos copiar o código fonte aqui
+# COPY . .
 
 EXPOSE 8080
 EXPOSE 5005
 
-# Ajustando o ENTRYPOINT para incluir as opções de debug
-ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "app.jar"]
+# Modificar para usar spring-boot:run em vez de jar
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'"]

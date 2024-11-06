@@ -12,13 +12,17 @@ services:
 
   backend:
     build:
-      context: ./manutencao-equipamentos-back # Ajuste para o caminho correto do backend
+      context: ./manutencao-equipamentos-back
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
       - "5005:5005"
+    volumes:
+      - ./manutencao-equipamentos-back:/app
+      - ~/.m2:/root/.m2
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ManutencaoEquipamentos
+      - SPRING_DEVTOOLS_REMOTE_SECRET=mysecret
     depends_on:
       - db
     networks:
@@ -29,13 +33,17 @@ services:
 
   frontend:
     build:
-      context: ./manutencao-equipamentos-front # Ajuste para o caminho correto do frontend
+      context: ./manutencao-equipamentos-front
       dockerfile: Dockerfile
     ports:
       - "8081:8081"
-      - "9229:9229"
+      - "9229:9229"  # porta para debugging
+    volumes:
+      - ./manutencao-equipamentos-front:/app  # monta o código fonte
+      - /app/node_modules  # preserva node_modules do container
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
+    command: npm start
     networks:
       - app-network
 
