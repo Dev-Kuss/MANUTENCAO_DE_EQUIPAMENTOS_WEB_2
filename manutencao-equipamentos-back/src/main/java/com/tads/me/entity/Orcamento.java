@@ -26,6 +26,9 @@ public class Orcamento {
     @Column(nullable = false, precision = 38, scale = 2)
     private BigDecimal valor;
 
+    @Column(name = "descricao", nullable = true)
+    private String descricao;
+
     @Column(name = "data_hora", nullable = false)
     private LocalDateTime dataHora;
 

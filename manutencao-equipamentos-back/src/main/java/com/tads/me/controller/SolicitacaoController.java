@@ -27,12 +27,11 @@ public class SolicitacaoController {
             var solicitacao = solicitacaoService.createSolicitacao(data);
             return new ResponseEntity<>(solicitacao, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/read-all")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<List<SolicitacaoResponseDTO>> getAllSolicitacoes(
             @RequestParam(required = false) UUID usuarioId) {
         try {
@@ -48,12 +47,11 @@ public class SolicitacaoController {
             }
             return new ResponseEntity<>(solicitacoes, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/read/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<SolicitacaoResponseDTO> getSolicitacaoById(@PathVariable("id") Long id) {
         var solicitacaoData = solicitacaoService.getById(id);
         return solicitacaoData

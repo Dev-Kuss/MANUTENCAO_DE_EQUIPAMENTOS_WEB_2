@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 public record OrcamentoResponseDTO(
         Long id,
+        String descricao,
         Solicitacao solicitacao,
         BigDecimal valor,
         LocalDateTime dataHora,
@@ -17,6 +18,7 @@ public record OrcamentoResponseDTO(
     public OrcamentoResponseDTO(Orcamento orcamento) {
         this(
                 orcamento.getId(),
+                orcamento.getDescricao(),
                 orcamento.getSolicitacao(),
                 orcamento.getValor(),
                 orcamento.getDataHora(),

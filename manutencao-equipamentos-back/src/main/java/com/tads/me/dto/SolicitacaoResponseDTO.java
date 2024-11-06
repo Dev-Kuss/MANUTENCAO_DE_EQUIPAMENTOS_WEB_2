@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tads.me.entity.Solicitacao;
+import lombok.Builder;
 
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Builder
 public record SolicitacaoResponseDTO(
         Long idSolicitacao,
         String descricaoEquipamento,

@@ -26,7 +26,7 @@ public class HistoricoSolicitacaoController {
             var historico = historicoSolicitacaoService.createHistorico(data);
             return new ResponseEntity<>(historico, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -40,7 +40,7 @@ public class HistoricoSolicitacaoController {
             }
             return new ResponseEntity<>(historicos, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -63,7 +63,7 @@ public class HistoricoSolicitacaoController {
             }
             return new ResponseEntity<>(historicos, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

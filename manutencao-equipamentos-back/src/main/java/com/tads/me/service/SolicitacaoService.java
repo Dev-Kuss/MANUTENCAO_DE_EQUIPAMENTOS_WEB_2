@@ -4,8 +4,6 @@ import com.tads.me.entity.Solicitacao;
 import com.tads.me.entity.HistoricoSolicitacao;
 import com.tads.me.dto.SolicitacaoRequestDTO;
 import com.tads.me.dto.SolicitacaoResponseDTO;
-import com.tads.me.dto.HistoricoSolicitacaoResponseDTO;
-import com.tads.me.dto.OrcamentoResponseDTO;
 import com.tads.me.repository.SolicitacaoRepository;
 import com.tads.me.repository.HistoricoSolicitacaoRepository;
 import com.tads.me.repository.CategoriaEquipamentoRepository;
@@ -113,46 +111,19 @@ public class SolicitacaoService {
                 .collect(Collectors.toList());
     }
 
+    
     private SolicitacaoResponseDTO convertToResponseDTO(Solicitacao solicitacao) {
-        String clienteNome = solicitacao.getCliente() != null ? solicitacao.getCliente().getNome() : null;
-        String categoriaNome = solicitacao.getCategoria() != null ? solicitacao.getCategoria().getNome_categoria() : null;
-        String responsavelNome = solicitacao.getResponsavel() != null ? solicitacao.getResponsavel().getNome() : null;
-        
-        List<HistoricoSolicitacaoResponseDTO> historicos = solicitacao.getHistoricos().stream()
-            .map(historico -> new HistoricoSolicitacaoResponseDTO(
-                historico.getId(),
-                historico.getDataHora(),
-                historico.getDescricao(),
-                historico.getFuncionario() != null ? historico.getFuncionario().getNome() : null,
-                historico.getCliente() != null ? historico.getCliente().getNome() : null,
-                historico.getSolicitacao().getIdSolicitacao()
-            ))
-            .collect(Collectors.toList());
-            
-        List<OrcamentoResponseDTO> orcamentos = solicitacao.getOrcamentos().stream()
-            .map(orcamento -> new OrcamentoResponseDTO(
-                orcamento.getId(),
-                orcamento.getValor(),
-                orcamento.getDataHora(),
-                orcamento.getSolicitacao().getIdSolicitacao(),
-                orcamento.getFuncionario() != null ? orcamento.getFuncionario().getNome() : null,
-                orcamento.getDescricao()
-            ))
-            .collect(Collectors.toList());
-
-        return new SolicitacaoResponseDTO(
-            solicitacao.getIdSolicitacao(),
-            solicitacao.getDescricaoEquipamento(),
-            solicitacao.getDescricaoDefeito(),
-            solicitacao.getDataHora(),
-            solicitacao.getDataHoraFinalizacao(),
-            solicitacao.getDataPagamento(),
-            solicitacao.getEstado(),
-            clienteNome,
-            categoriaNome,
-            responsavelNome,
-            historicos,
-            orcamentos
-        );
+        return SolicitacaoResponseDTO.builder()
+                .idSolicitacao(solicitacao.getIdSolicitacao())
+                .dataHora(solicitacao.getDataHora())
+                .descricaoEquipamento(solicitacao.getDescricaoEquipamento())
+                .descricaoDefeito(solicitacao.getDescricaoDefeito())
+                .estado(solicitacao.getEstado())
+                .dataPagamento(solicitacao.getDataPagamento())
+                .dataHoraFinalizacao(solicitacao.getDataHoraFinalizacao())
+                .categoriaNome(solicitacao.getCategoria().getNome_categoria())
+                .clienteNome(solicitacao.getCliente().getNome())
+                .responsavelNome(solicitacao.getResponsavel() != null ? solicitacao.getResponsavel().getNome() : null)
+                .build();
     }
 }
