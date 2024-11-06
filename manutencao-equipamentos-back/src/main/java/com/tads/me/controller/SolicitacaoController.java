@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/solicitacao")
@@ -32,7 +35,7 @@ public class SolicitacaoController {
     }
 
     @GetMapping("/read-all")
-    public ResponseEntity<List<SolicitacaoResponseDTO>> getAllSolicitacoes(
+    public ResponseEntity<?> getAllSolicitacoes(
             @RequestParam(required = false) UUID usuarioId) {
         try {
             List<SolicitacaoResponseDTO> solicitacoes;
@@ -47,7 +50,14 @@ public class SolicitacaoController {
             }
             return new ResponseEntity<>(solicitacoes, HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Internal Server Error");
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("stackTrace", Arrays.toString(e.getStackTrace()));
+            
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
         }
     }
 

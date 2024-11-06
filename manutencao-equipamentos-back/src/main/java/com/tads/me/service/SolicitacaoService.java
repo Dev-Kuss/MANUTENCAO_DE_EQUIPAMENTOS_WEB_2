@@ -58,19 +58,19 @@ public class SolicitacaoService {
 
         historicoRepository.save(historico);
         
-        return convertToResponseDTO(solicitacao);
+        return new SolicitacaoResponseDTO(solicitacao);
     }
 
     public List<SolicitacaoResponseDTO> listarSolicitacoes() {
         List<Solicitacao> solicitacoes = repository.findAll();
         return solicitacoes.stream()
-                .map(this::convertToResponseDTO)
+                .map(SolicitacaoResponseDTO::new)
                 .collect(Collectors.toList());
     }
 
     public Optional<SolicitacaoResponseDTO> getById(Long id) {
         return repository.findById(id)
-                .map(this::convertToResponseDTO);
+                .map(SolicitacaoResponseDTO::new);
     }
 
     @Transactional
@@ -101,29 +101,13 @@ public class SolicitacaoService {
                     historicoRepository.save(historico);
                     repository.save(solicitacao);
                     
-                    return convertToResponseDTO(solicitacao);
+                    return new SolicitacaoResponseDTO(solicitacao);
                 });
     }
 
     public List<SolicitacaoResponseDTO> listarSolicitacoesPorUsuario(UUID usuarioId) {
         return repository.findByClienteId(usuarioId).stream()
-                .map(this::convertToResponseDTO)
+                .map(SolicitacaoResponseDTO::new)
                 .collect(Collectors.toList());
-    }
-
-    
-    private SolicitacaoResponseDTO convertToResponseDTO(Solicitacao solicitacao) {
-        return SolicitacaoResponseDTO.builder()
-                .idSolicitacao(solicitacao.getIdSolicitacao())
-                .dataHora(solicitacao.getDataHora())
-                .descricaoEquipamento(solicitacao.getDescricaoEquipamento())
-                .descricaoDefeito(solicitacao.getDescricaoDefeito())
-                .estado(solicitacao.getEstado())
-                .dataPagamento(solicitacao.getDataPagamento())
-                .dataHoraFinalizacao(solicitacao.getDataHoraFinalizacao())
-                .categoriaNome(solicitacao.getCategoria().getNome_categoria())
-                .clienteNome(solicitacao.getCliente().getNome())
-                .responsavelNome(solicitacao.getResponsavel() != null ? solicitacao.getResponsavel().getNome() : null)
-                .build();
     }
 }
