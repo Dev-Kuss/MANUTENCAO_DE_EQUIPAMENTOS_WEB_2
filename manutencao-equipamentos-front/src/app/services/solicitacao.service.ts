@@ -11,8 +11,11 @@ export class SolicitacaoService {
 
   constructor(private http: HttpClient) {}
 
-  getSolicitacoes(usuarioId: string | null): Observable<Solicitacao[]> {
-    return this.http.get<Solicitacao[]>(`${this.apiUrl}/read-all?usuarioId=${usuarioId}`);
+  getSolicitacoes(usuarioId?: string | null): Observable<Solicitacao[]> {
+    const url = usuarioId 
+      ? `${this.apiUrl}/read-all?usuarioId=${usuarioId}`
+      : `${this.apiUrl}/read-all`;
+    return this.http.get<Solicitacao[]>(url);
   }
 
   getSolicitacaoById(id: string): Observable<Solicitacao> {

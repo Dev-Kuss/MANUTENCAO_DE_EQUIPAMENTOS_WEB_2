@@ -23,7 +23,7 @@ import { EfetuarOrcamentoComponent } from '../../components/efetuar-orcamento/ef
 import { EfetuarManutencaoComponent } from '../../components/efetuar-manutencao/efetuar-manutencao.component';
 import { FinalizarSolicitacaoComponent } from '../../components/finalizar-solicitacao/finalizar-solicitacao.component';
 import { AuthService } from '../../services/auth.service';
-
+import { SolicitacaoService } from '../../services/solicitacao.service';
 import { Solicitacao } from '../../models/solicitacao.model';
 import { Funcionario } from '../../models/funcionario.model';
 import { FuncionarioService } from '../../services/funcionario.service';
@@ -109,19 +109,33 @@ export class FuncionarioHomeComponent implements OnInit{
 
   constructor(
     private authService: AuthService,
-    private funcionarioService: FuncionarioService
+    private funcionarioService: FuncionarioService,
+    private solicitacaoService: SolicitacaoService
   ) {}
 
   ngOnInit(): void {
 
     this.loadListaFuncionarios();
-
+    this.loadSolicitacoes();
     this.nomeUsuario = this.authService.getNomeUsuario(); // Obtém o nome do usuário do AuthService
   }
 
   loadListaFuncionarios(): void {
     this.funcionarioService.getAllFuncionarios().subscribe((funcionarios: Funcionario[]) => {
       this.listaFuncionarios = funcionarios;
+    });
+  }
+
+  loadSolicitacoes(): void {
+    const id = this.authService.getId();
+    this.solicitacaoService.getSolicitacoes().subscribe({
+      next: (solicitacoes) => {
+        this.solicitacoes = solicitacoes;
+        this.filtrarSolicitacoes(); // Apply initial filtering
+      },
+      error: (error) => {
+        console.error('Erro ao carregar solicitações:', error);
+      }
     });
   }
 
