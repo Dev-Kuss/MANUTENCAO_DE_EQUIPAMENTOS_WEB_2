@@ -30,6 +30,7 @@ export interface HistoricoSolicitacao {
     idHistorico?: number;
     dataHora: Date;
     descricao: string;
+    destinoRedirecionamento?: string;
     funcionario: {
         idFuncionario: number;
         nome: string;

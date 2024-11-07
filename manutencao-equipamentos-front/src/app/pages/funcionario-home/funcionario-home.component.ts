@@ -25,8 +25,12 @@ import { FinalizarSolicitacaoComponent } from '../../components/finalizar-solici
 import { AuthService } from '../../services/auth.service';
 
 import { Solicitacao } from '../../models/solicitacao.model';
+import { Funcionario } from '../../models/funcionario.model';
+import { FuncionarioService } from '../../services/funcionario.service';
 
-import {SolicitacaoService} from "../../services/solicitacao.service";
+
+
+
 
 interface CategoryGroup {
   [key: string]: Solicitacao[];
@@ -49,6 +53,9 @@ interface CategoryGroup {
   ]
 })
 export class FuncionarioHomeComponent implements OnInit{
+
+  funcionarios: Funcionario[] = [];
+
   // Número da página atual
   paginaAtual: number = 1;
 
@@ -76,8 +83,8 @@ export class FuncionarioHomeComponent implements OnInit{
 
   solicitacaoSelecionada: Solicitacao | null = null;
 
-  listaFuncionarios: string[] = ['João Silva', 'Maria Santos', 'Pedro Oliveira', 'Carlos Souza'];
-  funcionarioLogado = 'João Silva';
+  listaFuncionarios: Funcionario[] = [];
+  funcionarioLogado: Funcionario | null = null;
 
   solicitacoes: Solicitacao[] = [];
 
@@ -102,10 +109,20 @@ export class FuncionarioHomeComponent implements OnInit{
 
   constructor(
     private authService: AuthService,
+    private funcionarioService: FuncionarioService
   ) {}
 
   ngOnInit(): void {
+
+    this.loadListaFuncionarios();
+
     this.nomeUsuario = this.authService.getNomeUsuario(); // Obtém o nome do usuário do AuthService
+  }
+
+  loadListaFuncionarios(): void {
+    this.funcionarioService.getAllFuncionarios().subscribe((funcionarios: Funcionario[]) => {
+      this.listaFuncionarios = funcionarios;
+    });
   }
 
   get totalPaginas(): number {
@@ -121,6 +138,11 @@ export class FuncionarioHomeComponent implements OnInit{
       paginas.push(i);
     }
     return paginas;
+  }
+
+  getDestinoRedirecionamento(solicitacao: Solicitacao): string | undefined {
+    const historico = solicitacao.historicos?.find(h => h.destinoRedirecionamento);
+    return historico?.destinoRedirecionamento;
   }
 
   get solicitacoesPaginadas(): Solicitacao[] {

@@ -97,7 +97,9 @@
                         <fa-icon [icon]="faFileInvoiceDollar"></fa-icon>
                     </button>
                     <button
-                        *ngIf="solicitacao.estado === 'APROVADA' || (solicitacao.estado === 'REDIRECIONADA' && solicitacao.destinoRedirecionamento === funcionarioLogado)"
+                        *ngIf="solicitacao.estado === 'APROVADA' || 
+                               (solicitacao.estado === 'REDIRECIONADA' && 
+                               getDestinoRedirecionamento(solicitacao) === funcionarioLogado?.nome)"
                         (click)="efetuarManutencao(solicitacao)"
                         class="bg-blue-500 text-white py-2 px-3 rounded hover:bg-blue-600" title="Efetuar Manutenção">
                         <fa-icon [icon]="faWrench"></fa-icon>
@@ -180,7 +182,7 @@
     </ng-container>
     <ng-container modal-body>
         <app-efetuar-manutencao [solicitacao]="solicitacaoSelecionada" [funcionarios]="listaFuncionarios"
-            [funcionarioLogado]="funcionarioLogado" (close)="fecharManutencaoModal()">
+            [funcionarioLogado]="funcionarioLogado!" (close)="fecharManutencaoModal()">
         </app-efetuar-manutencao>
     </ng-container>
 </app-base-modal>

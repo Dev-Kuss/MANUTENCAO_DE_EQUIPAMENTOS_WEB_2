@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Solicitacao } from '../../models/solicitacao.model';
+import { Solicitacao, Orcamento } from '../../models/solicitacao.model';
 
 @Component({
   selector: 'app-visualizar-servico',
@@ -11,6 +11,7 @@ import { Solicitacao } from '../../models/solicitacao.model';
 
 export class VisualizarServicoComponent {
   @Input() solicitacao: Solicitacao | null = null;
+  @Input() orcamento: Orcamento | null = null;
 
   resgatarServico(solicitacao: Solicitacao) {
     const previousEstado = solicitacao.estado;

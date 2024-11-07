@@ -12,9 +12,9 @@
             <label class="block text-sm font-medium text-gray-600">Data e Hora</label>
             <p class="mt-1 text-gray-800">{{ solicitacao?.dataHora | date: 'short' }}</p>
         </div>
-        <div *ngIf="solicitacao?.precoOrcado">
+        <div *ngIf="orcamento?.valor">
             <label class="block text-sm font-medium text-gray-600">Preço Orçado</label>
-            <p class="mt-1 text-gray-800">{{ solicitacao?.precoOrcado | currency:'BRL' }}</p>
+            <p class="mt-1 text-gray-800">{{ orcamento?.valor| currency:'BRL' }}</p>
         </div>
     </div>
 
