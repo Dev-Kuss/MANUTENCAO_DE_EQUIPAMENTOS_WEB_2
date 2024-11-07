@@ -47,7 +47,7 @@ public class CategoriaEquipamentoController {
             return ResponseEntity.ok(categoriaEquipamento);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -67,7 +67,7 @@ public class CategoriaEquipamentoController {
             return ResponseEntity.ok(categorias);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(List.of());
         }
     }
 
@@ -91,7 +91,7 @@ public class CategoriaEquipamentoController {
             @ApiResponse(responseCode = "404", description = "Categoria não encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
     @PutMapping("/update/{id}")
     public ResponseEntity<CategoriaEquipamento> updateCategoria(
             @Parameter(description = "ID da categoria a ser atualizada") @PathVariable("id") Long id,
@@ -114,7 +114,7 @@ public class CategoriaEquipamentoController {
             @ApiResponse(responseCode = "417", description = "Falha ao excluir a categoria"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(
             @Parameter(description = "ID da categoria a ser excluída") @PathVariable("id") Long id) {

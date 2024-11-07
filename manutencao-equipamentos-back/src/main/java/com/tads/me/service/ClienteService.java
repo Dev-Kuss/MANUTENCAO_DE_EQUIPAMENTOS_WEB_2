@@ -54,7 +54,7 @@ public class ClienteService {
         String passwordHashSalt = passwordEncoder.encode(senhaOriginal); // Inclui o salt
 
         newUser.setPasswordHashSalt(passwordHashSalt);
-        newUser.setRoles(new HashSet<>(Set.of("USER")));
+        newUser.setRoles(new HashSet<>(Set.of("CLIENT")));
         userRepository.save(newUser);
 
         Cliente newCliente = new Cliente(data, newUser);
@@ -72,7 +72,7 @@ public class ClienteService {
     }
 
     @Transactional
-    public Optional<Cliente> updateCliente(Long id, ClienteRequestDTO data) {
+    public Optional<Cliente> updateCliente(UUID id, ClienteRequestDTO data) {
         Optional<Cliente> clienteOptional = repository.findById(id);
         if (clienteOptional.isPresent()) {
             Cliente existingCliente = clienteOptional.get();

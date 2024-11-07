@@ -35,10 +35,12 @@ export class LoginComponent {
 
           nome = localStorage.getItem('nome');
 
-          if (JSON.parse(<string>localStorage.getItem('roles')).includes('ADMIN')) {
+          const roles = JSON.parse(<string>localStorage.getItem('roles'));
+          if (roles.includes('ADMIN') || roles.includes('EMPLOYEE')) {
             this.router.navigate(['/funcionario-home']); // Redireciona para a página de perfil ou dashboard
           }
-          else {
+
+          else if (JSON.parse(<string>localStorage.getItem('roles')).includes('CLIENT')) {
             this.router.navigate(['/cliente-home']); // Redireciona para a página de perfil ou dashboard
           }
         },

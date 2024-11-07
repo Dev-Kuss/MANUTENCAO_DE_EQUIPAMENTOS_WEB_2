@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,9 +22,19 @@ import { BaseModalComponent } from '../../components/base-modal/base-modal.compo
 import { EfetuarOrcamentoComponent } from '../../components/efetuar-orcamento/efetuar-orcamento.component';
 import { EfetuarManutencaoComponent } from '../../components/efetuar-manutencao/efetuar-manutencao.component';
 import { FinalizarSolicitacaoComponent } from '../../components/finalizar-solicitacao/finalizar-solicitacao.component';
+import { AuthService } from '../../services/auth.service';
 
 import { Solicitacao } from '../../models/solicitacao.model';
-import { solicitacoes } from '../../seeds/solicitacoes-seed';
+import { Funcionario } from '../../models/funcionario.model';
+import { FuncionarioService } from '../../services/funcionario.service';
+
+
+
+
+
+interface CategoryGroup {
+  [key: string]: Solicitacao[];
+}
 
 @Component({
   selector: 'app-funcionario-home',
@@ -42,7 +52,10 @@ import { solicitacoes } from '../../seeds/solicitacoes-seed';
     FinalizarSolicitacaoComponent
   ]
 })
-export class FuncionarioHomeComponent {
+export class FuncionarioHomeComponent implements OnInit{
+
+  funcionarios: Funcionario[] = [];
+
   // Número da página atual
   paginaAtual: number = 1;
 
@@ -60,6 +73,7 @@ export class FuncionarioHomeComponent {
   faUserPlus = faUserPlus;
   faFilePdf = faFilePdf;
   faCheckCircle = faCheckCircle
+  nomeUsuario: string | null = '';
 
   // Modals
   isOrcamentoModalOpen = false;
@@ -69,10 +83,10 @@ export class FuncionarioHomeComponent {
 
   solicitacaoSelecionada: Solicitacao | null = null;
 
-  listaFuncionarios: string[] = ['João Silva', 'Maria Santos', 'Pedro Oliveira', 'Carlos Souza'];
-  funcionarioLogado = 'João Silva';
+  listaFuncionarios: Funcionario[] = [];
+  funcionarioLogado: Funcionario | null = null;
 
-  solicitacoes: Solicitacao[] = [...solicitacoes];
+  solicitacoes: Solicitacao[] = [];
 
 
   // Colors mapping
@@ -93,6 +107,24 @@ export class FuncionarioHomeComponent {
 
   solicitacoesFiltradas: Solicitacao[] = [...this.solicitacoes];
 
+  constructor(
+    private authService: AuthService,
+    private funcionarioService: FuncionarioService
+  ) {}
+
+  ngOnInit(): void {
+
+    this.loadListaFuncionarios();
+
+    this.nomeUsuario = this.authService.getNomeUsuario(); // Obtém o nome do usuário do AuthService
+  }
+
+  loadListaFuncionarios(): void {
+    this.funcionarioService.getAllFuncionarios().subscribe((funcionarios: Funcionario[]) => {
+      this.listaFuncionarios = funcionarios;
+    });
+  }
+
   get totalPaginas(): number {
     return Math.ceil(this.solicitacoesFiltradas.length / this.itensPorPagina);
   }
@@ -106,6 +138,11 @@ export class FuncionarioHomeComponent {
       paginas.push(i);
     }
     return paginas;
+  }
+
+  getDestinoRedirecionamento(solicitacao: Solicitacao): string | undefined {
+    const historico = solicitacao.historicos?.find(h => h.destinoRedirecionamento);
+    return historico?.destinoRedirecionamento;
   }
 
   get solicitacoesPaginadas(): Solicitacao[] {
@@ -237,10 +274,9 @@ export class FuncionarioHomeComponent {
     doc.text('Relatório de Receitas por Período', pageWidth / 2, 10, { align: 'center' });
 
     const solicitacoesFiltradas = this.filtrarSolicitacoesPorData();
-
     const groupedByDate = solicitacoesFiltradas.reduce((acc, curr) => {
-      // Apenas incluir se precoOrcado existir
-      if (curr.precoOrcado !== undefined) {
+      const ultimoOrcamento = curr.orcamentos?.slice(-1)[0];
+      if (ultimoOrcamento?.valor !== undefined) {
         const dateKey = curr.dataHora.toISOString().split('T')[0];
         if (!acc[dateKey]) acc[dateKey] = [];
         acc[dateKey].push(curr);
@@ -249,13 +285,22 @@ export class FuncionarioHomeComponent {
     }, {} as { [key: string]: Solicitacao[] });
 
     const dataTable: any[] = [];
-
     for (const [date, solicitacoes] of Object.entries(groupedByDate)) {
-      const totalDia = solicitacoes.reduce((sum, s) => sum + (s.precoOrcado ?? 0), 0); // Usando precoOrcado
+      const totalDia = solicitacoes.reduce((sum, s) => {
+        const ultimoOrcamento = s.orcamentos?.slice(-1)[0];
+        return sum + (ultimoOrcamento?.valor ?? 0);
+      }, 0);
+      
       solicitacoes.forEach(solicitacao => {
-        dataTable.push([date, solicitacao.nomeCliente, solicitacao.descricaoEquipamento, `R$ ${solicitacao.precoOrcado}`]);
+        const ultimoOrcamento = solicitacao.orcamentos?.slice(-1)[0];
+        dataTable.push([
+          date,
+          solicitacao.cliente?.nome ?? 'N/A',
+          solicitacao.descricaoEquipamento,
+          `R$ ${ultimoOrcamento?.valor ?? 0}`
+        ]);
       });
-      dataTable.push([`${date} - Total`, '', '', `R$ ${totalDia}`]); // Adicionando R$
+      dataTable.push([`${date} - Total`, '', '', `R$ ${totalDia}`]);
     }
 
     (doc as any).autoTable({
@@ -274,22 +319,29 @@ export class FuncionarioHomeComponent {
     // Centralizando o título
     doc.text('Relatório de Receitas por Categoria', pageWidth / 2, 10, { align: 'center' });
 
-    const groupedByCategory = this.solicitacoes.reduce((acc, curr) => {
-      // Apenas incluir se precoOrcado existir
-      if (curr.precoOrcado !== undefined) {
-        const categoria = curr.categoria ?? 'Sem Categoria'; // Garantindo que haja um valor para categoria
+    const groupedByCategory: CategoryGroup = this.solicitacoes.reduce((acc, curr) => {
+      if (curr.orcamentos && curr.orcamentos.length > 0) {
+        const categoria = curr.categoria.nome;
         if (!acc[categoria]) acc[categoria] = [];
         acc[categoria].push(curr);
       }
       return acc;
-    }, {} as { [key: string]: Solicitacao[] });
+    }, {} as CategoryGroup);
 
     const dataTable: any[] = [];
 
     for (const [categoria, solicitacoes] of Object.entries(groupedByCategory)) {
-      const totalCategoria = solicitacoes.reduce((sum, s) => sum + (s.precoOrcado ?? 0), 0); // Usando precoOrcado
+      const totalCategoria = solicitacoes.reduce((sum, s) => {
+        const ultimoOrcamento = s.orcamentos?.slice(-1)[0];
+        return sum + (ultimoOrcamento?.valor ?? 0);
+      }, 0);
       solicitacoes.forEach(solicitacao => {
-        dataTable.push([categoria, solicitacao.nomeCliente, solicitacao.descricaoEquipamento, `R$ ${solicitacao.precoOrcado}`]);
+        dataTable.push([
+          categoria,
+          solicitacao.cliente?.nome ?? 'N/A',
+          solicitacao.descricaoEquipamento,
+          `R$ ${solicitacao.orcamentos?.slice(-1)[0]?.valor ?? 0}`
+        ]);
       });
       dataTable.push([`${categoria} - Total`, '', '', `R$ ${totalCategoria}`]); // Adicionando R$
     }

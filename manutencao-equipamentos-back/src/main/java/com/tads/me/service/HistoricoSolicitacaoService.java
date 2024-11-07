@@ -1,13 +1,20 @@
 package com.tads.me.service;
 
 import com.tads.me.entity.HistoricoSolicitacao;
+import com.tads.me.entity.Solicitacao;
+import com.tads.me.entity.Funcionario;
+import com.tads.me.entity.Cliente;
 import com.tads.me.dto.HistoricoSolicitacaoRequestDTO;
 import com.tads.me.dto.HistoricoSolicitacaoResponseDTO;
 import com.tads.me.repository.HistoricoSolicitacaoRepository;
+import com.tads.me.repository.SolicitacaoRepository;
+import com.tads.me.repository.FuncionarioRepository;
+import com.tads.me.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,40 +25,72 @@ public class HistoricoSolicitacaoService {
     @Autowired
     private HistoricoSolicitacaoRepository repository;
 
+    @Autowired
+    private SolicitacaoRepository solicitacaoRepository;
+
+    @Autowired
+    private FuncionarioRepository funcionarioRepository;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
+
     @Transactional
-    public HistoricoSolicitacao createHistorico(HistoricoSolicitacaoRequestDTO data) {
+    public HistoricoSolicitacaoResponseDTO createHistorico(HistoricoSolicitacaoRequestDTO data) {
+        Solicitacao solicitacao = solicitacaoRepository.findById(data.idSolicitacao())
+            .orElseThrow(() -> new RuntimeException("Solicitação não encontrada"));
+
+        Funcionario funcionario = null;
+        Cliente cliente = null;
+
+        if (data.idFuncionario() != null) {
+            funcionario = funcionarioRepository.findById(data.idFuncionario())
+                .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
+        }
+
+        if (data.idCliente() != null) {
+            cliente = clienteRepository.findById(data.idCliente())
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        }
+
         HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
-                .dataHora(data.dataHora())
-                .estadoAnterior(data.estadoAnterior())
-                .estadoAtual(data.estadoAtual())
-                .solicitacao(null)  // Atribuir corretamente a solicitação
-                .funcionario(null)  // Atribuir corretamente o funcionário
+                .dataHora(LocalDateTime.now())
+                .descricao(data.descricao())
+                .funcionario(funcionario)
+                .cliente(cliente)
+                .solicitacao(solicitacao)
                 .build();
+
         repository.save(historico);
-        return historico;
+        return convertToResponseDTO(historico);
     }
 
     public List<HistoricoSolicitacaoResponseDTO> listarHistoricos() {
         List<HistoricoSolicitacao> historicos = repository.findAll();
         return historicos.stream()
-                .map(HistoricoSolicitacaoResponseDTO::new)
+                .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    public Optional<HistoricoSolicitacao> getById(Long id) {
-        return repository.findById(id);
+    public List<HistoricoSolicitacaoResponseDTO> listarHistoricosPorSolicitacao(Long idSolicitacao) {
+        List<HistoricoSolicitacao> historicos = repository.findBySolicitacaoIdSolicitacaoOrderByDataHoraDesc(idSolicitacao);
+        return historicos.stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
     }
 
-    @Transactional
-    public Optional<HistoricoSolicitacao> updateHistorico(Long id, HistoricoSolicitacaoRequestDTO data) {
-        Optional<HistoricoSolicitacao> historicoOptional = repository.findById(id);
-        if (historicoOptional.isPresent()) {
-            HistoricoSolicitacao historico = historicoOptional.get();
-            historico.setEstadoAnterior(data.estadoAnterior());
-            historico.setEstadoAtual(data.estadoAtual());
-            repository.save(historico);
-            return Optional.of(historico);
-        }
-        return Optional.empty();
+    public Optional<HistoricoSolicitacaoResponseDTO> getById(Long id) {
+        return repository.findById(id)
+                .map(this::convertToResponseDTO);
+    }
+
+    private HistoricoSolicitacaoResponseDTO convertToResponseDTO(HistoricoSolicitacao historico) {
+        return new HistoricoSolicitacaoResponseDTO(
+            historico.getId(),
+            historico.getDataHora(),
+            historico.getDescricao(),
+            historico.getFuncionario() != null ? historico.getFuncionario().getNome() : null,
+            historico.getCliente() != null ? historico.getCliente().getNome() : null,
+            historico.getSolicitacao().getIdSolicitacao()
+        );
     }
 }

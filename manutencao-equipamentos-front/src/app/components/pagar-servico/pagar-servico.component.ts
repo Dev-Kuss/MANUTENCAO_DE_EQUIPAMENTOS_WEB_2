@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { Funcionario } from '../../models/funcionario.model';
 import { Solicitacao } from '../../models/solicitacao.model';
 
 @Component({
@@ -18,14 +19,17 @@ export class PagarServicoComponent {
       this.solicitacao.estado = 'APROVADA';
       this.solicitacao.dataPagamento = new Date();
 
-      if (!this.solicitacao.historico) {
-        this.solicitacao.historico = [];
+      if (!this.solicitacao.historicos) {
+        this.solicitacao.historicos = [];
       }
 
-      this.solicitacao.historico.push({
+      this.solicitacao.historicos.push({
         dataHora: this.solicitacao.dataPagamento,
         descricao: 'Pagamento confirmado pelo cliente.',
-        funcionario: 'Cliente',
+        funcionario: {
+          idFuncionario: this.solicitacao?.cliente?.idCliente ?? 0,
+          nome: this.solicitacao?.cliente?.nome ?? ''
+        }
       });
 
       // Emit an event to notify parent component

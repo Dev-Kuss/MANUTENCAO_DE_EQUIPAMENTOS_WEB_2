@@ -6,6 +6,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+
 @Entity
 @Table(name = "orcamento")
 @Data
@@ -22,10 +23,13 @@ public class Orcamento {
     @JoinColumn(name = "id_solicitacao", nullable = false)
     private Solicitacao solicitacao;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 38, scale = 2)
     private BigDecimal valor;
 
-    @Column(nullable = false)
+    @Column(name = "descricao", nullable = true)
+    private String descricao;
+
+    @Column(name = "data_hora", nullable = false)
     private LocalDateTime dataHora;
 
     @ManyToOne(fetch = FetchType.EAGER)

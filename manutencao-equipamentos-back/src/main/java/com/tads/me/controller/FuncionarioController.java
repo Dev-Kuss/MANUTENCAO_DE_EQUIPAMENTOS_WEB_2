@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,7 +25,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/funcionario")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
 @Tag(name = "Funcionário", description = "Gerenciamento de Funcionários")
 class FuncionarioController {
 
@@ -73,7 +74,7 @@ class FuncionarioController {
             return new ResponseEntity<>(responseItems, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -87,7 +88,7 @@ class FuncionarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping("/read/{id}")
-    public ResponseEntity<Funcionario> getById(@PathVariable("id") Long id) {
+    public ResponseEntity<Funcionario> getById(@PathVariable("id") UUID id) {
         Optional<Funcionario> existingItemOptional = repository.findById(id);
 
         return existingItemOptional.map(funcionario -> new ResponseEntity<>(funcionario, HttpStatus.OK))
@@ -105,7 +106,7 @@ class FuncionarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PutMapping("/update/{id}")
-    public ResponseEntity<Funcionario> updateFuncionario(@PathVariable Long id, @RequestBody FuncionarioRequestDTO data) throws NoSuchAlgorithmException {
+    public ResponseEntity<Funcionario> updateFuncionario(@PathVariable UUID id, @RequestBody FuncionarioRequestDTO data) throws NoSuchAlgorithmException {
         Optional<Funcionario> funcionarioOptional = this.funcionarioService.updateFuncionario(id, data);
 
         return funcionarioOptional.map(ResponseEntity::ok)
@@ -122,7 +123,7 @@ class FuncionarioController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteFuncionario(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteFuncionario(@PathVariable UUID id) {
         try {
             repository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -1,30 +1,45 @@
 package com.tads.me.dto;
 
-import com.tads.me.entity.CategoriaEquipamento;
-import com.tads.me.entity.Cliente;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tads.me.entity.Solicitacao;
+import lombok.Builder;
+
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Builder
 public record SolicitacaoResponseDTO(
-        Long id_solicitacao,
-        LocalDateTime dataHora,
+        Long idSolicitacao,
         String descricaoEquipamento,
+        String descricaoDefeito,
+        LocalDateTime dataHora,
+        LocalDateTime dataHoraFinalizacao,
+        LocalDateTime dataPagamento,
         String estado,
-        CategoriaEquipamento categoria,
-        Cliente cliente
+        String clienteNome,
+        String categoriaNome,
+        String responsavelNome,
+        List<HistoricoSolicitacaoResponseDTO> historicos,
+        List<OrcamentoResponseDTO> orcamentos
 ) {
     public SolicitacaoResponseDTO(Solicitacao solicitacao) {
         this(
-                solicitacao.getId_solicitacao(),
-                solicitacao.getDataHora(),
+                solicitacao.getIdSolicitacao(),
                 solicitacao.getDescricaoEquipamento(),
+                solicitacao.getDescricaoDefeito(),
+                solicitacao.getDataHora(),
+                solicitacao.getDataHoraFinalizacao(),
+                solicitacao.getDataPagamento(),
                 solicitacao.getEstado(),
-                solicitacao.getCategoria(),
-                solicitacao.getCliente()
+                solicitacao.getCliente().getNome(),
+                solicitacao.getCategoria().getNome_categoria(),
+                solicitacao.getResponsavel() != null ? solicitacao.getResponsavel().getNome() : null,
+                solicitacao.getHistoricos().stream().map(HistoricoSolicitacaoResponseDTO::new).collect(Collectors.toList()),
+                solicitacao.getOrcamentos().stream().map(OrcamentoResponseDTO::new).collect(Collectors.toList())
         );
     }
 }

@@ -45,7 +45,7 @@ public class OrcamentoController {
             return ResponseEntity.ok(orcamento);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -65,7 +65,7 @@ public class OrcamentoController {
             return ResponseEntity.ok(orcamentos);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -90,7 +90,7 @@ public class OrcamentoController {
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Orcamento> updateOrcamento(@PathVariable("id") Long id, @RequestBody OrcamentoRequestDTO orcamentoRequestDTO) {
         try {
@@ -101,7 +101,7 @@ public class OrcamentoController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -111,7 +111,7 @@ public class OrcamentoController {
             @ApiResponse(responseCode = "404", description = "Orçamento não encontrado para exclusão"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") Long id) {
         try {

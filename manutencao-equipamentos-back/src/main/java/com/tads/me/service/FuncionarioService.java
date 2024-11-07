@@ -9,12 +9,10 @@ import com.tads.me.security.SHA256PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.UUID;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
+
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -42,7 +40,7 @@ public class FuncionarioService {
         User newUser = new User();
         newUser.setNome(data.nome());
         newUser.setPasswordHashSalt(passwordHashSalt);
-        newUser.setRoles(new HashSet<>(Set.of("ADMIN")));
+        newUser.setRoles(new HashSet<>(Set.of("EMPLOYEE")));
         userRepository.save(newUser);
 
         // Cria o Funcionario usando o construtor com FuncionarioRequestDTO e User
@@ -52,7 +50,7 @@ public class FuncionarioService {
     }
 
     @Transactional
-    public Optional<Funcionario> updateFuncionario(Long id, FuncionarioRequestDTO data) throws NoSuchAlgorithmException {
+    public Optional<Funcionario> updateFuncionario(UUID id, FuncionarioRequestDTO data) throws NoSuchAlgorithmException {
         Optional<Funcionario> funcionarioOptional = funcionarioRepository.findById(id);
         if (funcionarioOptional.isPresent()) {
             Funcionario existingFuncionario = funcionarioOptional.get();

@@ -10,6 +10,8 @@ import { SolicitarManutencaoComponent } from "../../components/solicitar-manuten
 import { MostrarOrcamentoComponent } from '../../components/mostrar-orcamento/mostrar-orcamento.component';
 import { VisualizarServicoComponent } from '../../components/visualizar-servico/visualizar-servico.component';
 import { PagarServicoComponent } from '../../components/pagar-servico/pagar-servico.component';
+import { HistoricoSolicitacaoService } from '../../services/historico-solicitacao.service';
+
 
 import { Solicitacao } from '../../models/solicitacao.model';
 import { SolicitacaoService } from '../../services/solicitacao.service';
@@ -53,13 +55,17 @@ export class ClienteHomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.carregarSolicitacoes();
+    const usuarioId = this.authService.getId(); // Supondo que este método exista
+
+    this.carregarSolicitacoes(usuarioId);
     this.nomeUsuario = this.authService.getNomeUsuario(); // Obtém o nome do usuário do AuthService
+
+
   }
 
   // Método para carregar as solicitações do back-end
-  carregarSolicitacoes(): void {
-    this.solicitacaoService.getSolicitacoes().subscribe(
+  carregarSolicitacoes(usuarioId: string | null): void {
+    this.solicitacaoService.getSolicitacoes(usuarioId).subscribe(
       (solicitacoes) => {
         this.solicitacoes = solicitacoes;
       },
@@ -114,14 +120,17 @@ export class ClienteHomeComponent implements OnInit {
     const previousEstado = solicitacao.estado;
     solicitacao.estado = 'APROVADA';
 
-    if (!solicitacao.historico) {
-      solicitacao.historico = [];
+    if (!solicitacao.historicos) {
+      solicitacao.historicos = [];
     }
 
-    solicitacao.historico.push({
+    solicitacao.historicos.push({
       dataHora: new Date(),
       descricao: `Solicitação passou de ${previousEstado} para APROVADA.`,
-      funcionario: 'Cliente',
+      funcionario: {
+        idFuncionario: 0, // or appropriate ID for client
+        nome: 'Cliente'
+      }
     });
 
     alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');

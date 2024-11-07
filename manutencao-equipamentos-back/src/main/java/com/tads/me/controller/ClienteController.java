@@ -78,7 +78,7 @@ class ClienteController {
             return new ResponseEntity<>(responseItems, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -96,27 +96,27 @@ class ClienteController {
     }
 
     @Operation(summary = "Atualiza um cliente", description = "Acesso restrito a ADMIN.")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PutMapping("/update/{id}")
-    public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody ClienteRequestDTO data) {
+    public ResponseEntity<Cliente> updateCliente(@PathVariable UUID id, @RequestBody ClienteRequestDTO data) {
         Optional<Cliente> clienteOptional = this.clienteService.updateCliente(id, data);
         return clienteOptional.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @Operation(summary = "Exclui um cliente", description = "Acesso restrito a ADMIN.")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Cliente excluído com sucesso"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCliente(@PathVariable UUID id) {
         try {
             repository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

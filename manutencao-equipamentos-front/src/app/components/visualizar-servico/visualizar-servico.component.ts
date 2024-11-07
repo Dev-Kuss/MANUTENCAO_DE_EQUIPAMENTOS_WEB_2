@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Solicitacao } from '../../models/solicitacao.model';
+import { Solicitacao, Orcamento } from '../../models/solicitacao.model';
 
 @Component({
   selector: 'app-visualizar-servico',
@@ -11,19 +11,23 @@ import { Solicitacao } from '../../models/solicitacao.model';
 
 export class VisualizarServicoComponent {
   @Input() solicitacao: Solicitacao | null = null;
+  @Input() orcamento: Orcamento | null = null;
 
   resgatarServico(solicitacao: Solicitacao) {
     const previousEstado = solicitacao.estado;
     solicitacao.estado = 'APROVADA';
   
-    if (!solicitacao.historico) {
-      solicitacao.historico = [];
+    if (!solicitacao.historicos) {
+        solicitacao.historicos = [];
     }
   
-    solicitacao.historico.push({
-      dataHora: new Date(),
-      descricao: `Solicitação passou de ${previousEstado} para APROVADA.`,
-      funcionario: 'Cliente',
+    solicitacao.historicos.push({
+        dataHora: new Date(),
+        descricao: `Solicitação passou de ${previousEstado} para APROVADA.`,
+        funcionario: {
+            idFuncionario: 1, // ajuste conforme necessário
+            nome: 'Cliente'
+        }
     });
   
     alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');

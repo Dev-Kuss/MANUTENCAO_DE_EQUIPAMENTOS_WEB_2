@@ -12,16 +12,16 @@
             <label class="block text-sm font-medium text-gray-600">Data e Hora</label>
             <p class="mt-1 text-gray-800">{{ solicitacao?.dataHora | date: 'short' }}</p>
         </div>
-        <div *ngIf="solicitacao?.precoOrcado">
+        <div *ngIf="orcamento?.valor">
             <label class="block text-sm font-medium text-gray-600">Preço Orçado</label>
-            <p class="mt-1 text-gray-800">{{ solicitacao?.precoOrcado | currency:'BRL' }}</p>
+            <p class="mt-1 text-gray-800">{{ orcamento?.valor| currency:'BRL' }}</p>
         </div>
     </div>
 
     <div>
         <h3 class="text-xl font-semibold text-gray-700 mt-6">Histórico</h3>
         <ul class="mt-2 space-y-2">
-            <li *ngFor="let item of solicitacao?.historico">
+            <li *ngFor="let item of solicitacao?.historicos">
                 <div class="p-2 bg-gray-100 rounded-md">
                     <p class="text-sm text-gray-600">
                         <strong>{{ item.dataHora | date: 'short' }}</strong> - {{ item.funcionario }}

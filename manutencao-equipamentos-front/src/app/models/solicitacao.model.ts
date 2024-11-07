@@ -1,23 +1,46 @@
 export interface Solicitacao {
+    idSolicitacao?: number;
     dataHora: Date;
     descricaoEquipamento: string;
-    estado: string;
-    nomeCliente?: string;
-    precoOrcado?: number;
-    historico?: Historico[];
-    dataPagamento?: Date;
     descricaoDefeito?: string;
-    
-    id?: number;
-    destinoRedirecionamento?: string;
+    estado: string;
+    dataPagamento?: Date;
     dataHoraFinalizacao?: Date;
-
-    categoria?: string;
-    valor?: number;
+    
+    categoria: {
+        idCategoria: number;
+        nome: string;
+    };
+    
+    cliente?: {
+        idCliente: number;
+        nome: string;
+    };
+    
+    responsavel?: {
+        idFuncionario: number;
+        nome: string;
+    };
+    
+    historicos?: HistoricoSolicitacao[];
+    orcamentos?: Orcamento[];
 }
 
-export interface Historico {
+export interface HistoricoSolicitacao {
+    idHistorico?: number;
     dataHora: Date;
     descricao: string;
-    funcionario: string;
+    destinoRedirecionamento?: string;
+    funcionario: {
+        idFuncionario: number;
+        nome: string;
+    };
+}
+
+export interface Orcamento {
+    idOrcamento?: number;
+    valor: number;
+    descricao: string;
+    dataHora: Date;
+    aprovado?: boolean;
 }
