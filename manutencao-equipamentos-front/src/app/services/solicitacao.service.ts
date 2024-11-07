@@ -18,10 +18,6 @@ export class SolicitacaoService {
     return this.http.get<Solicitacao[]>(url);
   }
 
-  getSolicitacaoById(id: string): Observable<Solicitacao> {
-    return this.http.get<Solicitacao>(`${this.apiUrl}/read/${id}`);
-  }
-
   createSolicitacao(solicitacao: Solicitacao): Observable<Solicitacao> {
     return this.http.post<Solicitacao>(`${this.apiUrl}/create`, solicitacao);
   }

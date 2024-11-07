@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Solicitacao } from '../../models/solicitacao.model'; // Importe correto para o modelo Solicitacao
+import { Solicitacao } from '../../models/solicitacao.model';
+import { SolicitacaoService } from '../../services/solicitacao.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -16,6 +17,8 @@ import { FormsModule } from '@angular/forms';
 export class EfetuarOrcamentoComponent {
   @Input() solicitacao: Solicitacao | null = null;
   valorOrcamento: number | null = null;
+
+  constructor(private solicitacaoService: SolicitacaoService) {}
 
   confirmarOrcamento() {
     console.log(this.solicitacao)
@@ -41,6 +44,15 @@ export class EfetuarOrcamentoComponent {
   }
 
   salvarOrcamento(orcamento: any) {
-    // Lógica para salvar o orçamento (chamada a um serviço ou API)
+    if (this.solicitacao && this.solicitacao.idSolicitacao) {
+      this.solicitacaoService.updateSolicitacao(this.solicitacao.idSolicitacao, this.solicitacao).subscribe({
+        next: (response) => {
+          console.log('Orçamento registrado com sucesso:', response);
+        },
+        error: (error) => {
+          console.error('Erro ao registrar orçamento:', error);
+        }
+      });
+    }
   }
 }

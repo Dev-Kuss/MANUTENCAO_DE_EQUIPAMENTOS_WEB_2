@@ -20,9 +20,8 @@ public record SolicitacaoResponseDTO(
         LocalDateTime dataHoraFinalizacao,
         LocalDateTime dataPagamento,
         String estado,
-        String clienteNome,
         String categoriaNome,
-        String responsavelNome,
+        ClienteResponseDTO cliente,
         List<HistoricoSolicitacaoResponseDTO> historicos,
         List<OrcamentoResponseDTO> orcamentos
 ) {
@@ -35,9 +34,8 @@ public record SolicitacaoResponseDTO(
                 solicitacao.getDataHoraFinalizacao(),
                 solicitacao.getDataPagamento(),
                 solicitacao.getEstado(),
-                solicitacao.getCliente().getNome(),
                 solicitacao.getCategoria().getNome_categoria(),
-                solicitacao.getResponsavel() != null ? solicitacao.getResponsavel().getNome() : null,
+                new ClienteResponseDTO(solicitacao.getCliente()),
                 solicitacao.getHistoricos().stream().map(HistoricoSolicitacaoResponseDTO::new).collect(Collectors.toList()),
                 solicitacao.getOrcamentos().stream().map(OrcamentoResponseDTO::new).collect(Collectors.toList())
         );
