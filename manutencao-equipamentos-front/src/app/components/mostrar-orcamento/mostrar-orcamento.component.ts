@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { BaseModalComponent } from '../base-modal/base-modal.component';
 import { MostrarOrcamentoService } from '../../services/mostrar-orcamento.service';
-import { Solicitacao, Orcamento } from '../../models/solicitacao.model';
+import { Solicitacao } from '../../models/solicitacao.model';
 
 
 @Component({
@@ -16,7 +16,6 @@ import { Solicitacao, Orcamento } from '../../models/solicitacao.model';
 
 export class MostrarOrcamentoComponent {
   @Input() solicitacao: Solicitacao | null = null;
-  @Input() orcamento: Orcamento | null = null;
   
 
   constructor(

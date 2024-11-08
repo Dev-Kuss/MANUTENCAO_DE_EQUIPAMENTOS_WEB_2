@@ -8,6 +8,7 @@ import { Solicitacao } from '../models/solicitacao.model';
 })
 export class SolicitacaoService {
   private apiUrl = 'http://localhost:8080/solicitacao'; // URL base do endpoint de solicitações
+  private orcamentoUrl = 'http://localhost:8080/orcamento'; // Nova URL
 
   constructor(private http: HttpClient) {}
 
@@ -28,5 +29,9 @@ export class SolicitacaoService {
 
   deleteSolicitacao(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/delete/${id}`);
+  }
+
+  createOrcamento(orcamento: any): Observable<any> {
+    return this.http.post<any>(`${this.orcamentoUrl}/create`, orcamento);
   }
 }

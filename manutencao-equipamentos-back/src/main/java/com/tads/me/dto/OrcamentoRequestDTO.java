@@ -2,10 +2,13 @@ package com.tads.me.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record OrcamentoRequestDTO(
-        Long idSolicitacao,
         BigDecimal valor,
+        String descricao,
         LocalDateTime dataHora,
-        Long idFuncionario
+        Boolean aprovado,
+        Long solicitacaoId,
+        UUID funcionarioId
 ) {}

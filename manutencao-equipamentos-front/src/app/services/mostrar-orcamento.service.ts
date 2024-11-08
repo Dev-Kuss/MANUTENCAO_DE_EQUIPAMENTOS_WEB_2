@@ -1,28 +1,30 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Solicitacao } from '../models/solicitacao.model';
 
-interface Solicitacao {
-  dataHora: Date;
-  descricaoEquipamento: string;
-  estado: string;
-  precoOrcado?: number;
-}
 
 @Injectable({
   providedIn: 'root',
 })
-
 export class MostrarOrcamentoService {
-  constructor() {}
+  private apiUrl = `http://localhost:8080/solicitacao`;
 
-  aprovarSolicitacao(solicitacao: Solicitacao) {
+  constructor(private http: HttpClient) {}
+
+  aprovarSolicitacao(solicitacao: Solicitacao): Observable<Solicitacao> {
     solicitacao.estado = 'ARRUMADA';
-    console.log('Serviço aprovado:', solicitacao);
-    // TODO: Chamada ao back-end
+    return this.http.put<Solicitacao>(
+      `${this.apiUrl}/update/${solicitacao.idSolicitacao}`,
+      solicitacao
+    );
   }
 
-  rejeitarSolicitacao(solicitacao: Solicitacao) {
+  rejeitarSolicitacao(solicitacao: Solicitacao): Observable<Solicitacao> {
     solicitacao.estado = 'REJEITADA';
-    console.log('Serviço rejeitado:', solicitacao);
-    // TODO: Chamada ao back-end
+    return this.http.put<Solicitacao>(
+      `${this.apiUrl}/update/${solicitacao.idSolicitacao}`,
+      solicitacao
+    );
   }
 }
