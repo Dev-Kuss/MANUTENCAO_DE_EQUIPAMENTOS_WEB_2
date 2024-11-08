@@ -1,15 +1,22 @@
-FROM node:18-buster
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files
+# Instalar dependências como root
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
+RUN npm install -g @angular/cli@17
 
-# Install Angular CLI globally
-RUN npm install -g @angular/cli
+# Copiar arquivos do projeto
+COPY . .
+
+# Criar diretório .angular e definir permissões
+RUN mkdir -p /app/.angular/cache && \
+    chmod -R 777 /app/.angular && \
+    chmod -R 777 /app/node_modules
+
+# Manter como root para execução (temporariamente)
+USER root
 
 # Expose ports
 EXPOSE 8081

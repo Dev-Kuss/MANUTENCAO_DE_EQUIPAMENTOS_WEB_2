@@ -45,6 +45,7 @@ services:
       - CHOKIDAR_USEPOLLING=true
     networks:
       - app-network
+    user: "node:node"
 
 networks:
   app-network:
