@@ -38,3 +38,13 @@
 (V) Datas em formato brasileiro;
 ( ) Campos possuires máscara (acho que só valor/precoOrcado)
 (V) Remoção com confirmação;
+
+### VALIDAÇÃO RAZER
+
+[ ] - Relatórios precisam estar alinhados com RF;
+[ ] - Separar tela de página inicial de funcionário em solicitações (ABERTAS) redirecionadas a ele, e solicitações totais;
+[ ] - Botão de logout;
+[ ] - Fechar modal ao realizar manutenção;
+[ ] - Toast ao realizar manutenção;
+[!] - Validação de formulários;
+[ ] - Máscara em CPF;

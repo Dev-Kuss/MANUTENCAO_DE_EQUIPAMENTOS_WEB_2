@@ -220,28 +220,39 @@ export class FuncionarioHomeComponent {
   }
 
   filtrarSolicitacoesPorData(): Solicitacao[] {
-    if (this.dataInicio && this.dataFim) {
-      return this.solicitacoes.filter(solicitacao => {
-        const dataSolicitacao = solicitacao.dataHora.getTime();
-        return dataSolicitacao >= this.dataInicio!.getTime() && dataSolicitacao <= this.dataFim!.getTime();
-      });
-    }
-    return this.solicitacoes;
+    const inicio = this.dataInicio ? new Date(this.dataInicio).setHours(0, 0, 0, 0) : null;
+    const fim = this.dataFim ? new Date(this.dataFim).setHours(23, 59, 59, 999) : null;
+
+    return this.solicitacoes.filter(solicitacao => {
+      const dataSolicitacao = new Date(solicitacao.dataHora).getTime();
+
+      // Check if dataInicio and dataFim are set, and filter accordingly
+      if (inicio && fim) {
+        return dataSolicitacao >= inicio && dataSolicitacao <= fim;
+      } else if (inicio) {
+        return dataSolicitacao >= inicio;
+      } else if (fim) {
+        return dataSolicitacao <= fim;
+      } else {
+        return true; // Include all if no dates are set
+      }
+    });
   }
 
   gerarRelatorioReceitas() {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
 
-    // Centralizando o título
+    // Centralizing the title
     doc.text('Relatório de Receitas por Período', pageWidth / 2, 10, { align: 'center' });
 
     const solicitacoesFiltradas = this.filtrarSolicitacoesPorData();
 
+    // Group solicitations by day
     const groupedByDate = solicitacoesFiltradas.reduce((acc, curr) => {
-      // Apenas incluir se precoOrcado existir
+      // Only include if 'precoOrcado' exists (assuming this is the revenue)
       if (curr.precoOrcado !== undefined) {
-        const dateKey = curr.dataHora.toISOString().split('T')[0];
+        const dateKey = new Date(curr.dataHora).toISOString().split('T')[0];
         if (!acc[dateKey]) acc[dateKey] = [];
         acc[dateKey].push(curr);
       }
@@ -251,11 +262,16 @@ export class FuncionarioHomeComponent {
     const dataTable: any[] = [];
 
     for (const [date, solicitacoes] of Object.entries(groupedByDate)) {
-      const totalDia = solicitacoes.reduce((sum, s) => sum + (s.precoOrcado ?? 0), 0); // Usando precoOrcado
+      const totalDia = solicitacoes.reduce((sum, s) => sum + (s.precoOrcado ?? 0), 0);
       solicitacoes.forEach(solicitacao => {
-        dataTable.push([date, solicitacao.nomeCliente, solicitacao.descricaoEquipamento, `R$ ${solicitacao.precoOrcado}`]);
+        dataTable.push([
+          date,
+          solicitacao.nomeCliente,
+          solicitacao.descricaoEquipamento,
+          `R$ ${solicitacao.precoOrcado}`
+        ]);
       });
-      dataTable.push([`${date} - Total`, '', '', `R$ ${totalDia}`]); // Adicionando R$
+      dataTable.push([`${date} - Total`, '', '', `R$ ${totalDia}`]);
     }
 
     (doc as any).autoTable({
@@ -266,36 +282,33 @@ export class FuncionarioHomeComponent {
     doc.save('relatorio-receitas-periodo.pdf');
   }
 
-  // RF020 - Geração de Relatório de Receitas por Categoria
   gerarRelatorioReceitasPorCategoria() {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
 
-    // Centralizando o título
+    // Centralizing the title
     doc.text('Relatório de Receitas por Categoria', pageWidth / 2, 10, { align: 'center' });
 
-    const groupedByCategory = this.solicitacoes.reduce((acc, curr) => {
-      // Apenas incluir se precoOrcado existir
-      if (curr.precoOrcado !== undefined) {
-        const categoria = curr.categoria ?? 'Sem Categoria'; // Garantindo que haja um valor para categoria
-        if (!acc[categoria]) acc[categoria] = [];
-        acc[categoria].push(curr);
-      }
+    // Include all solicitations with a valid `precoOrcado`
+    const solicitacoesComReceita = this.solicitacoes.filter(solicitacao => solicitacao.precoOrcado !== undefined);
+
+    // Group solicitations by category
+    const groupedByCategory = solicitacoesComReceita.reduce((acc, curr) => {
+      const categoria = curr.categoria ?? 'Sem Categoria'; // Ensure there's a category value
+      if (!acc[categoria]) acc[categoria] = 0;
+      acc[categoria] += curr.precoOrcado ?? 0;
       return acc;
-    }, {} as { [key: string]: Solicitacao[] });
+    }, {} as { [key: string]: number });
 
     const dataTable: any[] = [];
 
-    for (const [categoria, solicitacoes] of Object.entries(groupedByCategory)) {
-      const totalCategoria = solicitacoes.reduce((sum, s) => sum + (s.precoOrcado ?? 0), 0); // Usando precoOrcado
-      solicitacoes.forEach(solicitacao => {
-        dataTable.push([categoria, solicitacao.nomeCliente, solicitacao.descricaoEquipamento, `R$ ${solicitacao.precoOrcado}`]);
-      });
-      dataTable.push([`${categoria} - Total`, '', '', `R$ ${totalCategoria}`]); // Adicionando R$
+    // Add rows for each category and its total
+    for (const [categoria, total] of Object.entries(groupedByCategory)) {
+      dataTable.push([categoria, `R$ ${total}`]);
     }
 
     (doc as any).autoTable({
-      head: [['Categoria', 'Cliente', 'Descrição', 'Valor']],
+      head: [['Categoria', 'Total']],
       body: dataTable,
     });
 
