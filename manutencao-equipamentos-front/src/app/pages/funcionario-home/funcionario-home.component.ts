@@ -13,7 +13,8 @@ import {
   faWrench,
   faUserPlus,
   faFilePdf,
-  faCheckCircle
+  faCheckCircle,
+  faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
@@ -59,7 +60,9 @@ export class FuncionarioHomeComponent {
   faWrench = faWrench;
   faUserPlus = faUserPlus;
   faFilePdf = faFilePdf;
-  faCheckCircle = faCheckCircle
+  faCheckCircle = faCheckCircle;
+  faSignOutAlt = faSignOutAlt;
+
 
   // Modals
   isOrcamentoModalOpen = false;
@@ -316,4 +319,14 @@ export class FuncionarioHomeComponent {
 
     doc.save('relatorio-receitas-categoria.pdf');
   }
+
+  logout() {
+    // Limpa qualquer dado de autenticação armazenado (exemplo: localStorage ou sessionStorage)
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+
+    // Redireciona para a página de login
+    window.location.href = '/login'; // Substitua por uma rota Angular caso esteja usando roteamento
+  }
+
 }

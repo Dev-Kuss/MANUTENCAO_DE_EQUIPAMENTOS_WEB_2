@@ -41,7 +41,7 @@
 
 ### VALIDAÇÃO RAZER
 
-[ ] - Relatórios precisam estar alinhados com RF;
+[!] - Relatórios precisam estar alinhados com RF;
 [ ] - Separar tela de página inicial de funcionário em solicitações (ABERTAS) redirecionadas a ele, e solicitações totais;
 [ ] - Botão de logout;
 [ ] - Fechar modal ao realizar manutenção;
