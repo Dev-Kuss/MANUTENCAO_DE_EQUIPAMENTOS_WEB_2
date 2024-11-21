@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule  } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BaseModalComponent } from '../base-modal/base-modal.component';
+import { CategoriaService } from '../../services/categoria.service';
 
 @Component({
   selector: 'app-solicitar-manutencao',
@@ -14,9 +15,9 @@ export class SolicitarManutencaoComponent implements OnInit {
   @Input() fecharModal!: () => void;
   
   solicitacaoForm: FormGroup;
-  categorias = ['Eletrônico', 'Eletrodoméstico', 'Mecânico', 'Outro']; 
+  categorias: string[] = [];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private categoriaService: CategoriaService) {
     this.solicitacaoForm = this.fb.group({
       descricaoEquipamento: ['', [Validators.required]],
       categoriaEquipamento: ['', [Validators.required]],
@@ -24,7 +25,11 @@ export class SolicitarManutencaoComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.categoriaService.getCategorias().subscribe(categorias => {
+      this.categorias = categorias.map(c => c.nome_categoria);
+    });
+  }
   
   registrarSolicitacao() {
     if (this.solicitacaoForm.valid) {
