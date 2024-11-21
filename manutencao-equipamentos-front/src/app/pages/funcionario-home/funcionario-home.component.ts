@@ -250,7 +250,6 @@ export class FuncionarioHomeComponent {
 
     // Group solicitations by day
     const groupedByDate = solicitacoesFiltradas.reduce((acc, curr) => {
-      // Only include if 'precoOrcado' exists (assuming this is the revenue)
       if (curr.precoOrcado !== undefined) {
         const dateKey = new Date(curr.dataHora).toISOString().split('T')[0];
         if (!acc[dateKey]) acc[dateKey] = [];
@@ -260,19 +259,22 @@ export class FuncionarioHomeComponent {
     }, {} as { [key: string]: Solicitacao[] });
 
     const dataTable: any[] = [];
+    let totalGeral = 0; // Total revenue across all periods
 
     for (const [date, solicitacoes] of Object.entries(groupedByDate)) {
-      const totalDia = solicitacoes.reduce((sum, s) => sum + (s.precoOrcado ?? 0), 0);
       solicitacoes.forEach(solicitacao => {
         dataTable.push([
           date,
-          solicitacao.nomeCliente,
+          solicitacao.nomeCliente ?? 'N/A',
           solicitacao.descricaoEquipamento,
           `R$ ${solicitacao.precoOrcado}`
         ]);
+        totalGeral += solicitacao.precoOrcado ?? 0; // Accumulate the total revenue
       });
-      dataTable.push([`${date} - Total`, '', '', `R$ ${totalDia}`]);
     }
+
+    // Add the overall total row
+    dataTable.push(['', '', 'Total Geral', `R$ ${totalGeral}`]);
 
     (doc as any).autoTable({
       head: [['Data', 'Cliente', 'Descrição', 'Valor']],
