@@ -37,15 +37,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8081:8081"
-      - "9229:9229"  # porta para debugging
     volumes:
-      - ./manutencao-equipamentos-front:/app  # monta o código fonte
-      - /app/node_modules  # preserva node_modules do container
+      - ./manutencao-equipamentos-front:/app
+      - /app/node_modules
     environment:
-      NODE_ENV: development
-    command: npm start
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
     networks:
       - app-network
+    user: "node:node"
 
 networks:
   app-network:

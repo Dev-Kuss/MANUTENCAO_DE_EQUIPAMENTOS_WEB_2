@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Solicitacao } from '../../models/solicitacao.model'; // Importe correto para o modelo Solicitacao
+import { Solicitacao } from '../../models/solicitacao.model';
+import { SolicitacaoService } from '../../services/solicitacao.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -17,30 +18,45 @@ export class EfetuarOrcamentoComponent {
   @Input() solicitacao: Solicitacao | null = null;
   valorOrcamento: number | null = null;
 
+  constructor(private solicitacaoService: SolicitacaoService) {}
+
   confirmarOrcamento() {
-    console.log(this.solicitacao)
-
     if (this.valorOrcamento && this.solicitacao) {
-        const novoOrcamento = {
-            valor: this.valorOrcamento,
-            descricao: 'Orçamento inicial',
-            dataHora: new Date(),
-            aprovado: false
-        };
+      const novoOrcamento = {
+        valor: this.valorOrcamento,
+        descricao: 'Orçamento inicial',
+        dataHora: new Date(),
+        aprovado: false,
+        solicitacaoId: this.solicitacao.idSolicitacao,
+        funcionarioId: localStorage.getItem('id')
+      };
 
-        if (!this.solicitacao.orcamentos) {
-            this.solicitacao.orcamentos = [];
-        }
-        
-        this.solicitacao.orcamentos.push(novoOrcamento);
+      if (this.solicitacao.idSolicitacao) {
         this.solicitacao.estado = 'ORÇADA';
-
-        console.log('Orçamento registrado com sucesso:', novoOrcamento);
-        this.salvarOrcamento(novoOrcamento);
+        
+        this.solicitacaoService.updateSolicitacao(
+          this.solicitacao.idSolicitacao,
+          this.solicitacao
+        ).subscribe({
+          next: () => {
+            this.solicitacaoService.createOrcamento(novoOrcamento).subscribe({
+              next: (response) => {
+                console.log('Orçamento registrado com sucesso:', response);
+                if (!this.solicitacao!.orcamentos) {
+                  this.solicitacao!.orcamentos = [];
+                }
+                this.solicitacao!.orcamentos.push(response);
+              },
+              error: (error) => {
+                console.error('Erro ao registrar orçamento:', error);
+              }
+            });
+          },
+          error: (error) => {
+            console.error('Erro ao atualizar solicitação:', error);
+          }
+        });
+      }
     }
-  }
-
-  salvarOrcamento(orcamento: any) {
-    // Lógica para salvar o orçamento (chamada a um serviço ou API)
   }
 }

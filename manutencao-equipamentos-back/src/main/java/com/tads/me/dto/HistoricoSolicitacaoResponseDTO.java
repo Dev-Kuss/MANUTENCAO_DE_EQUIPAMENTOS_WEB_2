@@ -9,6 +9,7 @@ public record HistoricoSolicitacaoResponseDTO(
         Long id,
         LocalDateTime dataHora,
         String descricao,
+        String destinoRedirecionamento,
         String nomeFuncionario,
         String nomeCliente,
         Long solicitacaoId
@@ -18,6 +19,7 @@ public record HistoricoSolicitacaoResponseDTO(
                 historico.getId(),
                 historico.getDataHora(),
                 historico.getDescricao(),
+                historico.getDestinoRedirecionamento(),
                 historico.getFuncionario() != null ? historico.getFuncionario().getNome() : null,
                 historico.getSolicitacao().getCliente().getNome(),
                 historico.getSolicitacao().getIdSolicitacao()

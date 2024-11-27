@@ -7,6 +7,7 @@ export interface Solicitacao {
     dataPagamento?: Date;
     dataHoraFinalizacao?: Date;
     
+    
     categoria: {
         idCategoria: number;
         nome: string;

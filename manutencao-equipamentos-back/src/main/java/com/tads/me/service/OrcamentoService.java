@@ -1,9 +1,13 @@
 package com.tads.me.service;
 
 import com.tads.me.entity.Orcamento;
+import com.tads.me.entity.Solicitacao;
+import com.tads.me.entity.Funcionario;
 import com.tads.me.dto.OrcamentoRequestDTO;
 import com.tads.me.dto.OrcamentoResponseDTO;
 import com.tads.me.repository.OrcamentoRepository;
+import com.tads.me.repository.SolicitacaoRepository;
+import com.tads.me.repository.FuncionarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,16 +22,35 @@ public class OrcamentoService {
     @Autowired
     private OrcamentoRepository repository;
 
+    @Autowired
+    private SolicitacaoRepository solicitacaoRepository;
+
+    @Autowired
+    private FuncionarioRepository funcionarioRepository;
+
     @Transactional
     public Orcamento createOrcamento(OrcamentoRequestDTO data) {
+        if (data.solicitacaoId() == null) {
+            throw new IllegalArgumentException("ID da solicitação não pode ser nulo");
+        }
+        if (data.funcionarioId() == null) {
+            throw new IllegalArgumentException("ID do funcionário não pode ser nulo");
+        }
+
+        Solicitacao solicitacao = solicitacaoRepository.findById(data.solicitacaoId())
+            .orElseThrow(() -> new RuntimeException("Solicitação não encontrada"));
+
+        Funcionario funcionario = funcionarioRepository.findById(data.funcionarioId())
+            .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
+
         Orcamento orcamento = Orcamento.builder()
                 .valor(data.valor())
                 .dataHora(data.dataHora())
-                .solicitacao(null)  // Atribuir corretamente a solicitação
-                .funcionario(null)  // Atribuir corretamente o funcionário
+                .solicitacao(solicitacao)
+                .funcionario(funcionario)
                 .build();
-        repository.save(orcamento);
-        return orcamento;
+
+        return repository.save(orcamento);
     }
 
     public List<OrcamentoResponseDTO> listarOrcamentos() {

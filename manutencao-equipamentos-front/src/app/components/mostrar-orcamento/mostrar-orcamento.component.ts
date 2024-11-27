@@ -4,13 +4,8 @@ import { Router } from '@angular/router';
 
 import { BaseModalComponent } from '../base-modal/base-modal.component';
 import { MostrarOrcamentoService } from '../../services/mostrar-orcamento.service';
+import { Solicitacao } from '../../models/solicitacao.model';
 
-interface Solicitacao {
-  dataHora: Date;
-  descricaoEquipamento: string;
-  estado: string;
-  precoOrcado?: number;
-}
 
 @Component({
   selector: 'app-mostrar-orcamento',
@@ -21,7 +16,7 @@ interface Solicitacao {
 
 export class MostrarOrcamentoComponent {
   @Input() solicitacao: Solicitacao | null = null;
-  precoOrcado: number | undefined;
+  
 
   constructor(
     private mostrarOrcamentoService: MostrarOrcamentoService,
@@ -29,19 +24,17 @@ export class MostrarOrcamentoComponent {
   ) { }
 
   ngOnInit(): void {
-    if (this.solicitacao) {
-      this.precoOrcado = this.solicitacao.precoOrcado;
-    }
+
+    
   }
 
   aprovarServico() {
-    if (this.solicitacao) {
+    if (this.solicitacao && this.solicitacao.orcamentos?.[0]?.valor !== undefined) {
       this.solicitacao.estado = 'ARRUMADA';
+
       console.log('Serviço aprovado:', this.solicitacao);
 
-      if (this.solicitacao.precoOrcado !== undefined) {
-        alert(`Serviço Aprovado no Valor R$ ${this.solicitacao.precoOrcado.toFixed(2)}`);
-      }
+      alert(`Serviço Aprovado no Valor R$ ${this.solicitacao.orcamentos[0].valor.toFixed(2)}`);
     }
   }
 

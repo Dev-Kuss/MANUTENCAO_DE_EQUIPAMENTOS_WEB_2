@@ -55,6 +55,7 @@ public class HistoricoSolicitacaoService {
         HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
                 .dataHora(LocalDateTime.now())
                 .descricao(data.descricao())
+                .destinoRedirecionamento(data.destinoRedirecionamento())
                 .funcionario(funcionario)
                 .cliente(cliente)
                 .solicitacao(solicitacao)
@@ -88,6 +89,7 @@ public class HistoricoSolicitacaoService {
             historico.getId(),
             historico.getDataHora(),
             historico.getDescricao(),
+            historico.getDestinoRedirecionamento(),
             historico.getFuncionario() != null ? historico.getFuncionario().getNome() : null,
             historico.getCliente() != null ? historico.getCliente().getNome() : null,
             historico.getSolicitacao().getIdSolicitacao()

@@ -8,15 +8,15 @@ import { Solicitacao } from '../models/solicitacao.model';
 })
 export class SolicitacaoService {
   private apiUrl = 'http://localhost:8080/solicitacao'; // URL base do endpoint de solicitações
+  private orcamentoUrl = 'http://localhost:8080/orcamento'; // Nova URL
 
   constructor(private http: HttpClient) {}
 
-  getSolicitacoes(usuarioId: string | null): Observable<Solicitacao[]> {
-    return this.http.get<Solicitacao[]>(`${this.apiUrl}/read-all?usuarioId=${usuarioId}`);
-  }
-
-  getSolicitacaoById(id: string): Observable<Solicitacao> {
-    return this.http.get<Solicitacao>(`${this.apiUrl}/read/${id}`);
+  getSolicitacoes(usuarioId?: string | null): Observable<Solicitacao[]> {
+    const url = usuarioId 
+      ? `${this.apiUrl}/read-all?usuarioId=${usuarioId}`
+      : `${this.apiUrl}/read-all`;
+    return this.http.get<Solicitacao[]>(url);
   }
 
   createSolicitacao(solicitacao: Solicitacao): Observable<Solicitacao> {
@@ -29,5 +29,9 @@ export class SolicitacaoService {
 
   deleteSolicitacao(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/delete/${id}`);
+  }
+
+  createOrcamento(orcamento: any): Observable<any> {
+    return this.http.post<any>(`${this.orcamentoUrl}/create`, orcamento);
   }
 }

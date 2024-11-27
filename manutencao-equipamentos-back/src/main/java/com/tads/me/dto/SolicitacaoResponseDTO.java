@@ -1,6 +1,5 @@
 package com.tads.me.dto;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,7 +7,6 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tads.me.entity.Solicitacao;
 import lombok.Builder;
-
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Builder
@@ -20,9 +18,8 @@ public record SolicitacaoResponseDTO(
         LocalDateTime dataHoraFinalizacao,
         LocalDateTime dataPagamento,
         String estado,
-        String clienteNome,
-        String categoriaNome,
-        String responsavelNome,
+        CategoriaEquipamentoResponseDTO categoria, // Usando CategoriaEquipamentoResponseDTO
+        ClienteResponseDTO cliente,
         List<HistoricoSolicitacaoResponseDTO> historicos,
         List<OrcamentoResponseDTO> orcamentos
 ) {
@@ -35,11 +32,11 @@ public record SolicitacaoResponseDTO(
                 solicitacao.getDataHoraFinalizacao(),
                 solicitacao.getDataPagamento(),
                 solicitacao.getEstado(),
-                solicitacao.getCliente().getNome(),
-                solicitacao.getCategoria().getNome_categoria(),
-                solicitacao.getResponsavel() != null ? solicitacao.getResponsavel().getNome() : null,
+                new CategoriaEquipamentoResponseDTO(solicitacao.getCategoria()), // Usando CategoriaEquipamentoResponseDTO
+                new ClienteResponseDTO(solicitacao.getCliente()),
                 solicitacao.getHistoricos().stream().map(HistoricoSolicitacaoResponseDTO::new).collect(Collectors.toList()),
                 solicitacao.getOrcamentos().stream().map(OrcamentoResponseDTO::new).collect(Collectors.toList())
         );
+ 
     }
 }

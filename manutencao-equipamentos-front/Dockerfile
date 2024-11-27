@@ -1,22 +1,27 @@
-# Use a Node.js version that's compatible with Angular CLI
-FROM node:18.20.0-alpine
+FROM node:20-alpine
 
-# Set working directory to the Angular project root
 WORKDIR /app
 
-# Copy package files
+# Instalar dependências como root
 COPY package*.json ./
-
-# Install dependencies (including dev dependencies)
 RUN npm install
+RUN npm install -g @angular/cli@17
 
-# Install Angular CLI globally to avoid workspace issues
-RUN npm install -g @angular/cli
+# Copiar arquivos do projeto
+COPY . .
 
-# Expose the port Angular uses
+# Criar diretório .angular e definir permissões
+RUN mkdir -p /app/.angular/cache && \
+    chmod -R 777 /app/.angular && \
+    chmod -R 777 /app/node_modules
+
+# Manter como root para execução (temporariamente)
+USER root
+
+# Expose ports
 EXPOSE 8081
 EXPOSE 9229
 
-# Set the default command to serve the Angular app
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200", "--poll=2000"]
+# We'll let docker-compose handle the command
+CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "8081", "--poll=2000", "--disable-host-check"]
 

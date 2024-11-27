@@ -23,6 +23,9 @@ public class HistoricoSolicitacao {
     @Column(nullable = false)
     private String descricao;
 
+    @Column(nullable = true)
+    private String destinoRedirecionamento;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_solicitacao", nullable = false)
     private Solicitacao solicitacao;

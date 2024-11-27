@@ -55,10 +55,10 @@ export class ClienteHomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const usuarioId = this.authService.getId(); // Supondo que este método exista
+    const usuarioId = this.authService.getId(); 
 
     this.carregarSolicitacoes(usuarioId);
-    this.nomeUsuario = this.authService.getNomeUsuario(); // Obtém o nome do usuário do AuthService
+    this.nomeUsuario = this.authService.getNomeUsuario(); 
 
 
   }

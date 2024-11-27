@@ -82,7 +82,6 @@ class ClienteController {
         }
     }
 
-    @Operation(summary = "Obtém cliente por ID", description = "Acesso restrito a ADMIN.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
@@ -96,7 +95,7 @@ class ClienteController {
     }
 
     @Operation(summary = "Atualiza um cliente", description = "Acesso restrito a ADMIN.")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
+    // @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
