@@ -7,6 +7,8 @@ import com.tads.me.dto.SolicitacaoResponseDTO;
 import com.tads.me.repository.SolicitacaoRepository;
 import com.tads.me.repository.HistoricoSolicitacaoRepository;
 import com.tads.me.repository.CategoriaEquipamentoRepository;
+import com.tads.me.repository.ClienteRepository;
+import com.tads.me.repository.FuncionarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +30,15 @@ public class SolicitacaoService {
 
     @Autowired
     private CategoriaEquipamentoRepository categoriaRepository;
+    
+    @Autowired
+    private ClienteRepository clienteRepository;
+
+    @Autowired
+    private FuncionarioRepository funcionarioRepository;
 
     @Transactional
     public SolicitacaoResponseDTO createSolicitacao(SolicitacaoRequestDTO data) {
-        var categoria = categoriaRepository.findById(data.idCategoria())
-            .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
 
         Solicitacao solicitacao = Solicitacao.builder()
                 .dataHora(data.dataHora())
@@ -41,9 +47,9 @@ public class SolicitacaoService {
                 .estado(data.estado())
                 .dataPagamento(data.dataPagamento())
                 .dataHoraFinalizacao(data.dataHoraFinalizacao())
-                .categoria(categoria)
-                .cliente(data.cliente())
-                .responsavel(data.responsavel())
+                .categoria(categoriaRepository.findById(data.categoriaId()).orElseThrow(() -> new RuntimeException("Categoria não encontrada")))
+                .cliente(clienteRepository.findById(data.clienteId()).orElseThrow(() -> new RuntimeException("Cliente não encontrado")))
+                .responsavel(null)
                 .build();
 
         repository.save(solicitacao);
@@ -52,7 +58,7 @@ public class SolicitacaoService {
         HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
                 .dataHora(LocalDateTime.now())
                 .descricao("Solicitação criada")
-                .cliente(data.cliente())
+                .cliente(clienteRepository.findById(data.clienteId()).orElseThrow(() -> new RuntimeException("Cliente não encontrado")))
                 .solicitacao(solicitacao)
                 .build();
 
@@ -81,12 +87,12 @@ public class SolicitacaoService {
                     solicitacao.setDescricaoEquipamento(data.descricaoEquipamento());
                     solicitacao.setDescricaoDefeito(data.descricaoDefeito());
                     solicitacao.setEstado(data.estado());
-                    solicitacao.setResponsavel(data.responsavel());
+                    solicitacao.setResponsavel(funcionarioRepository.findById(data.responsavelId()).orElseThrow(() -> new RuntimeException("Funcionario não encontrado")));
                     solicitacao.setDataPagamento(data.dataPagamento());
                     solicitacao.setDataHoraFinalizacao(data.dataHoraFinalizacao());
 
-                    if (data.idCategoria() != null) {
-                        categoriaRepository.findById(data.idCategoria())
+                    if (data.categoriaId() != null) {
+                        categoriaRepository.findById(data.categoriaId())
                                 .ifPresent(solicitacao::setCategoria);
                     }
 
@@ -94,7 +100,7 @@ public class SolicitacaoService {
                     HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
                             .dataHora(LocalDateTime.now())
                             .descricao("Solicitação atualizada")
-                            .funcionario(data.responsavel())
+                            .funcionario(funcionarioRepository.findById(data.responsavelId()).orElseThrow(() -> new RuntimeException("Funcionario não encontrado")))
                             .solicitacao(solicitacao)
                             .build();
 

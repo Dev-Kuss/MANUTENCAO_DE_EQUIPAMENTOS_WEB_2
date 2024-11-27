@@ -55,11 +55,12 @@ export class SolicitarManutencaoComponent implements OnInit {
             descricaoEquipamento: this.solicitacaoForm.value.descricaoEquipamento,
             descricaoDefeito: this.solicitacaoForm.value.descricaoDefeito,
             estado: 'ABERTA',
-            categoria: { 
-                idCategoria: categoriaSelecionada.idCategoria,
-                nome: categoriaSelecionada.nome
-            }
-        };
+            dataPagamento: undefined,
+            dataHoraFinalizacao: undefined,
+            idCategoria: categoriaSelecionada.idCategoria,
+            idCliente: 1, //PEGAR DO LOCAL STORAGEe
+            idResponsavel: undefined
+        }; 
 
         console.log('Valor da categoria selecionada:', categoriaSelecionada);
 

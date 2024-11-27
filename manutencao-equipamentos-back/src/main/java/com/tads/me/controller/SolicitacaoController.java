@@ -1,4 +1,4 @@
-package com.tads.me.controller;
+ package com.tads.me.controller;
 
 import com.tads.me.dto.SolicitacaoRequestDTO;
 import com.tads.me.dto.SolicitacaoResponseDTO;
@@ -27,7 +27,7 @@ public class SolicitacaoController {
     @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<SolicitacaoResponseDTO> createSolicitacao(@RequestBody SolicitacaoRequestDTO data) {
         try {
-            var solicitacao = solicitacaoService.createSolicitacao(data);
+            var solicitacao = solicitacaoService.createSolicitacao(data);  
             return new ResponseEntity<>(solicitacao, HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

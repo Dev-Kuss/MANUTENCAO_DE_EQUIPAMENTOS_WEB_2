@@ -8,20 +8,11 @@ export interface Solicitacao {
     dataHoraFinalizacao?: Date;
     
     
-    categoria: {
-        idCategoria: number;
-        nome: string;
-    };
+    idCategoria: number;
     
-    cliente?: {
-        idCliente: number;
-        nome: string;
-    };
+    idCliente: number;
     
-    responsavel?: {
-        idFuncionario: number;
-        nome: string;
-    };
+    idResponsavel?: number;
     
     historicos?: HistoricoSolicitacao[];
     orcamentos?: Orcamento[];
