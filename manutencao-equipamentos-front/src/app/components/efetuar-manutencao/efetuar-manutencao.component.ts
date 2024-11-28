@@ -1,9 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { Solicitacao, HistoricoSolicitacao, Orcamento } from '../../models/solicitacao.model';
 import { Funcionario } from '../../models/funcionario.model';
+import { Cliente } from '../../models/cliente.model';
+import { ClienteService } from '../../services/cliente.service';
 
 @Component({
   selector: 'app-efetuar-manutencao',
@@ -15,10 +17,31 @@ import { Funcionario } from '../../models/funcionario.model';
   ]
 })
 
-export class EfetuarManutencaoComponent {
+export class EfetuarManutencaoComponent implements OnInit {
+  
   @Input() solicitacao: Solicitacao | null = null;
+  @Input() cliente: Cliente = {} as Cliente;
   @Input() funcionarios: Funcionario[] = [];
   @Input() funcionarioLogado!: Funcionario;
+
+  constructor(private clienteService: ClienteService) {}
+
+  ngOnInit(): void {
+    this.getCliente();
+  }
+
+  getCliente(): void {
+    if (this.solicitacao?.idCliente) {
+      this.clienteService.getClienteById(this.solicitacao.idCliente).subscribe({
+        next: (data: Cliente) => {
+          this.cliente = data;
+        },
+        error: (err) => {
+          console.error('Erro ao obter cliente:', err);
+        }
+      });
+    }
+  }
 
   descricaoManutencao: string = '';
   orientacoesCliente: string = '';
@@ -41,10 +64,7 @@ export class EfetuarManutencaoComponent {
       const historico: HistoricoSolicitacao = {
         dataHora: new Date(),
         descricao: `Manutenção realizada: ${this.descricaoManutencao}. Orientações: ${this.orientacoesCliente}`,
-        funcionario: {
-          idFuncionario: this.funcionarioLogado.id,
-          nome: this.funcionarioLogado.nome
-        }
+        idFuncionario: this.funcionarioLogado.id,
       };
       this.solicitacao.historicos.push(historico);
 
@@ -66,10 +86,7 @@ export class EfetuarManutencaoComponent {
       const historico: HistoricoSolicitacao = {
         dataHora: new Date(),
         descricao: `Solicitação redirecionada de ${this.funcionarioLogado.nome} para ${this.funcionarioDestino.nome}`,
-        funcionario: {
           idFuncionario: this.funcionarioLogado.id,
-          nome: this.funcionarioLogado.nome
-        }
       };
       this.solicitacao.historicos.push(historico);
 

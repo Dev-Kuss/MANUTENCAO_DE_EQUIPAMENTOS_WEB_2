@@ -13,32 +13,26 @@ export class ClienteService {
   constructor(private http: HttpClient) {}
 
   // Cria um novo cliente
-  createCliente(data: ClienteRequestDTO): Observable<ClienteResponseDTO> {
-    return this.http.post<ClienteResponseDTO>(`${this.apiUrl}/create`, data)
+  createCliente(cliente: Cliente): Observable<Cliente> {
+    return this.http.post<Cliente>(`${this.apiUrl}/create`, cliente)
       .pipe(catchError(this.handleError));
   }
 
   // Lista todos os clientes
-  getAllClientes(): Observable<ClienteResponseDTO[]> {
-    return this.http.get<ClienteResponseDTO[]>(`${this.apiUrl}/read-all`)
+  getAllClientes(): Observable<Cliente[]> {
+    return this.http.get<Cliente[]>(`${this.apiUrl}/read-all`)
       .pipe(catchError(this.handleError));
   }
 
   // Obtém um cliente por ID
-  getClienteById(id: string): Observable<Cliente> {
+  getClienteById(id: number): Observable<Cliente> {
     return this.http.get<Cliente>(`${this.apiUrl}/read/${id}`)
       .pipe(catchError(this.handleError));
   }
 
   // Atualiza um cliente
-  updateCliente(id: string, data: ClienteRequestDTO): Observable<Cliente> {
-    return this.http.put<Cliente>(`${this.apiUrl}/update/${id}`, data)
-      .pipe(catchError(this.handleError));
-  }
-
-  // Exclui um cliente
-  deleteCliente(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/delete/${id}`)
+  updateCliente(id: string, cliente: Cliente): Observable<Cliente> {
+    return this.http.put<Cliente>(`${this.apiUrl}/update/${id}`, cliente)
       .pipe(catchError(this.handleError));
   }
 

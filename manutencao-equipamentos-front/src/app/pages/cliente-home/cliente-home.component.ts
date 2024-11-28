@@ -34,6 +34,7 @@ import { AuthService } from '../../services/auth.service';
   ]
 })
 export class ClienteHomeComponent implements OnInit {
+  
   // Icons
   faEye = faEye;
   faFileInvoiceDollar = faFileInvoiceDollar;
@@ -127,10 +128,7 @@ export class ClienteHomeComponent implements OnInit {
     solicitacao.historicos.push({
       dataHora: new Date(),
       descricao: `Solicitação passou de ${previousEstado} para APROVADA.`,
-      funcionario: {
         idFuncionario: 0, // or appropriate ID for client
-        nome: 'Cliente'
-      }
     });
 
     alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');

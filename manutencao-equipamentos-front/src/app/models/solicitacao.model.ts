@@ -23,10 +23,7 @@ export interface HistoricoSolicitacao {
     dataHora: Date;
     descricao: string;
     destinoRedirecionamento?: string;
-    funcionario: {
-        idFuncionario: number;
-        nome: string;
-    };
+    idFuncionario: number;
 }
 
 export interface Orcamento {

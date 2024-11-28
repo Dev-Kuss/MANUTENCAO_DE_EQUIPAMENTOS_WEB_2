@@ -81,7 +81,7 @@
         <tbody>
             <tr *ngFor="let solicitacao of solicitacoesPaginadas" class="border-t h-12">
                 <td class="py-2 px-4 text-sm">{{ solicitacao.dataHora | date: 'dd/MM/yyyy HH:mm' }}</td>
-                <td class="py-2 px-4 text-sm">{{ solicitacao.cliente?.nome }}</td>
+                <td class="py-2 px-4 text-sm">{{ clientes[solicitacao.idCliente].nome}}</td>
                 <td class="py-2 px-4 text-sm">{{ solicitacao.descricaoEquipamento | slice: 0:30 }}</td>
                 <td class="py-2 px-4 text-sm">
                     <span class="inline-block align-middle">

@@ -24,8 +24,10 @@ import { EfetuarManutencaoComponent } from '../../components/efetuar-manutencao/
 import { FinalizarSolicitacaoComponent } from '../../components/finalizar-solicitacao/finalizar-solicitacao.component';
 import { AuthService } from '../../services/auth.service';
 import { SolicitacaoService } from '../../services/solicitacao.service';
+import { ClienteService } from '../../services/cliente.service';
 import { Solicitacao } from '../../models/solicitacao.model';
 import { Funcionario } from '../../models/funcionario.model';
+import { Cliente } from '../../models/cliente.model';
 import { FuncionarioService } from '../../services/funcionario.service';
 
 
@@ -88,6 +90,7 @@ export class FuncionarioHomeComponent implements OnInit{
 
   solicitacoes: Solicitacao[] = [];
 
+  clientes: { [id: number]: Cliente } = {};
 
   // Colors mapping
   estadoCores: any = {
@@ -110,7 +113,8 @@ export class FuncionarioHomeComponent implements OnInit{
   constructor(
     private authService: AuthService,
     private funcionarioService: FuncionarioService,
-    private solicitacaoService: SolicitacaoService
+    private solicitacaoService: SolicitacaoService,
+    private clienteService: ClienteService
   ) {}
 
   ngOnInit(): void {
@@ -132,9 +136,25 @@ export class FuncionarioHomeComponent implements OnInit{
       next: (solicitacoes) => {
         this.solicitacoes = solicitacoes;
         this.filtrarSolicitacoes(); // Apply initial filtering
+        this.loadClientes();
       },
       error: (error) => {
         console.error('Erro ao carregar solicitações:', error);
+      }
+    });
+  }
+
+  loadClientes(): void {
+    this.solicitacoes.forEach(solicitacao => {
+      if (solicitacao.idCliente) {
+        this.clienteService.getClienteById(solicitacao.idCliente).subscribe({
+          next: (cliente) => {
+            this.clientes[solicitacao.idCliente] = cliente;
+          },
+          error: (error) => {
+            console.error(`Erro ao carregar cliente com ID ${solicitacao.idCliente}:`, error);
+          }
+        });
       }
     });
   }
@@ -307,9 +327,10 @@ export class FuncionarioHomeComponent implements OnInit{
       
       solicitacoes.forEach(solicitacao => {
         const ultimoOrcamento = solicitacao.orcamentos?.slice(-1)[0];
+        const cliente = this.clientes[solicitacao.idCliente]; // Define cliente based on solicitacao.idCliente
         dataTable.push([
           date,
-          solicitacao.cliente?.nome ?? 'N/A',
+          cliente?.nome ?? 'N/A',
           solicitacao.descricaoEquipamento,
           `R$ ${ultimoOrcamento?.valor ?? 0}`
         ]);
@@ -335,7 +356,7 @@ export class FuncionarioHomeComponent implements OnInit{
 
     const groupedByCategory: CategoryGroup = this.solicitacoes.reduce((acc, curr) => {
       if (curr.orcamentos && curr.orcamentos.length > 0) {
-        const categoria = curr.categoria.nome;
+        const categoria = curr.idCategoria;
         if (!acc[categoria]) acc[categoria] = [];
         acc[categoria].push(curr);
       }
@@ -352,7 +373,7 @@ export class FuncionarioHomeComponent implements OnInit{
       solicitacoes.forEach(solicitacao => {
         dataTable.push([
           categoria,
-          solicitacao.cliente?.nome ?? 'N/A',
+          this.clientes[solicitacao.idCliente]?.nome ?? 'N/A',
           solicitacao.descricaoEquipamento,
           `R$ ${solicitacao.orcamentos?.slice(-1)[0]?.valor ?? 0}`
         ]);
