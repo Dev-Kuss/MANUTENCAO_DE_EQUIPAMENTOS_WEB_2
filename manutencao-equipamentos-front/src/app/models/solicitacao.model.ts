@@ -1,3 +1,6 @@
+import { Orcamento } from "./orcamento.model";
+import { HistoricoSolicitacao } from "./historico-solicitacao.model";
+
 export interface Solicitacao {
     idSolicitacao?: number;
     dataHora: Date;
@@ -5,31 +8,10 @@ export interface Solicitacao {
     descricaoDefeito?: string;
     estado: string;
     dataPagamento?: Date;
-    dataHoraFinalizacao?: Date;
-    
-    
+    dataHoraFinalizacao?: Date; 
     idCategoria: number;
-    
-    idCliente: number;
-    
-    idResponsavel?: number;
-    
+    idCliente: string;
+    idResponsavel?: string;
     historicos?: HistoricoSolicitacao[];
     orcamentos?: Orcamento[];
-}
-
-export interface HistoricoSolicitacao {
-    idHistorico?: number;
-    dataHora: Date;
-    descricao: string;
-    destinoRedirecionamento?: string;
-    idFuncionario: number;
-}
-
-export interface Orcamento {
-    idOrcamento?: number;
-    valor: number;
-    descricao: string;
-    dataHora: Date;
-    aprovado?: boolean;
 }

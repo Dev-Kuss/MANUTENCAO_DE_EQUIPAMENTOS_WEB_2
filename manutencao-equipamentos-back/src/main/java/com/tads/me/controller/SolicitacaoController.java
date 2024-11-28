@@ -30,6 +30,7 @@ public class SolicitacaoController {
             var solicitacao = solicitacaoService.createSolicitacao(data);  
             return new ResponseEntity<>(solicitacao, HttpStatus.CREATED);
         } catch (Exception e) {
+            System.err.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

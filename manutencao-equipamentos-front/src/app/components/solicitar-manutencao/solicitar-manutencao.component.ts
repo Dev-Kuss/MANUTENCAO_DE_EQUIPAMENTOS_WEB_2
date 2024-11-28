@@ -51,6 +51,7 @@ export class SolicitarManutencaoComponent implements OnInit {
         }
 
         const novaSolicitacao: Solicitacao = {
+            idSolicitacao: 1,
             dataHora: new Date(),
             descricaoEquipamento: this.solicitacaoForm.value.descricaoEquipamento,
             descricaoDefeito: this.solicitacaoForm.value.descricaoDefeito,
@@ -58,8 +59,8 @@ export class SolicitarManutencaoComponent implements OnInit {
             dataPagamento: undefined,
             dataHoraFinalizacao: undefined,
             idCategoria: categoriaSelecionada.idCategoria,
-            idCliente: 1, //PEGAR DO LOCAL STORAGEe
-            idResponsavel: undefined
+            idCliente: localStorage.getItem('id') ?? '',
+            idResponsavel: ''
         }; 
 
         console.log('Valor da categoria selecionada:', categoriaSelecionada);

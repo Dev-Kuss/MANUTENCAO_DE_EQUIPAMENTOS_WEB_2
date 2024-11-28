@@ -9,7 +9,7 @@ public record SolicitacaoRequestDTO(
         String estado,
         LocalDateTime dataPagamento,
         LocalDateTime dataHoraFinalizacao,
-        Long categoriaId,
-        UUID clienteId,
-        UUID responsavelId
+        Long idCategoria,
+        UUID idCliente,
+        UUID idResponsavel
 ) {}

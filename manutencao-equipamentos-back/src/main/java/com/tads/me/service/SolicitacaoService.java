@@ -47,8 +47,8 @@ public class SolicitacaoService {
                 .estado(data.estado())
                 .dataPagamento(data.dataPagamento())
                 .dataHoraFinalizacao(data.dataHoraFinalizacao())
-                .categoria(categoriaRepository.findById(data.categoriaId()).orElseThrow(() -> new RuntimeException("Categoria não encontrada")))
-                .cliente(clienteRepository.findById(data.clienteId()).orElseThrow(() -> new RuntimeException("Cliente não encontrado")))
+                .categoria(categoriaRepository.findById(data.idCategoria()).orElseThrow(() -> new RuntimeException("Categoria não encontrada")))
+                .cliente(clienteRepository.findById(data.idCliente()).orElseThrow(() -> new RuntimeException("Cliente não encontrado")))
                 .responsavel(null)
                 .build();
 
@@ -58,7 +58,7 @@ public class SolicitacaoService {
         HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
                 .dataHora(LocalDateTime.now())
                 .descricao("Solicitação criada")
-                .cliente(clienteRepository.findById(data.clienteId()).orElseThrow(() -> new RuntimeException("Cliente não encontrado")))
+                .cliente(clienteRepository.findById(data.idCliente()).orElseThrow(() -> new RuntimeException("Cliente não encontrado")))
                 .solicitacao(solicitacao)
                 .build();
 
@@ -87,12 +87,12 @@ public class SolicitacaoService {
                     solicitacao.setDescricaoEquipamento(data.descricaoEquipamento());
                     solicitacao.setDescricaoDefeito(data.descricaoDefeito());
                     solicitacao.setEstado(data.estado());
-                    solicitacao.setResponsavel(funcionarioRepository.findById(data.responsavelId()).orElseThrow(() -> new RuntimeException("Funcionario não encontrado")));
+                    solicitacao.setResponsavel(funcionarioRepository.findById(data.idResponsavel()).orElseThrow(() -> new RuntimeException("Funcionario não encontrado")));
                     solicitacao.setDataPagamento(data.dataPagamento());
                     solicitacao.setDataHoraFinalizacao(data.dataHoraFinalizacao());
 
-                    if (data.categoriaId() != null) {
-                        categoriaRepository.findById(data.categoriaId())
+                    if (data.idCategoria() != null) {
+                        categoriaRepository.findById(data.idCategoria())
                                 .ifPresent(solicitacao::setCategoria);
                     }
 
@@ -100,7 +100,7 @@ public class SolicitacaoService {
                     HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
                             .dataHora(LocalDateTime.now())
                             .descricao("Solicitação atualizada")
-                            .funcionario(funcionarioRepository.findById(data.responsavelId()).orElseThrow(() -> new RuntimeException("Funcionario não encontrado")))
+                            .funcionario(funcionarioRepository.findById(data.idResponsavel()).orElseThrow(() -> new RuntimeException("Funcionario não encontrado")))
                             .solicitacao(solicitacao)
                             .build();
 
@@ -116,4 +116,4 @@ public class SolicitacaoService {
                 .map(SolicitacaoResponseDTO::new)
                 .collect(Collectors.toList());
     }
-}
+} 

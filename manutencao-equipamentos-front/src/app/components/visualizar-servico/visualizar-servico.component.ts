@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Solicitacao, Orcamento } from '../../models/solicitacao.model';
+import { Solicitacao } from '../../models/solicitacao.model';
+import { Orcamento } from "../../models/orcamento.model";
 import { Funcionario } from '../../models/funcionario.model';
 
 @Component({

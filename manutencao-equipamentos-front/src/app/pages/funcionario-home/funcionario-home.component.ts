@@ -90,7 +90,7 @@ export class FuncionarioHomeComponent implements OnInit{
 
   solicitacoes: Solicitacao[] = [];
 
-  clientes: { [id: number]: Cliente } = {};
+  clientes: { [id: string]: Cliente } = {};
 
   // Colors mapping
   estadoCores: any = {
@@ -148,7 +148,7 @@ export class FuncionarioHomeComponent implements OnInit{
     this.solicitacoes.forEach(solicitacao => {
       if (solicitacao.idCliente) {
         this.clienteService.getClienteById(solicitacao.idCliente).subscribe({
-          next: (cliente) => {
+          next: (cliente: Cliente) => {
             this.clientes[solicitacao.idCliente] = cliente;
           },
           error: (error) => {
@@ -272,7 +272,7 @@ export class FuncionarioHomeComponent implements OnInit{
       });
     } else if (this.filtroSelecionado === 'PERIODO') {
       if (this.dataInicio && this.dataFim) {
-        // Apenas filtra se dataInicio e dataFim não forem null
+        // Apenas filtra se dataInicio e dataFim não forem nulll
         const inicio = new Date(this.dataInicio);
         const fim = new Date(this.dataFim);
 

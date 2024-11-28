@@ -2,7 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { Solicitacao, HistoricoSolicitacao, Orcamento } from '../../models/solicitacao.model';
+import { Solicitacao } from '../../models/solicitacao.model';
+import { HistoricoSolicitacao } from "../../models/historico-solicitacao.model";
+import { Orcamento } from "../../models/orcamento.model";
 import { Funcionario } from '../../models/funcionario.model';
 import { Cliente } from '../../models/cliente.model';
 import { ClienteService } from '../../services/cliente.service';

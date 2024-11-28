@@ -25,7 +25,7 @@ export class ClienteService {
   }
 
   // Obtém um cliente por ID
-  getClienteById(id: number): Observable<Cliente> {
+  getClienteById(id: string): Observable<Cliente> {
     return this.http.get<Cliente>(`${this.apiUrl}/read/${id}`)
       .pipe(catchError(this.handleError));
   }
