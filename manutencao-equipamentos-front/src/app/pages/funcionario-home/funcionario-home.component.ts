@@ -58,10 +58,8 @@ export class FuncionarioHomeComponent implements OnInit{
 
   funcionarios: Funcionario[] = [];
 
-  // Número da página atual
   paginaAtual: number = 1;
 
-  // Número máximo de itens por página
   itensPorPagina: number = 10;
 
   // Icons
@@ -77,7 +75,6 @@ export class FuncionarioHomeComponent implements OnInit{
   faCheckCircle = faCheckCircle
   nomeUsuario: string | null = '';
 
-  // Modals
   isOrcamentoModalOpen = false;
   isManutencaoModalOpen = false;
   isRedirecionarModalOpen = false;
@@ -92,7 +89,6 @@ export class FuncionarioHomeComponent implements OnInit{
 
   clientes: { [id: string]: Cliente } = {};
 
-  // Colors mapping
   estadoCores: any = {
     'ABERTA': 'bg-gray-500',
     'ORÇADA': 'bg-brown-500',
@@ -131,34 +127,18 @@ export class FuncionarioHomeComponent implements OnInit{
   }
 
   loadSolicitacoes(): void {
-    const id = this.authService.getId();
     this.solicitacaoService.getSolicitacoes().subscribe({
       next: (solicitacoes) => {
+        console.log('Solicitações carregadas:', solicitacoes);
         this.solicitacoes = solicitacoes;
-        this.filtrarSolicitacoes(); // Apply initial filtering
-        this.loadClientes();
+        this.filtrarSolicitacoes();
       },
       error: (error) => {
         console.error('Erro ao carregar solicitações:', error);
-      }
+      },
     });
   }
-
-  loadClientes(): void {
-    this.solicitacoes.forEach(solicitacao => {
-      if (solicitacao.idCliente) {
-        this.clienteService.getClienteById(solicitacao.idCliente).subscribe({
-          next: (cliente: Cliente) => {
-            this.clientes[solicitacao.idCliente] = cliente;
-          },
-          error: (error) => {
-            console.error(`Erro ao carregar cliente com ID ${solicitacao.idCliente}:`, error);
-          }
-        });
-      }
-    });
-  }
-
+  
   get totalPaginas(): number {
     return Math.ceil(this.solicitacoesFiltradas.length / this.itensPorPagina);
   }

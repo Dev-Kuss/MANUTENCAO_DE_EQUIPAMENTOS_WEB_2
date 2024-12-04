@@ -73,6 +73,7 @@
             <tr>
                 <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Data/Hora</th>
                 <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Cliente</th>
+                <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Equipamento</th>
                 <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Descrição</th>
                 <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Estado</th>
                 <th class="py-2 px-4 text-center text-sm font-semibold text-gray-600">Ações</th>
@@ -81,8 +82,9 @@
         <tbody>
             <tr *ngFor="let solicitacao of solicitacoesPaginadas" class="border-t h-12">
                 <td class="py-2 px-4 text-sm">{{ solicitacao.dataHora | date: 'dd/MM/yyyy HH:mm' }}</td>
-                <td class="py-2 px-4 text-sm">{{ clientes[solicitacao.idCliente].nome}}</td>
+                <td class="py-2 px-4 text-sm">{{ solicitacao.cliente.nome}}</td>
                 <td class="py-2 px-4 text-sm">{{ solicitacao.descricaoEquipamento | slice: 0:30 }}</td>
+                <td class="py-2 px-4 text-sm">{{" Descrição "}}</td>  <!-- TODO : pegar descrição do defeito -->
                 <td class="py-2 px-4 text-sm">
                     <span class="inline-block align-middle">
                         {{ solicitacao.estado }}

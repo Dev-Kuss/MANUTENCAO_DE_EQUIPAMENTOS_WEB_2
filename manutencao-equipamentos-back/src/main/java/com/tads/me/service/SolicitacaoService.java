@@ -1,10 +1,14 @@
 package com.tads.me.service;
 
 import com.tads.me.entity.Solicitacao;
+import com.tads.me.entity.Funcionario;
 import com.tads.me.entity.HistoricoSolicitacao;
 import com.tads.me.dto.SolicitacaoRequestDTO;
 import com.tads.me.dto.SolicitacaoResponseDTO;
 import com.tads.me.repository.SolicitacaoRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import com.tads.me.repository.HistoricoSolicitacaoRepository;
 import com.tads.me.repository.CategoriaEquipamentoRepository;
 import com.tads.me.repository.ClienteRepository;
@@ -15,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,7 +35,7 @@ public class SolicitacaoService {
 
     @Autowired
     private CategoriaEquipamentoRepository categoriaRepository;
-    
+
     @Autowired
     private ClienteRepository clienteRepository;
 
@@ -47,8 +52,10 @@ public class SolicitacaoService {
                 .estado(data.estado())
                 .dataPagamento(data.dataPagamento())
                 .dataHoraFinalizacao(data.dataHoraFinalizacao())
-                .categoria(categoriaRepository.findById(data.idCategoria()).orElseThrow(() -> new RuntimeException("Categoria não encontrada")))
-                .cliente(clienteRepository.findById(data.idCliente()).orElseThrow(() -> new RuntimeException("Cliente não encontrado")))
+                .categoria(categoriaRepository.findById(data.idCategoria())
+                        .orElseThrow(() -> new RuntimeException("Categoria não encontrada")))
+                .cliente(clienteRepository.findById(data.idCliente())
+                        .orElseThrow(() -> new RuntimeException("Cliente não encontrado")))
                 .responsavel(null)
                 .build();
 
@@ -58,12 +65,13 @@ public class SolicitacaoService {
         HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
                 .dataHora(LocalDateTime.now())
                 .descricao("Solicitação criada")
-                .cliente(clienteRepository.findById(data.idCliente()).orElseThrow(() -> new RuntimeException("Cliente não encontrado")))
+                .cliente(clienteRepository.findById(data.idCliente())
+                        .orElseThrow(() -> new RuntimeException("Cliente não encontrado")))
                 .solicitacao(solicitacao)
                 .build();
 
         historicoRepository.save(historico);
-        
+
         return new SolicitacaoResponseDTO(solicitacao);
     }
 
@@ -83,32 +91,79 @@ public class SolicitacaoService {
     public Optional<SolicitacaoResponseDTO> updateSolicitacao(Long id, SolicitacaoRequestDTO data) {
         return repository.findById(id)
                 .map(solicitacao -> {
-                    // Atualiza os dados da solicitação
-                    solicitacao.setDescricaoEquipamento(data.descricaoEquipamento());
-                    solicitacao.setDescricaoDefeito(data.descricaoDefeito());
-                    solicitacao.setEstado(data.estado());
-                    solicitacao.setResponsavel(funcionarioRepository.findById(data.idResponsavel()).orElseThrow(() -> new RuntimeException("Funcionario não encontrado")));
-                    solicitacao.setDataPagamento(data.dataPagamento());
-                    solicitacao.setDataHoraFinalizacao(data.dataHoraFinalizacao());
+                    // Atualizar campos apenas se não forem nulos
+                    Optional.ofNullable(data.descricaoEquipamento()).ifPresent(solicitacao::setDescricaoEquipamento);
+                    Optional.ofNullable(data.descricaoDefeito()).ifPresent(solicitacao::setDescricaoDefeito);
+                    Optional.ofNullable(data.estado()).ifPresent(solicitacao::setEstado);
+                    Optional.ofNullable(data.dataPagamento()).ifPresent(solicitacao::setDataPagamento);
+                    Optional.ofNullable(data.dataHoraFinalizacao()).ifPresent(solicitacao::setDataHoraFinalizacao);
 
-                    if (data.idCategoria() != null) {
-                        categoriaRepository.findById(data.idCategoria())
-                                .ifPresent(solicitacao::setCategoria);
+                    // Atualizar categoria, se fornecida
+                    Optional.ofNullable(data.idCategoria())
+                            .flatMap(categoriaRepository::findById)
+                            .ifPresent(solicitacao::setCategoria);
+
+                    // Atualizar responsável
+                    if (data.idResponsavel() != null) {
+                        solicitacao.setResponsavel(buscarFuncionario(data.idResponsavel()));
                     }
 
-                    // Registra a alteração no histórico
-                    HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
-                            .dataHora(LocalDateTime.now())
-                            .descricao("Solicitação atualizada")
-                            .funcionario(funcionarioRepository.findById(data.idResponsavel()).orElseThrow(() -> new RuntimeException("Funcionario não encontrado")))
-                            .solicitacao(solicitacao)
-                            .build();
+                    // Registrar histórico
+                    registrarHistorico(solicitacao, data.idResponsavel(), "Solicitação atualizada");
 
-                    historicoRepository.save(historico);
+                    // Salvar alterações
                     repository.save(solicitacao);
-                    
+
                     return new SolicitacaoResponseDTO(solicitacao);
                 });
+    }
+
+    @Transactional
+    public Optional<SolicitacaoResponseDTO> patchSolicitacao(Long id, Map<String, Object> updates) {
+        return repository.findById(id).map(solicitacao -> {
+            updates.forEach((key, value) -> updateField(solicitacao, key, value));
+
+            UUID responsavelId = updates.containsKey("idResponsavel") 
+                    ? UUID.fromString((String) updates.get("idResponsavel")) 
+                    : null;
+
+            registrarHistorico(solicitacao, responsavelId, "Solicitação atualizada parcialmente");
+            repository.save(solicitacao);
+            return new SolicitacaoResponseDTO(solicitacao);
+        });
+    }
+
+    private void updateField(Solicitacao solicitacao, String key, Object value) {
+        switch (key) {
+            case "descricaoEquipamento" -> solicitacao.setDescricaoEquipamento((String) value);
+            case "descricaoDefeito" -> solicitacao.setDescricaoDefeito((String) value);
+            case "estado" -> solicitacao.setEstado((String) value);
+            case "dataPagamento" -> solicitacao.setDataPagamento(
+                value instanceof String ? LocalDateTime.parse((String) value) : (LocalDateTime) value
+            );
+            case "dataHoraFinalizacao" -> solicitacao.setDataHoraFinalizacao(
+                value instanceof String ? LocalDateTime.parse((String) value) : (LocalDateTime) value
+            );
+            case "idCategoria" -> categoriaRepository.findById(((Number) value).longValue())
+                    .ifPresent(solicitacao::setCategoria);
+            case "idResponsavel" -> solicitacao.setResponsavel(buscarFuncionario(UUID.fromString((String) value)));
+            default -> throw new IllegalArgumentException("Campo não suportado: " + key);
+        }
+    }
+
+    private Funcionario buscarFuncionario(UUID idResponsavel) {
+        return funcionarioRepository.findById(idResponsavel)
+                .orElseThrow(() -> new EntityNotFoundException("Funcionário não encontrado com ID: " + idResponsavel));
+    }
+
+    private void registrarHistorico(Solicitacao solicitacao, UUID idResponsavel, String descricao) {
+        HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
+                .dataHora(LocalDateTime.now())
+                .descricao(descricao)
+                .funcionario(buscarFuncionario(idResponsavel))
+                .solicitacao(solicitacao)
+                .build();
+        historicoRepository.save(historico);
     }
 
     public List<SolicitacaoResponseDTO> listarSolicitacoesPorUsuario(UUID usuarioId) {
@@ -116,4 +171,4 @@ public class SolicitacaoService {
                 .map(SolicitacaoResponseDTO::new)
                 .collect(Collectors.toList());
     }
-} 
+}

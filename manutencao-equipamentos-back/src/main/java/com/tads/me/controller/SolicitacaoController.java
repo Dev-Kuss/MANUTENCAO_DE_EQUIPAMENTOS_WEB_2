@@ -80,4 +80,31 @@ public class SolicitacaoController {
                 .map(solicitacao -> new ResponseEntity<>(solicitacao, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @PatchMapping("/update/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
+    public ResponseEntity<?> patchSolicitacao(
+            @PathVariable("id") Long id,
+            @RequestBody Map<String, Object> updates) {
+        try {
+            if (id == null) {
+                return ResponseEntity.badRequest().body("ID não pode ser nulo.");
+            }
+            System.out.println("ID recebido: " + id); // Log para depuração
+            System.out.println("Updates recebidos: " + updates); // Log para depuração
+            
+            var solicitacaoData = solicitacaoService.patchSolicitacao(id, updates);
+            return solicitacaoData
+                    .map(solicitacao -> new ResponseEntity<>(solicitacao, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Internal Server Error");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse);
+        }
+    }
+    
 }
