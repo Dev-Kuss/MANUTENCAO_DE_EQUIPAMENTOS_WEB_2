@@ -79,22 +79,25 @@ export class SolicitarManutencaoComponent implements OnInit {
         console.log('Valor da categoria selecionada:', categoriaSelecionada);
 
         this.solicitacaoService.createSolicitacao(novaSolicitacao).subscribe(
-            response => {
-                console.log('Solicitação registrada com sucesso:', response);
-                if (this.fecharModal) {
-                    this.fecharModal();
-                    console.log('Modal fechada com sucesso');
-                } else {
-                    console.error('Função fecharModal não está definida');
-                }
-            },
-            error => {
-                console.error('Erro ao registrar solicitação:', error);
-                if (error.error) {
-                    console.error('Detalhes do erro:', error.error);
-                }
-            }
-        );
+          response => {
+              console.log('Solicitação registrada com sucesso:', response);
+              console.log('Valor de fecharModal:', this.fecharModal);
+      
+              if (this.fecharModal) {
+                  this.fecharModal();
+                  console.log('Modal fechada com sucesso');
+              } else {
+                  console.error('Função fecharModal não está definida');
+              }
+          },
+          error => {
+              console.error('Erro ao registrar solicitação:', error);
+              if (error.error) {
+                  console.error('Detalhes do erro:', error.error);
+              }
+          }
+      );
+      
     } else {
         console.log('Formulário inválido');
     }

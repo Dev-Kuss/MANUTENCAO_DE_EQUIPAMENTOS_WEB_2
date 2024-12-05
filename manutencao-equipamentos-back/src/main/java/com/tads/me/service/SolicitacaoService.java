@@ -61,12 +61,11 @@ public class SolicitacaoService {
 
         repository.save(solicitacao);
 
-        // Cria o primeiro histórico da solicitação
         HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
                 .dataHora(LocalDateTime.now())
                 .descricao("Solicitação criada")
-                .cliente(clienteRepository.findById(data.idCliente())
-                        .orElseThrow(() -> new RuntimeException("Cliente não encontrado")))
+                // .cliente(clienteRepository.findById(data.idCliente())
+                //         .orElseThrow(() -> new RuntimeException("Cliente não encontrado")))
                 .solicitacao(solicitacao)
                 .build();
 

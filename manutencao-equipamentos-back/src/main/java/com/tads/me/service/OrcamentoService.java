@@ -3,15 +3,19 @@ package com.tads.me.service;
 import com.tads.me.entity.Orcamento;
 import com.tads.me.entity.Solicitacao;
 import com.tads.me.entity.Funcionario;
+import com.tads.me.entity.HistoricoSolicitacao;
 import com.tads.me.dto.OrcamentoRequestDTO;
 import com.tads.me.dto.OrcamentoResponseDTO;
 import com.tads.me.repository.OrcamentoRepository;
 import com.tads.me.repository.SolicitacaoRepository;
 import com.tads.me.repository.FuncionarioRepository;
+import com.tads.me.repository.HistoricoSolicitacaoRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +32,9 @@ public class OrcamentoService {
     @Autowired
     private FuncionarioRepository funcionarioRepository;
 
+    @Autowired
+    private HistoricoSolicitacaoRepository historicoRepository;
+
     @Transactional
     public Orcamento createOrcamento(OrcamentoRequestDTO data) {
         if (data.solicitacaoId() == null) {
@@ -42,6 +49,14 @@ public class OrcamentoService {
 
         Funcionario funcionario = funcionarioRepository.findById(data.funcionarioId())
             .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
+
+        HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
+                .dataHora(LocalDateTime.now())
+                .descricao("Orçamento realizado.")
+                .solicitacao(solicitacao)
+                .build();
+
+        historicoRepository.save(historico);
 
         Orcamento orcamento = Orcamento.builder()
                 .valor(data.valor())
