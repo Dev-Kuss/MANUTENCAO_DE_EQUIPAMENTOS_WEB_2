@@ -29,7 +29,6 @@ export class SolicitacaoService {
     return this.http.put<Solicitacao>(`${this.apiUrl}/update/${solicitacao.idSolicitacao}`, solicitacao);
   }
 
-  /** Método atualizado para lidar com o novo endpoint PATCH **/
   patchSolicitacao(id: number, updates: Partial<Solicitacao>): Observable<Solicitacao | any> {
     return this.http.patch<Solicitacao | any>(`${this.apiUrl}/update/${id}`, updates).pipe(
       catchError(this.handleError)

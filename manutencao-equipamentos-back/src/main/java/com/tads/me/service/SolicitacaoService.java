@@ -123,33 +123,69 @@ public class SolicitacaoService {
         return repository.findById(id).map(solicitacao -> {
             updates.forEach((key, value) -> updateField(solicitacao, key, value));
 
-            UUID responsavelId = updates.containsKey("idResponsavel") 
-                    ? UUID.fromString((String) updates.get("idResponsavel")) 
-                    : null;
+            // UUID responsavelId = updates.containsKey("idResponsavel") 
+            //         ? UUID.fromString((String) updates.get("idResponsavel")) 
+            //         : null;
 
-            registrarHistorico(solicitacao, responsavelId, "Solicitação atualizada parcialmente");
+            // registrarHistorico(solicitacao, responsavelId, "Solicitação atualizada parcialmente");
             repository.save(solicitacao);
             return new SolicitacaoResponseDTO(solicitacao);
         });
     }
 
     private void updateField(Solicitacao solicitacao, String key, Object value) {
+        System.out.println("Atualizando campo: " + key + " com valor: " + value);
         switch (key) {
             case "descricaoEquipamento" -> solicitacao.setDescricaoEquipamento((String) value);
             case "descricaoDefeito" -> solicitacao.setDescricaoDefeito((String) value);
             case "estado" -> solicitacao.setEstado((String) value);
-            case "dataPagamento" -> solicitacao.setDataPagamento(
-                value instanceof String ? LocalDateTime.parse((String) value) : (LocalDateTime) value
-            );
-            case "dataHoraFinalizacao" -> solicitacao.setDataHoraFinalizacao(
-                value instanceof String ? LocalDateTime.parse((String) value) : (LocalDateTime) value
-            );
-            case "idCategoria" -> categoriaRepository.findById(((Number) value).longValue())
-                    .ifPresent(solicitacao::setCategoria);
-            case "idResponsavel" -> solicitacao.setResponsavel(buscarFuncionario(UUID.fromString((String) value)));
-            default -> throw new IllegalArgumentException("Campo não suportado: " + key);
+            case "dataPagamento" -> {
+                if (value == null) {
+                    solicitacao.setDataPagamento(null);
+                } else if (value instanceof String) {
+                    solicitacao.setDataPagamento(LocalDateTime.parse((String) value));
+                } else if (value instanceof LocalDateTime) {
+                    solicitacao.setDataPagamento((LocalDateTime) value);
+                } else {
+                    throw new IllegalArgumentException("Formato de 'dataPagamento' inválido: " + value);
+                }
+            }
+            case "dataHoraFinalizacao" -> {
+                if (value == null) {
+                    solicitacao.setDataHoraFinalizacao(null);
+                } else if (value instanceof String) {
+                    solicitacao.setDataHoraFinalizacao(LocalDateTime.parse((String) value));
+                } else if (value instanceof LocalDateTime) {
+                    solicitacao.setDataHoraFinalizacao((LocalDateTime) value);
+                } else {
+                    throw new IllegalArgumentException("Formato de 'dataHoraFinalizacao' inválido: " + value);
+                }
+            }
+            case "idCategoria" -> {
+                if (value == null || !(value instanceof Number)) {
+                    throw new IllegalArgumentException("O valor de 'idCategoria' deve ser um número");
+                }
+                categoriaRepository.findById(((Number) value).longValue())
+                        .ifPresentOrElse(
+                            solicitacao::setCategoria,
+                            () -> { throw new IllegalArgumentException("Categoria não encontrada com o ID fornecido"); }
+                        );
+            }
+            case "idResponsavel" -> {
+                if (value == null || !(value instanceof String)) {
+                    throw new IllegalArgumentException("O valor de 'idResponsavel' deve ser uma string válida");
+                }
+                try {
+                    UUID responsavelId = UUID.fromString((String) value);
+                    solicitacao.setResponsavel(buscarFuncionario(responsavelId));
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("ID do responsável inválido: " + value, e);
+                }
+            }
+            default -> throw new IllegalArgumentException("Campo não suportado ou inválido: " + key);
         }
     }
+    
 
     private Funcionario buscarFuncionario(UUID idResponsavel) {
         return funcionarioRepository.findById(idResponsavel)
