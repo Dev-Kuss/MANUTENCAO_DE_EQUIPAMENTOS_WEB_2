@@ -1,9 +1,6 @@
 package com.tads.me.dto;
-
-import com.tads.me.entity.Cliente;
-import com.tads.me.entity.Funcionario;
-
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record SolicitacaoRequestDTO(
         LocalDateTime dataHora,
@@ -13,6 +10,6 @@ public record SolicitacaoRequestDTO(
         LocalDateTime dataPagamento,
         LocalDateTime dataHoraFinalizacao,
         Long idCategoria,
-        Cliente cliente,
-        Funcionario responsavel
+        UUID idCliente,
+        UUID idResponsavel
 ) {}

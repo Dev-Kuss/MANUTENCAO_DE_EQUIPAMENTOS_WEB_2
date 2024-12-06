@@ -24,8 +24,10 @@ import { EfetuarManutencaoComponent } from '../../components/efetuar-manutencao/
 import { FinalizarSolicitacaoComponent } from '../../components/finalizar-solicitacao/finalizar-solicitacao.component';
 import { AuthService } from '../../services/auth.service';
 import { SolicitacaoService } from '../../services/solicitacao.service';
+import { ClienteService } from '../../services/cliente.service';
 import { Solicitacao } from '../../models/solicitacao.model';
 import { Funcionario } from '../../models/funcionario.model';
+import { Cliente } from '../../models/cliente.model';
 import { FuncionarioService } from '../../services/funcionario.service';
 
 
@@ -56,10 +58,8 @@ export class FuncionarioHomeComponent implements OnInit{
 
   funcionarios: Funcionario[] = [];
 
-  // Número da página atual
   paginaAtual: number = 1;
 
-  // Número máximo de itens por página
   itensPorPagina: number = 10;
 
   // Icons
@@ -75,7 +75,6 @@ export class FuncionarioHomeComponent implements OnInit{
   faCheckCircle = faCheckCircle
   nomeUsuario: string | null = '';
 
-  // Modals
   isOrcamentoModalOpen = false;
   isManutencaoModalOpen = false;
   isRedirecionarModalOpen = false;
@@ -88,8 +87,8 @@ export class FuncionarioHomeComponent implements OnInit{
 
   solicitacoes: Solicitacao[] = [];
 
+  clientes: { [id: string]: Cliente } = {};
 
-  // Colors mapping
   estadoCores: any = {
     'ABERTA': 'bg-gray-500',
     'ORÇADA': 'bg-brown-500',
@@ -110,7 +109,8 @@ export class FuncionarioHomeComponent implements OnInit{
   constructor(
     private authService: AuthService,
     private funcionarioService: FuncionarioService,
-    private solicitacaoService: SolicitacaoService
+    private solicitacaoService: SolicitacaoService,
+    private clienteService: ClienteService
   ) {}
 
   ngOnInit(): void {
@@ -127,18 +127,18 @@ export class FuncionarioHomeComponent implements OnInit{
   }
 
   loadSolicitacoes(): void {
-    const id = this.authService.getId();
     this.solicitacaoService.getSolicitacoes().subscribe({
       next: (solicitacoes) => {
+        console.log('Solicitações carregadas:', solicitacoes);
         this.solicitacoes = solicitacoes;
-        this.filtrarSolicitacoes(); // Apply initial filtering
+        this.filtrarSolicitacoes();
       },
       error: (error) => {
         console.error('Erro ao carregar solicitações:', error);
-      }
+      },
     });
   }
-
+  
   get totalPaginas(): number {
     return Math.ceil(this.solicitacoesFiltradas.length / this.itensPorPagina);
   }
@@ -252,7 +252,7 @@ export class FuncionarioHomeComponent implements OnInit{
       });
     } else if (this.filtroSelecionado === 'PERIODO') {
       if (this.dataInicio && this.dataFim) {
-        // Apenas filtra se dataInicio e dataFim não forem null
+        // Apenas filtra se dataInicio e dataFim não forem nulll
         const inicio = new Date(this.dataInicio);
         const fim = new Date(this.dataFim);
 
@@ -307,9 +307,10 @@ export class FuncionarioHomeComponent implements OnInit{
       
       solicitacoes.forEach(solicitacao => {
         const ultimoOrcamento = solicitacao.orcamentos?.slice(-1)[0];
+        const cliente = this.clientes[solicitacao.idCliente]; // Define cliente based on solicitacao.idCliente
         dataTable.push([
           date,
-          solicitacao.cliente?.nome ?? 'N/A',
+          cliente?.nome ?? 'N/A',
           solicitacao.descricaoEquipamento,
           `R$ ${ultimoOrcamento?.valor ?? 0}`
         ]);
@@ -335,7 +336,7 @@ export class FuncionarioHomeComponent implements OnInit{
 
     const groupedByCategory: CategoryGroup = this.solicitacoes.reduce((acc, curr) => {
       if (curr.orcamentos && curr.orcamentos.length > 0) {
-        const categoria = curr.categoria.nome;
+        const categoria = curr.idCategoria;
         if (!acc[categoria]) acc[categoria] = [];
         acc[categoria].push(curr);
       }
@@ -352,7 +353,7 @@ export class FuncionarioHomeComponent implements OnInit{
       solicitacoes.forEach(solicitacao => {
         dataTable.push([
           categoria,
-          solicitacao.cliente?.nome ?? 'N/A',
+          this.clientes[solicitacao.idCliente]?.nome ?? 'N/A',
           solicitacao.descricaoEquipamento,
           `R$ ${solicitacao.orcamentos?.slice(-1)[0]?.valor ?? 0}`
         ]);

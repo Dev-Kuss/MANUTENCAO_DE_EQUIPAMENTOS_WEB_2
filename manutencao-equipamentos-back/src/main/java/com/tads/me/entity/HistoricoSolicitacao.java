@@ -34,7 +34,4 @@ public class HistoricoSolicitacao {
     @JoinColumn(name = "id_funcionario")
     private Funcionario funcionario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_cliente")
-    private Cliente cliente;
 }

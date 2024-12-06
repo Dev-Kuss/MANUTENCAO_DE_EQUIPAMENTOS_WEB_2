@@ -18,7 +18,7 @@ public record SolicitacaoResponseDTO(
         LocalDateTime dataHoraFinalizacao,
         LocalDateTime dataPagamento,
         String estado,
-        CategoriaEquipamentoResponseDTO categoria, // Usando CategoriaEquipamentoResponseDTO
+        CategoriaEquipamentoResponseDTO categoria,
         ClienteResponseDTO cliente,
         List<HistoricoSolicitacaoResponseDTO> historicos,
         List<OrcamentoResponseDTO> orcamentos

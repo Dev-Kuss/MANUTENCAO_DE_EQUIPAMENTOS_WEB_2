@@ -34,6 +34,7 @@ import { AuthService } from '../../services/auth.service';
   ]
 })
 export class ClienteHomeComponent implements OnInit {
+  
   // Icons
   faEye = faEye;
   faFileInvoiceDollar = faFileInvoiceDollar;
@@ -63,7 +64,6 @@ export class ClienteHomeComponent implements OnInit {
 
   }
 
-  // Método para carregar as solicitações do back-end
   carregarSolicitacoes(usuarioId: string | null): void {
     this.solicitacaoService.getSolicitacoes(usuarioId).subscribe(
       (solicitacoes) => {
@@ -113,7 +113,6 @@ export class ClienteHomeComponent implements OnInit {
   visualizarServico(solicitacao: Solicitacao): void {
     console.log(`Visualizando solicitação: ${solicitacao.descricaoEquipamento}`);
     this.abrirVisualizarModal(solicitacao);
-    // TODO: Navegar para a página de visualização da solicitação (RF008)
   }
 
   resgatarServico(solicitacao: Solicitacao): void {
@@ -127,10 +126,7 @@ export class ClienteHomeComponent implements OnInit {
     solicitacao.historicos.push({
       dataHora: new Date(),
       descricao: `Solicitação passou de ${previousEstado} para APROVADA.`,
-      funcionario: {
-        idFuncionario: 0, // or appropriate ID for client
-        nome: 'Cliente'
-      }
+        idFuncionario: 0, 
     });
 
     alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');

@@ -5,6 +5,8 @@ import { BaseModalComponent } from '../base-modal/base-modal.component';
 import { CategoriaService } from '../../services/categoria.service';
 import { SolicitacaoService } from '../../services/solicitacao.service';
 import { Solicitacao } from '../../models/solicitacao.model';
+import { ClienteService } from '../../services/cliente.service';
+import { Cliente } from '../../models/cliente.model';
 
 @Component({
   selector: 'app-solicitar-manutencao',
@@ -18,8 +20,10 @@ export class SolicitarManutencaoComponent implements OnInit {
   
   solicitacaoForm: FormGroup;
   categorias: { idCategoria: number; nome: string }[] = [];
+  clienteAtual: Cliente | null = null;
 
-  constructor(private fb: FormBuilder, private categoriaService: CategoriaService, private solicitacaoService: SolicitacaoService) {
+
+  constructor(private fb: FormBuilder, private categoriaService: CategoriaService, private solicitacaoService: SolicitacaoService, private clienteService: ClienteService) {
     this.solicitacaoForm = this.fb.group({
       descricaoEquipamento: ['', [Validators.required]],
       categoriaEquipamento: ['', [Validators.required]],
@@ -34,6 +38,14 @@ export class SolicitarManutencaoComponent implements OnInit {
         nome: c.nome_categoria
       }));
     });
+    this.clienteService.getClienteById(localStorage.getItem('id') ?? '').subscribe({
+      next: (cliente) => {
+          this.clienteAtual = cliente;
+      },
+      error: (err) => {
+          console.error('Erro ao carregar cliente:', err);
+      }
+  });
   }
   
   registrarSolicitacao() {
@@ -51,30 +63,41 @@ export class SolicitarManutencaoComponent implements OnInit {
         }
 
         const novaSolicitacao: Solicitacao = {
+            idSolicitacao: 1,
             dataHora: new Date(),
             descricaoEquipamento: this.solicitacaoForm.value.descricaoEquipamento,
             descricaoDefeito: this.solicitacaoForm.value.descricaoDefeito,
             estado: 'ABERTA',
-            categoria: { 
-                idCategoria: categoriaSelecionada.idCategoria,
-                nome: categoriaSelecionada.nome
-            }
-        };
+            dataPagamento: undefined,
+            dataHoraFinalizacao: undefined,
+            idCliente: localStorage.getItem('id') ?? '',
+            cliente: this.clienteAtual!,
+            idCategoria: categoriaSelecionada.idCategoria,
+            idResponsavel: ''
+        }; 
 
         console.log('Valor da categoria selecionada:', categoriaSelecionada);
 
         this.solicitacaoService.createSolicitacao(novaSolicitacao).subscribe(
-            response => {
-                console.log('Solicitação registrada com sucesso:', response);
-                this.fecharModal();
-            },
-            error => {
-                console.error('Erro ao registrar solicitação:', error);
-                if (error.error) {
-                    console.error('Detalhes do erro:', error.error);
-                }
-            }
-        );
+          response => {
+              console.log('Solicitação registrada com sucesso:', response);
+              console.log('Valor de fecharModal:', this.fecharModal);
+      
+              if (this.fecharModal) {
+                  this.fecharModal();
+                  console.log('Modal fechada com sucesso');
+              } else {
+                  console.error('Função fecharModal não está definida');
+              }
+          },
+          error => {
+              console.error('Erro ao registrar solicitação:', error);
+              if (error.error) {
+                  console.error('Detalhes do erro:', error.error);
+              }
+          }
+      );
+      
     } else {
         console.log('Formulário inválido');
     }

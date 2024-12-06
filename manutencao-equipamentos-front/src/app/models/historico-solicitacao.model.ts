@@ -1,14 +1,7 @@
 export interface HistoricoSolicitacao {
-  id?: number;
-  dataHora: Date;
-  descricao: string;
-  funcionario: string;
-  solicitacaoId?: number;
+    idHistorico?: number;
+    dataHora: Date;
+    descricao: string;
+    destinoRedirecionamento?: string;
+    idFuncionario: number;
 }
-
-export interface HistoricoSolicitacaoRequest {
-  dataHora: Date;
-  descricao: string;
-  funcionario: string;
-  solicitacaoId: number;
-} 

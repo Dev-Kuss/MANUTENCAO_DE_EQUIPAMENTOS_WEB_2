@@ -12,6 +12,7 @@ import { Solicitacao } from '../../models/solicitacao.model';
 })
 export class PagarServicoComponent {
   @Input() solicitacao: Solicitacao | null = null;
+  @Input() funcionarioLogado!: Funcionario;
   @Output() onPagamentoConfirmado = new EventEmitter<void>();
 
   confirmarPagamento() {
@@ -26,10 +27,7 @@ export class PagarServicoComponent {
       this.solicitacao.historicos.push({
         dataHora: this.solicitacao.dataPagamento,
         descricao: 'Pagamento confirmado pelo cliente.',
-        funcionario: {
-          idFuncionario: this.solicitacao?.cliente?.idCliente ?? 0,
-          nome: this.solicitacao?.cliente?.nome ?? ''
-        }
+        idFuncionario: this.funcionarioLogado.id,
       });
 
       // Emit an event to notify parent component

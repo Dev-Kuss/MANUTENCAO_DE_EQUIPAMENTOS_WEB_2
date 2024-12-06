@@ -24,7 +24,7 @@
             <li *ngFor="let item of solicitacao?.historicos">
                 <div class="p-2 bg-gray-100 rounded-md">
                     <p class="text-sm text-gray-600">
-                        <strong>{{ item.dataHora | date: 'short' }}</strong> - {{ item.funcionario }}
+                        <strong>{{ item.dataHora | date: 'short' }}</strong> - {{ item.idFuncionario }}
                     </p>
                     <p class="text-gray-800">{{ item.descricao }}</p>
                 </div>

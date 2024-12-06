@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Funcionario } from '../../models/funcionario.model';
 
-import { Solicitacao, HistoricoSolicitacao } from '../../models/solicitacao.model';
+import { Solicitacao } from '../../models/solicitacao.model';
+import { HistoricoSolicitacao } from "../../models/historico-solicitacao.model";
 
 @Component({
   selector: 'app-finalizar-solicitacao',
@@ -15,7 +17,7 @@ import { Solicitacao, HistoricoSolicitacao } from '../../models/solicitacao.mode
 })
 export class FinalizarSolicitacaoComponent {
   @Input() solicitacao: Solicitacao | null = null;
-  @Input() funcionarioLogado: string = '';
+  @Input() funcionarioLogado!: Funcionario;
 
   finalizar() {
     if (this.solicitacao) {
@@ -23,11 +25,8 @@ export class FinalizarSolicitacaoComponent {
 
       const historico: HistoricoSolicitacao = {
         dataHora: new Date(),
-        descricao: `Solicitação finalizada por ${this.funcionarioLogado}`,
-        funcionario: {
-          idFuncionario: 1, // Ajuste conforme necessário
-          nome: this.funcionarioLogado
-        }
+        descricao: `Solicitação finalizada por ${this.funcionarioLogado.nome}`,
+        idFuncionario: this.funcionarioLogado.id,
       };
       this.solicitacao.historicos?.push(historico);
       this.solicitacao.dataHoraFinalizacao = new Date();

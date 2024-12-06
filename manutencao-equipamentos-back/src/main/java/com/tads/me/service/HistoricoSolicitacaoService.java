@@ -3,13 +3,11 @@ package com.tads.me.service;
 import com.tads.me.entity.HistoricoSolicitacao;
 import com.tads.me.entity.Solicitacao;
 import com.tads.me.entity.Funcionario;
-import com.tads.me.entity.Cliente;
 import com.tads.me.dto.HistoricoSolicitacaoRequestDTO;
 import com.tads.me.dto.HistoricoSolicitacaoResponseDTO;
 import com.tads.me.repository.HistoricoSolicitacaoRepository;
 import com.tads.me.repository.SolicitacaoRepository;
 import com.tads.me.repository.FuncionarioRepository;
-import com.tads.me.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,33 +29,24 @@ public class HistoricoSolicitacaoService {
     @Autowired
     private FuncionarioRepository funcionarioRepository;
 
-    @Autowired
-    private ClienteRepository clienteRepository;
-
     @Transactional
     public HistoricoSolicitacaoResponseDTO createHistorico(HistoricoSolicitacaoRequestDTO data) {
         Solicitacao solicitacao = solicitacaoRepository.findById(data.idSolicitacao())
             .orElseThrow(() -> new RuntimeException("Solicitação não encontrada"));
 
         Funcionario funcionario = null;
-        Cliente cliente = null;
 
         if (data.idFuncionario() != null) {
             funcionario = funcionarioRepository.findById(data.idFuncionario())
                 .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
         }
 
-        if (data.idCliente() != null) {
-            cliente = clienteRepository.findById(data.idCliente())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-        }
 
         HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
                 .dataHora(LocalDateTime.now())
                 .descricao(data.descricao())
                 .destinoRedirecionamento(data.destinoRedirecionamento())
                 .funcionario(funcionario)
-                .cliente(cliente)
                 .solicitacao(solicitacao)
                 .build();
 
@@ -91,7 +80,6 @@ public class HistoricoSolicitacaoService {
             historico.getDescricao(),
             historico.getDestinoRedirecionamento(),
             historico.getFuncionario() != null ? historico.getFuncionario().getNome() : null,
-            historico.getCliente() != null ? historico.getCliente().getNome() : null,
             historico.getSolicitacao().getIdSolicitacao()
         );
     }

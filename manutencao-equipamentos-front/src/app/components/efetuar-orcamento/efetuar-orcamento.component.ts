@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule  } from '@angular/forms';
 import { Solicitacao } from '../../models/solicitacao.model';
+import { Orcamento } from '../../models/orcamento.model';
 import { SolicitacaoService } from '../../services/solicitacao.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,53 +12,47 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [
     CommonModule, 
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
-
 export class EfetuarOrcamentoComponent {
   @Input() solicitacao: Solicitacao | null = null;
-  valorOrcamento: number | null = null;
+  valorOrcamento!: number;
+  descricaoServico!: string;
 
   constructor(private solicitacaoService: SolicitacaoService) {}
 
   confirmarOrcamento() {
     if (this.valorOrcamento && this.solicitacao) {
-      const novoOrcamento = {
+      const novoOrcamento: Orcamento = {
+        idOrcamento: 0, // TODO: gerar id incremental
         valor: this.valorOrcamento,
-        descricao: 'Orçamento inicial',
+        descricao: this.descricaoServico,
         dataHora: new Date(),
         aprovado: false,
         solicitacaoId: this.solicitacao.idSolicitacao,
-        funcionarioId: localStorage.getItem('id')
+        funcionarioId: localStorage.getItem('id') || ''
       };
 
-      if (this.solicitacao.idSolicitacao) {
-        this.solicitacao.estado = 'ORÇADA';
-        
-        this.solicitacaoService.updateSolicitacao(
-          this.solicitacao.idSolicitacao,
-          this.solicitacao
-        ).subscribe({
-          next: () => {
-            this.solicitacaoService.createOrcamento(novoOrcamento).subscribe({
-              next: (response) => {
-                console.log('Orçamento registrado com sucesso:', response);
-                if (!this.solicitacao!.orcamentos) {
-                  this.solicitacao!.orcamentos = [];
-                }
-                this.solicitacao!.orcamentos.push(response);
-              },
-              error: (error) => {
-                console.error('Erro ao registrar orçamento:', error);
-              }
-            });
-          },
-          error: (error) => {
-            console.error('Erro ao atualizar solicitação:', error);
-          }
-        });
-      }
+      this.solicitacaoService.createOrcamento(novoOrcamento).subscribe({
+        next: (response) => {
+          console.log('Orçamento registrado com sucesso:', response);
+        },
+        error: (error) => {
+          console.error('Erro ao registrar orçamento:', error);
+        }
+      });
+
+      const updates = { estado: 'ORÇADA' }; 
+      this.solicitacaoService.patchSolicitacao(this.solicitacao.idSolicitacao, updates).subscribe({
+        next: () => {
+          console.log('Solicitação atualizada parcialmente com sucesso');
+        },
+        error: (error) => {
+          console.error('Erro ao atualizar solicitação parcialmente:', error);
+        }
+      });
     }
   }
 }

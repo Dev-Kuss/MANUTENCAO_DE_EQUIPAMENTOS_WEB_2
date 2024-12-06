@@ -11,7 +11,6 @@ public record HistoricoSolicitacaoResponseDTO(
         String descricao,
         String destinoRedirecionamento,
         String nomeFuncionario,
-        String nomeCliente,
         Long solicitacaoId
 ) {
     public HistoricoSolicitacaoResponseDTO(HistoricoSolicitacao historico) {
@@ -21,7 +20,6 @@ public record HistoricoSolicitacaoResponseDTO(
                 historico.getDescricao(),
                 historico.getDestinoRedirecionamento(),
                 historico.getFuncionario() != null ? historico.getFuncionario().getNome() : null,
-                historico.getSolicitacao().getCliente().getNome(),
                 historico.getSolicitacao().getIdSolicitacao()
         );
     }

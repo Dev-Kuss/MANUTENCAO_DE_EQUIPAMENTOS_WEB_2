@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -50,8 +51,10 @@ public class Solicitacao {
     private Funcionario responsavel;
 
     @OneToMany(mappedBy = "solicitacao", fetch = FetchType.LAZY)
-    private List<HistoricoSolicitacao> historicos;
+    @Builder.Default
+    private List<HistoricoSolicitacao> historicos = new ArrayList<>(); 
 
     @OneToMany(mappedBy = "solicitacao", fetch = FetchType.LAZY)
-    private List<Orcamento> orcamentos;
+    @Builder.Default
+    private List<Orcamento> orcamentos = new ArrayList<>(); 
 }
