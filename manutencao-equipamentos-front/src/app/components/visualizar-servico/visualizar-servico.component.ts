@@ -28,6 +28,7 @@ export class VisualizarServicoComponent {
         dataHora: new Date(),
         descricao: `Solicitação passou de ${previousEstado} para APROVADA.`,
         idFuncionario: this.funcionarioLogado.id,
+        nomeFuncionario: "",
     });
   
     alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');

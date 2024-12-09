@@ -4,4 +4,5 @@ export interface HistoricoSolicitacao {
     descricao: string;
     destinoRedirecionamento?: string;
     idFuncionario: number;
+    nomeFuncionario: string;
 }

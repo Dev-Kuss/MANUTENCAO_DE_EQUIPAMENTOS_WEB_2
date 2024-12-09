@@ -54,6 +54,7 @@ public class OrcamentoService {
                 .dataHora(LocalDateTime.now())
                 .descricao("Orçamento realizado.")
                 .solicitacao(solicitacao)
+                .funcionario(funcionario)
                 .build();
 
         historicoRepository.save(historico);
