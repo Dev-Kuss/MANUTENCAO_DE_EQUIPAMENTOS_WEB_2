@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.tads.me.util.GerarSenhaAleatoria.gerarSenhaAleatoria;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class FuncionarioService {
@@ -48,21 +49,17 @@ public class FuncionarioService {
         String passwordHashSalt = passwordEncoder.encode(senhaOriginal);
         newUser.setPasswordHashSalt(passwordHashSalt);
         newUser.setRoles(new HashSet<>(Set.of("EMPLOYEE")));
-
-        // Salvar o usuário no banco
         userRepository.save(newUser);
 
-        // Criar o funcionário associado ao usuário
+        // Criar o funcionário usando o mesmo ID do usuário
         Funcionario newFuncionario = new Funcionario();
+        newFuncionario.setId(newUser.getId());  // Usa o mesmo ID do usuário
         newFuncionario.setUser(newUser);
         newFuncionario.setNome(data.nome());
         newFuncionario.setTelefone(data.telefone());
         newFuncionario.setDataNascimento(data.dataNascimento());
 
-        // Salvar o funcionário no banco
-        funcionarioRepository.save(newFuncionario);
-
-        return newFuncionario;
+        return funcionarioRepository.save(newFuncionario);
     }
        
     
@@ -72,16 +69,35 @@ public class FuncionarioService {
         Optional<Funcionario> funcionarioOptional = funcionarioRepository.findById(id);
         if (funcionarioOptional.isPresent()) {
             Funcionario existingFuncionario = funcionarioOptional.get();
+            User existingUser = existingFuncionario.getUser();
+            
+            // Verify if user exists
+            if (existingUser == null) {
+                throw new EntityNotFoundException("User not found for funcionario: " + id);
+            }
+            
+            // Check if email is already in use by another user
+            if (!existingUser.getEmail().equals(data.email()) && 
+                userRepository.existsByEmail(data.email())) {
+                throw new IllegalArgumentException("Email já está em uso por outro usuário.");
+            }
+            
+            // Update user information
+            existingUser.setNome(data.nome());
+            existingUser.setEmail(data.email());
+            if (data.senha() != null && !data.senha().isEmpty()) {
+                String passwordHashSalt = passwordEncoder.encode(data.senha());
+                existingUser.setPasswordHashSalt(passwordHashSalt);
+            }
+            userRepository.save(existingUser);
+            
+            // Update funcionario information
             existingFuncionario.setNome(data.nome());
             existingFuncionario.setEmail(data.email());
+            existingFuncionario.setTelefone(data.telefone());
             existingFuncionario.setDataNascimento(data.dataNascimento());
-
-            String senhaOriginal = data.senha() != null ? data.senha() : gerarSenhaAleatoria();
-            String passwordHashSalt = passwordEncoder.encode(senhaOriginal);
-            existingFuncionario.getUser().setPasswordHashSalt(passwordHashSalt);
-
-            funcionarioRepository.save(existingFuncionario);
-            return Optional.of(existingFuncionario);
+            
+            return Optional.of(funcionarioRepository.save(existingFuncionario));
         }
         return Optional.empty();
     }
