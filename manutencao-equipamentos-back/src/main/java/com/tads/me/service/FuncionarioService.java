@@ -55,6 +55,7 @@ public class FuncionarioService {
         Funcionario newFuncionario = new Funcionario();
         newFuncionario.setId(newUser.getId());  // Usa o mesmo ID do usuário
         newFuncionario.setUser(newUser);
+        newFuncionario.setEmail(newUser.getEmail());
         newFuncionario.setNome(data.nome());
         newFuncionario.setTelefone(data.telefone());
         newFuncionario.setDataNascimento(data.dataNascimento());
@@ -100,6 +101,22 @@ public class FuncionarioService {
             return Optional.of(funcionarioRepository.save(existingFuncionario));
         }
         return Optional.empty();
+    }
+
+    @Transactional
+    public void deleteFuncionario(UUID id) {
+        Optional<Funcionario> funcionario = funcionarioRepository.findById(id);
+        if (funcionario.isPresent()) {
+            User user = funcionario.get().getUser();
+            if (user != null) {
+                funcionarioRepository.deleteById(id);
+                userRepository.deleteById(user.getId());
+            } else {
+                throw new EntityNotFoundException("User not found for funcionario: " + id);
+            }
+        } else {
+            throw new EntityNotFoundException("Funcionario not found with id: " + id);
+        }
     }
 
 }
