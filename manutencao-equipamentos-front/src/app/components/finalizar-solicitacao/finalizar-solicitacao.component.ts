@@ -27,6 +27,7 @@ export class FinalizarSolicitacaoComponent {
         dataHora: new Date(),
         descricao: `Solicitação finalizada por ${this.funcionarioLogado.nome}`,
         idFuncionario: this.funcionarioLogado.id,
+        nomeFuncionario: this.funcionarioLogado.nome
       };
       this.solicitacao.historicos?.push(historico);
       this.solicitacao.dataHoraFinalizacao = new Date();

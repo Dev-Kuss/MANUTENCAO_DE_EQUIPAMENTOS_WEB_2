@@ -32,22 +32,40 @@ public class FuncionarioService {
     private SHA256PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Funcionario createFuncionario(FuncionarioRequestDTO data, User user) throws NoSuchAlgorithmException {
+    public Funcionario createFuncionario(FuncionarioRequestDTO data) throws NoSuchAlgorithmException {
+        // Verificar se o e-mail já está cadastrado
+        if (userRepository.existsByEmail(data.email())) {
+            throw new IllegalArgumentException("Email já cadastrado.");
+        }
 
-        String senhaOriginal = data.senha() != null ? data.senha() : gerarSenhaAleatoria();
-        String passwordHashSalt = passwordEncoder.encode(senhaOriginal); // Inclui o salt
-
+        // Criar o usuário
         User newUser = new User();
         newUser.setNome(data.nome());
+        newUser.setEmail(data.email());
+
+        // Gerar a senha do usuário
+        String senhaOriginal = data.senha() != null ? data.senha() : gerarSenhaAleatoria();
+        String passwordHashSalt = passwordEncoder.encode(senhaOriginal);
         newUser.setPasswordHashSalt(passwordHashSalt);
         newUser.setRoles(new HashSet<>(Set.of("EMPLOYEE")));
+
+        // Salvar o usuário no banco
         userRepository.save(newUser);
 
-        // Cria o Funcionario usando o construtor com FuncionarioRequestDTO e User
-        Funcionario newFuncionario = new Funcionario(data, user);
+        // Criar o funcionário associado ao usuário
+        Funcionario newFuncionario = new Funcionario();
+        newFuncionario.setUser(newUser);
+        newFuncionario.setNome(data.nome());
+        newFuncionario.setTelefone(data.telefone());
+        newFuncionario.setDataNascimento(data.dataNascimento());
+
+        // Salvar o funcionário no banco
         funcionarioRepository.save(newFuncionario);
+
         return newFuncionario;
     }
+       
+    
 
     @Transactional
     public Optional<Funcionario> updateFuncionario(UUID id, FuncionarioRequestDTO data) throws NoSuchAlgorithmException {

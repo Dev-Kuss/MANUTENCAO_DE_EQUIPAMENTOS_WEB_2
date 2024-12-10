@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
 import { BaseModalComponent } from '../../components/base-modal/base-modal.component';
 import { Funcionario } from '../../models/funcionario.model';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FuncionarioService } from '../../services/funcionario.service';
 
 @Component({
   selector: 'app-funcionario-crud',
@@ -20,25 +20,32 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
     BaseModalComponent
   ]
 })
-export class FuncionarioCrudComponent {
+export class FuncionarioCrudComponent implements OnInit {
   faEdit = faEdit;
   faTrash = faTrash;
   isFuncionarioModalOpen = false;
+  funcionarios: Funcionario[] = [];
+  funcionarioSelecionado!: Funcionario;
+  funcionarioLogado!: Funcionario;
+  
 
-  funcionarios: Funcionario[] = [
-    { id: 1, nome: 'João Silva', email: 'joao@empresa.com', dataNascimento: '1990-01-01', senha: 'senha123' },
-    { id: 2, nome: 'Maria Silva', email: 'maria@empresa.com', dataNascimento: '1990-10-16', senha: 'senha123' },  
-  ];
+  constructor(private funcionarioService: FuncionarioService) {}
 
-  funcionarioSelecionado: Funcionario | null = null
-  funcionarioLogado = 'joao@empresa.com';
+  ngOnInit() {
+    this.carregarFuncionarios();
+  }
+
+  carregarFuncionarios() {
+    this.funcionarioService.getAllFuncionarios().subscribe(funcionarios => {
+      this.funcionarios = funcionarios;
+    });
+  }
 
   abrirModalFuncionario() {
-    // Cria um novo funcionário vazio com id incremental para novos
-    const nextId = this.funcionarios.length > 0 ? Math.max(...this.funcionarios.map(f => f.id)) + 1 : 1;
-    this.funcionarioSelecionado = { id: nextId, nome: '', email: '', dataNascimento: '', senha: '' };
+    this.funcionarioSelecionado = { id: '', nome: '', email: '', dataNascimento: '', senha: '' };
     this.isFuncionarioModalOpen = true;
   }
+  
 
   fecharModalFuncionario() {
     this.isFuncionarioModalOpen = false;
@@ -46,18 +53,24 @@ export class FuncionarioCrudComponent {
 
   salvarFuncionario() {
     if (this.funcionarioSelecionado) {
-      const index = this.funcionarios.findIndex(func => func.id === this.funcionarioSelecionado!.id);
-
-      if (index !== -1) {
-        this.funcionarios[index] = { ...this.funcionarioSelecionado };
+      if (this.funcionarioSelecionado.id) {
+        this.funcionarioService
+          .updateFuncionario(this.funcionarioSelecionado.id, this.funcionarioSelecionado)
+          .subscribe(() => {
+            this.carregarFuncionarios();
+            this.fecharModalFuncionario();
+          });
       } else {
-        this.funcionarios.push({ ...this.funcionarioSelecionado });
+        this.funcionarioService
+          .createFuncionario(this.funcionarioSelecionado)
+          .subscribe(() => {
+            this.carregarFuncionarios();
+            this.fecharModalFuncionario();
+          });
       }
     }
-
-    // Fecha o modal após salvar
-    this.fecharModalFuncionario();
   }
+  ////
 
   editarFuncionario(funcionario: Funcionario) {
     this.funcionarioSelecionado = { ...funcionario };
@@ -66,9 +79,10 @@ export class FuncionarioCrudComponent {
 
   removerFuncionario(funcionario: Funcionario) {
     const confirmacao = window.confirm(`Tem certeza de que deseja remover o funcionário "${funcionario.nome}"?`);
-    
-    if(confirmacao) {
-      this.funcionarios = this.funcionarios.filter(func => func.id !== funcionario.id);
+    if (confirmacao) {
+      this.funcionarioService.deleteFuncionario(funcionario.id.toString()).subscribe(() => {
+        this.carregarFuncionarios();
+      });
     }
   }
 }
