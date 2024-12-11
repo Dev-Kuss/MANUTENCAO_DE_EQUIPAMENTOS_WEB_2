@@ -55,7 +55,7 @@
 
 <app-base-modal [isOpen]="isFuncionarioModalOpen" (onClose)="fecharModalFuncionario()">
     <ng-container modal-header>
-        <h2 class="text-2xl font-semibold text-gray-700">{{ funcionarioSelecionado?.id ? 'Editar Funcionário' : 'Adicionar Funcionário' }}</h2>
+        <h2 class="text-2xl font-semibold text-gray-700">{{ funcionarioSelecionado.id ? 'Editar Funcionário' : 'Adicionar Funcionário' }}</h2>
     </ng-container>
     <ng-container modal-body>
         <form *ngIf="funcionarioSelecionado" (ngSubmit)="salvarFuncionario()" class="space-y-2">

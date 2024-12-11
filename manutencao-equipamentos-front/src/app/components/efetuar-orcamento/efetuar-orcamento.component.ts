@@ -24,9 +24,8 @@ export class EfetuarOrcamentoComponent {
   constructor(private solicitacaoService: SolicitacaoService) {}
 
   confirmarOrcamento() {
-    if (this.valorOrcamento && this.solicitacao) {
+    if (this.valorOrcamento && this.solicitacao && this.descricaoServico) {
       const novoOrcamento: Orcamento = {
-        idOrcamento: 0, // TODO: gerar id incremental
         valor: this.valorOrcamento,
         descricao: this.descricaoServico,
         dataHora: new Date(),
@@ -38,6 +37,8 @@ export class EfetuarOrcamentoComponent {
       this.solicitacaoService.createOrcamento(novoOrcamento).subscribe({
         next: (response) => {
           console.log('Orçamento registrado com sucesso:', response);
+          this.valorOrcamento = 0;
+          this.descricaoServico = '';
         },
         error: (error) => {
           console.error('Erro ao registrar orçamento:', error);

@@ -29,7 +29,7 @@
 
     <div>
       <label for="descricaoServico" class="block text-sm font-medium text-gray-600">Serviço a ser realizado:</label>
-      <textarea id="descricaoServico" formControlName="descricaoServico" rows="3" placeholder="Descreva o serviço a ser realizado" 
+      <textarea id="descricaoServico" [(ngModel)]="descricaoServico" rows="3" placeholder="Descreva o serviço a ser realizado" 
                 class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
     </div>
     

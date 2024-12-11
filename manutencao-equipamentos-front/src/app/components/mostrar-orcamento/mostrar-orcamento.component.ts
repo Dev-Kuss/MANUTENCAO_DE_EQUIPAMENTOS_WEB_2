@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -14,7 +14,7 @@ import { Solicitacao } from '../../models/solicitacao.model';
   templateUrl: './mostrar-orcamento.component.html',
 })
 
-export class MostrarOrcamentoComponent {
+export class MostrarOrcamentoComponent implements OnChanges {
   @Input() solicitacao: Solicitacao | null = null;
   
 
@@ -23,9 +23,16 @@ export class MostrarOrcamentoComponent {
     private router: Router
   ) { }
 
-  ngOnInit(): void {
-
-    
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['solicitacao'] && changes['solicitacao'].currentValue) {
+      console.log('MostrarOrcamento - Solicitação:', this.solicitacao);
+      console.log('MostrarOrcamento - Orçamentos:', this.solicitacao?.orcamentos);
+      if (this.solicitacao?.orcamentos && this.solicitacao.orcamentos.length > 0) {
+        const ultimoOrcamento = this.solicitacao.orcamentos[this.solicitacao.orcamentos.length - 1];
+        console.log('MostrarOrcamento - Último orçamento:', ultimoOrcamento);
+        console.log('MostrarOrcamento - Descrição do último orçamento:', ultimoOrcamento.descricao);
+      }
+    }
   }
 
   aprovarServico() {
@@ -44,5 +51,9 @@ export class MostrarOrcamentoComponent {
       console.log('Serviço rejeitado:', this.solicitacao);
       alert('Serviço Rejeitado.');
     }
+  }
+
+  get ultimoOrcamento() {
+    return this.solicitacao?.orcamentos?.[this.solicitacao.orcamentos.length - 1];
   }
 }

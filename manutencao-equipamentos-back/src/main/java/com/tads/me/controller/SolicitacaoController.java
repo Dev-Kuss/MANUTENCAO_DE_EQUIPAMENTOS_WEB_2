@@ -25,13 +25,16 @@ public class SolicitacaoController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
-    public ResponseEntity<SolicitacaoResponseDTO> createSolicitacao(@RequestBody SolicitacaoRequestDTO data) {
+    public ResponseEntity<?> createSolicitacao(@RequestBody SolicitacaoRequestDTO data) {
         try {
             var solicitacao = solicitacaoService.createSolicitacao(data);  
             return new ResponseEntity<>(solicitacao, HttpStatus.CREATED);
         } catch (Exception e) {
-            System.err.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());            
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
         }
     }
 

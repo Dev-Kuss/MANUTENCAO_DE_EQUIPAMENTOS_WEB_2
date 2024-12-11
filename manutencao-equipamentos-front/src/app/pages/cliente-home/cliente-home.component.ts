@@ -85,6 +85,7 @@ export class ClienteHomeComponent implements OnInit {
 
   abrirOrcamentoModal(solicitacao: Solicitacao): void {
     this.solicitacaoSelecionada = solicitacao;
+    console.log('Solicitação selecionada:', this.solicitacaoSelecionada);
     this.isOrcamentoModalOpen = true;
   }
 

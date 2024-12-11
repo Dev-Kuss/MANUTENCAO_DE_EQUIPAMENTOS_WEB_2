@@ -61,6 +61,7 @@ public class OrcamentoService {
 
         Orcamento orcamento = Orcamento.builder()
                 .valor(data.valor())
+                .descricao(data.descricao())
                 .dataHora(data.dataHora())
                 .solicitacao(solicitacao)
                 .funcionario(funcionario)
