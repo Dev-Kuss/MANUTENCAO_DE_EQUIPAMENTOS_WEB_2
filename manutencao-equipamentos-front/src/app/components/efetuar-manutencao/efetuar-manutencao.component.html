@@ -28,14 +28,19 @@
 
   <!-- Abas para alternar entre Efetuar Manutenção e Redirecionar Manutenção -->
   <div class="flex border-b mb-4 mt-4">
-    <button (click)="abaSelecionada = 'manutencao'"
+    <button *ngIf="solicitacao?.estado !== 'REDIRECIONADA' || 
+                  (solicitacao?.estado === 'REDIRECIONADA' && solicitacao?.idResponsavel === funcionarioLogado?.id)"
+            (click)="abaSelecionada = 'manutencao'"
             [class.text-blue-600]="abaSelecionada === 'manutencao'"
             class="py-2 px-4 font-semibold text-gray-600 border-b-2"
             [class.border-blue-600]="abaSelecionada === 'manutencao'"
             [class.border-transparent]="abaSelecionada !== 'manutencao'">
       Realizar Manutenção
     </button>
-    <button (click)="abaSelecionada = 'redirecionar'"
+    
+    <button *ngIf="solicitacao?.estado !== 'REDIRECIONADA' || 
+                  (solicitacao?.estado === 'REDIRECIONADA' && solicitacao?.idResponsavel !== funcionarioLogado?.id)"
+            (click)="abaSelecionada = 'redirecionar'"
             [class.text-blue-600]="abaSelecionada === 'redirecionar'"
             class="py-2 px-4 font-semibold text-gray-600 border-b-2"
             [class.border-blue-600]="abaSelecionada === 'redirecionar'"
@@ -69,8 +74,10 @@
     <div>
       <label class="block text-sm font-medium text-gray-600">Selecionar Funcionário</label>
       <select [(ngModel)]="funcionarioDestino" class="mt-1 block w-full px-3 py-2 border rounded-md">
-        <option *ngFor="let funcionario of funcionarios" [value]="funcionario" [disabled]="funcionario === funcionarioLogado">
-          {{ funcionario }}
+        <option *ngFor="let funcionario of funcionarios" 
+                [ngValue]="funcionario" 
+                [disabled]="funcionario.id === funcionarioLogado?.id">
+          {{ funcionario.nome }}
         </option>
       </select>
     </div>
@@ -78,7 +85,7 @@
     <div class="flex justify-end gap-2.5 mt-6">
       <button (click)="confirmarRedirecionamento()"
         class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md"
-        [disabled]="!funcionarioDestino || funcionarioDestino === funcionarioLogado">
+        [disabled]="!funcionarioDestino || !funcionarioLogado || funcionarioDestino.id === funcionarioLogado.id">
         Confirmar Redirecionamento
       </button>
     </div>
