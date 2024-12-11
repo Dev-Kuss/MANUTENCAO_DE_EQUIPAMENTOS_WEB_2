@@ -36,8 +36,8 @@ interface CategoryGroup {
 }
 
 @Component({
-  selector: 'app-funcionario-home',
-  templateUrl: './funcionario-home.component.html',
+  selector: 'app-funcionario-solicitacoes',
+  templateUrl: './funcionario-solicitacoes.component.html',
   standalone: true,
   imports: [
     CommonModule,
@@ -51,11 +51,13 @@ interface CategoryGroup {
     FinalizarSolicitacaoComponent
   ]
 })
-export class FuncionarioHomeComponent implements OnInit {
+export class FuncionarioSolicitacoesComponent implements OnInit {
+
   funcionarios: Funcionario[] = [];
   paginaAtual: number = 1;
   itensPorPagina: number = 10;
 
+  // Ícones
   faEye = faEye;
   faFileInvoiceDollar = faFileInvoiceDollar;
   faUndoAlt = faUndoAlt;
@@ -65,7 +67,7 @@ export class FuncionarioHomeComponent implements OnInit {
   faWrench = faWrench;
   faUserPlus = faUserPlus;
   faFilePdf = faFilePdf;
-  faCheckCircle = faCheckCircle
+  faCheckCircle = faCheckCircle;
 
   nomeUsuario: string | null = '';
 
@@ -91,18 +93,23 @@ export class FuncionarioHomeComponent implements OnInit {
     'FINALIZADA': 'bg-green-500'
   };
 
+  filtroSelecionado: string = 'TODAS';
+  dataInicio: Date | null = null;
+  dataFim: Date | null = null;
+
   solicitacoesFiltradas: Solicitacao[] = [...this.solicitacoes];
 
   constructor(
     private authService: AuthService,
     private funcionarioService: FuncionarioService,
     private solicitacaoService: SolicitacaoService,
-  ) { }
+    private clienteService: ClienteService
+  ) {}
 
   ngOnInit(): void {
     this.loadListaFuncionarios();
     this.loadSolicitacoes();
-    this.nomeUsuario = this.authService.getNomeUsuario(); // Obtém o nome do usuário do AuthService
+    this.nomeUsuario = this.authService.getNomeUsuario();
   }
 
   loadListaFuncionarios(): void {
@@ -113,12 +120,11 @@ export class FuncionarioHomeComponent implements OnInit {
 
   loadSolicitacoes(): void {
     this.solicitacaoService.getSolicitacoes().subscribe({
-      next: (solicitacoes: Solicitacao[]) => {
-        // Aqui filtramos apenas as solicitações "ABERTA"
-        this.solicitacoes = solicitacoes.filter(s => s.estado === 'ABERTA');
-        this.solicitacoesFiltradas = [...this.solicitacoes];
+      next: (solicitacoes) => {
+        this.solicitacoes = solicitacoes;
+        this.filtrarSolicitacoes();
       },
-      error: (error: any) => {
+      error: (error) => {
         console.error('Erro ao carregar solicitações:', error);
       },
     });
@@ -150,22 +156,10 @@ export class FuncionarioHomeComponent implements OnInit {
     return this.solicitacoesFiltradas.slice(inicio, fim);
   }
 
-  // Método para mudar a página
   mudarPagina(numeroPagina: number) {
     this.paginaAtual = numeroPagina;
   }
 
-  // Verifica se pode avançar para a próxima página
-  proximaPagina(): boolean {
-    return this.paginaAtual < Math.ceil(this.solicitacoesFiltradas.length / this.itensPorPagina);
-  }
-
-  // Verifica se pode voltar para a página anterior
-  paginaAnterior(): boolean {
-    return this.paginaAtual > 1;
-  }
-
-  // Methods to open modals
   abrirOrcamentoModal(solicitacao: Solicitacao) {
     this.solicitacaoSelecionada = solicitacao;
     this.isOrcamentoModalOpen = true;
@@ -216,5 +210,130 @@ export class FuncionarioHomeComponent implements OnInit {
 
   finalizarSolicitacao(solicitacao: Solicitacao) {
     this.abrirFinalizarModal(solicitacao);
+  }
+
+  atualizarFiltro(filtro: string) {
+    this.filtroSelecionado = filtro;
+    this.filtrarSolicitacoes();
+  }
+
+  filtrarSolicitacoes() {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    if (this.filtroSelecionado === 'HOJE') {
+      this.solicitacoesFiltradas = this.solicitacoes.filter(solicitacao => {
+        const dataSolicitacao = new Date(solicitacao.dataHora);
+        dataSolicitacao.setHours(0,0,0,0);
+        return dataSolicitacao.getTime() === hoje.getTime();
+      });
+    } else if (this.filtroSelecionado === 'PERIODO') {
+      if (this.dataInicio && this.dataFim) {
+        const inicio = new Date(this.dataInicio);
+        const fim = new Date(this.dataFim);
+
+        this.solicitacoesFiltradas = this.solicitacoes.filter(solicitacao => {
+          const dataSolicitacao = new Date(solicitacao.dataHora);
+          return dataSolicitacao.getTime() >= inicio.getTime() && dataSolicitacao.getTime() <= fim.getTime();
+        });
+      } else {
+        this.solicitacoesFiltradas = [];
+      }
+    } else {
+      this.solicitacoesFiltradas = [...this.solicitacoes];
+    }
+  }
+
+  filtrarSolicitacoesPorData(): Solicitacao[] {
+    if (this.dataInicio && this.dataFim) {
+      return this.solicitacoes.filter(solicitacao => {
+        const dataSolicitacao = solicitacao.dataHora.getTime();
+        return dataSolicitacao >= this.dataInicio!.getTime() && dataSolicitacao <= this.dataFim!.getTime();
+      });
+    }
+    return this.solicitacoes;
+  }
+
+  gerarRelatorioReceitas() {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    doc.text('Relatório de Receitas por Período', pageWidth / 2, 10, { align: 'center' });
+
+    const solicitacoesFiltradas = this.filtrarSolicitacoesPorData();
+    const groupedByDate = solicitacoesFiltradas.reduce((acc, curr) => {
+      const ultimoOrcamento = curr.orcamentos?.slice(-1)[0];
+      if (ultimoOrcamento?.valor !== undefined) {
+        const dateKey = curr.dataHora.toISOString().split('T')[0];
+        if (!acc[dateKey]) acc[dateKey] = [];
+        acc[dateKey].push(curr);
+      }
+      return acc;
+    }, {} as { [key: string]: Solicitacao[] });
+
+    const dataTable: any[] = [];
+    for (const [date, solicitacoes] of Object.entries(groupedByDate)) {
+      const totalDia = solicitacoes.reduce((sum, s) => {
+        const ultimoOrcamento = s.orcamentos?.slice(-1)[0];
+        return sum + (ultimoOrcamento?.valor ?? 0);
+      }, 0);
+      
+      solicitacoes.forEach(solicitacao => {
+        const ultimoOrcamento = solicitacao.orcamentos?.slice(-1)[0];
+        const cliente = this.clientes[solicitacao.idCliente];
+        dataTable.push([
+          date,
+          cliente?.nome ?? 'N/A',
+          solicitacao.descricaoEquipamento,
+          `R$ ${ultimoOrcamento?.valor ?? 0}`
+        ]);
+      });
+      dataTable.push([`${date} - Total`, '', '', `R$ ${totalDia}`]);
+    }
+
+    (doc as any).autoTable({
+      head: [['Data', 'Cliente', 'Descrição', 'Valor']],
+      body: dataTable,
+    });
+
+    doc.save('relatorio-receitas-periodo.pdf');
+  }
+
+  gerarRelatorioReceitasPorCategoria() {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    doc.text('Relatório de Receitas por Categoria', pageWidth / 2, 10, { align: 'center' });
+
+    const groupedByCategory: CategoryGroup = this.solicitacoes.reduce((acc, curr) => {
+      if (curr.orcamentos && curr.orcamentos.length > 0) {
+        const categoria = curr.idCategoria;
+        if (!acc[categoria]) acc[categoria] = [];
+        acc[categoria].push(curr);
+      }
+      return acc;
+    }, {} as CategoryGroup);
+
+    const dataTable: any[] = [];
+    for (const [categoria, solicitacoes] of Object.entries(groupedByCategory)) {
+      const totalCategoria = solicitacoes.reduce((sum, s) => {
+        const ultimoOrcamento = s.orcamentos?.slice(-1)[0];
+        return sum + (ultimoOrcamento?.valor ?? 0);
+      }, 0);
+      solicitacoes.forEach(solicitacao => {
+        dataTable.push([
+          categoria,
+          this.clientes[solicitacao.idCliente]?.nome ?? 'N/A',
+          solicitacao.descricaoEquipamento,
+          `R$ ${solicitacao.orcamentos?.slice(-1)[0]?.valor ?? 0}`
+        ]);
+      });
+      dataTable.push([`${categoria} - Total`, '', '', `R$ ${totalCategoria}`]);
+    }
+
+    (doc as any).autoTable({
+      head: [['Categoria', 'Cliente', 'Descrição', 'Valor']],
+      body: dataTable,
+    });
+
+    doc.save('relatorio-receitas-categoria.pdf');
   }
 }
