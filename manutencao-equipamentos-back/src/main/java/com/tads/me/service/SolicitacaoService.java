@@ -75,11 +75,12 @@ public class SolicitacaoService {
     }
 
     public List<SolicitacaoResponseDTO> listarSolicitacoes() {
-        List<Solicitacao> solicitacoes = repository.findAll();
+        List<Solicitacao> solicitacoes = repository.findAllByOrderByIdDesc();
         return solicitacoes.stream()
                 .map(SolicitacaoResponseDTO::new)
                 .collect(Collectors.toList());
     }
+    
 
     public Optional<SolicitacaoResponseDTO> getById(Long id) {
         return repository.findById(id)

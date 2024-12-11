@@ -16,16 +16,19 @@ import java.util.UUID;
 public class Funcionario {
 
     @Id
-    @GeneratedValue(generator = "UUID")
     @Column(updatable = false, nullable = false, columnDefinition = "CHAR(36)")
     private UUID id;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    
     private String email;
+    
     private String nome;
+
     private String telefone;
+    
     private LocalDate dataNascimento;
 
 

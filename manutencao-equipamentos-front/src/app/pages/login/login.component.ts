@@ -14,6 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class LoginComponent {
   loginForm: FormGroup;
   loginError = false;
+  showSuccessAnimation = false; 
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
@@ -24,7 +25,6 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      let nome = this.loginForm.get('nome')?.value;
       const email = this.loginForm.get('email')?.value;
       const senha = this.loginForm.get('senha')?.value;
 
@@ -33,22 +33,28 @@ export class LoginComponent {
           console.log('Login bem-sucedido!');
           this.loginError = false;
 
-          nome = localStorage.getItem('nome');
+          this.showSuccessAnimation = true;
 
-          const roles = JSON.parse(<string>localStorage.getItem('roles'));
-          if (roles.includes('ADMIN') || roles.includes('EMPLOYEE')) {
-            this.router.navigate(['/funcionario-home']); // Redireciona para a página de perfil ou dashboard
-          }
+          setTimeout(() => {
+            const roles = JSON.parse(<string>localStorage.getItem('roles'));
+            if (roles.includes('ADMIN') || roles.includes('EMPLOYEE')) {
+              this.router.navigate(['/funcionario-home']);
+            } else if (roles.includes('CLIENT')) {
+              this.router.navigate(['/cliente-home']);
+            }
 
-          else if (JSON.parse(<string>localStorage.getItem('roles')).includes('CLIENT')) {
-            this.router.navigate(['/cliente-home']); // Redireciona para a página de perfil ou dashboard
-          }
+            this.showSuccessAnimation = false;
+          }, 2000);
         },
-          (error: any) => {
+        (error: any) => {
           console.log('Erro de autenticação:', error);
           this.loginError = true;
         }
       );
     }
+  }
+
+  navigateToSignup() {
+    this.router.navigate(['/autocadastro']);
   }
 }

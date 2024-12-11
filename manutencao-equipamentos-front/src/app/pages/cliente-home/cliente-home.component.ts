@@ -126,7 +126,8 @@ export class ClienteHomeComponent implements OnInit {
     solicitacao.historicos.push({
       dataHora: new Date(),
       descricao: `Solicitação passou de ${previousEstado} para APROVADA.`,
-        idFuncionario: 0, 
+        idFuncionario: localStorage.getItem('id') || '', 
+        nomeFuncionario: '',
     });
 
     alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');

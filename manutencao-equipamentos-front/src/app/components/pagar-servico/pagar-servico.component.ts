@@ -28,6 +28,7 @@ export class PagarServicoComponent {
         dataHora: this.solicitacao.dataPagamento,
         descricao: 'Pagamento confirmado pelo cliente.',
         idFuncionario: this.funcionarioLogado.id,
+        nomeFuncionario: this.funcionarioLogado.nome
       });
 
       // Emit an event to notify parent component

@@ -3,5 +3,6 @@ export interface HistoricoSolicitacao {
     dataHora: Date;
     descricao: string;
     destinoRedirecionamento?: string;
-    idFuncionario: number;
+    idFuncionario: string;
+    nomeFuncionario: string;
 }

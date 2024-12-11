@@ -62,11 +62,11 @@ export class EfetuarManutencaoComponent implements OnInit {
         this.solicitacao.historicos = [];
       }
 
-      // Adiciona o histórico da manutenção
       const historico: HistoricoSolicitacao = {
         dataHora: new Date(),
         descricao: `Manutenção realizada: ${this.descricaoManutencao}. Orientações: ${this.orientacoesCliente}`,
         idFuncionario: this.funcionarioLogado.id,
+        nomeFuncionario: this.funcionarioLogado.nome
       };
       this.solicitacao.historicos.push(historico);
 
@@ -89,6 +89,8 @@ export class EfetuarManutencaoComponent implements OnInit {
         dataHora: new Date(),
         descricao: `Solicitação redirecionada de ${this.funcionarioLogado.nome} para ${this.funcionarioDestino.nome}`,
           idFuncionario: this.funcionarioLogado.id,
+          nomeFuncionario: this.funcionarioLogado.nome
+
       };
       this.solicitacao.historicos.push(historico);
 
