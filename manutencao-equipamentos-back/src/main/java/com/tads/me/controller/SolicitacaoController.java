@@ -74,7 +74,7 @@ public class SolicitacaoController {
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<SolicitacaoResponseDTO> updateSolicitacao(
             @PathVariable("id") Long id,
             @RequestBody SolicitacaoRequestDTO data) {
@@ -85,7 +85,7 @@ public class SolicitacaoController {
     }
 
     @PatchMapping("/update/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<?> patchSolicitacao(
             @PathVariable("id") Long id,
             @RequestBody Map<String, Object> updates) {
@@ -93,8 +93,6 @@ public class SolicitacaoController {
             if (id == null) {
                 return ResponseEntity.badRequest().body("ID não pode ser nulo.");
             }
-            System.out.println("ID recebido: " + id); // Log para depuração
-            System.out.println("Updates recebidos: " + updates); // Log para depuração
             
             var solicitacaoData = solicitacaoService.patchSolicitacao(id, updates);
             return solicitacaoData
@@ -109,5 +107,4 @@ public class SolicitacaoController {
                     .body(errorResponse);
         }
     }
-    
 }

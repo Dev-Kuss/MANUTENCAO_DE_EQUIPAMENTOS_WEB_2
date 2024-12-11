@@ -129,6 +129,16 @@ public class SolicitacaoService {
 
             // registrarHistorico(solicitacao, responsavelId, "Solicitação atualizada parcialmente");
             repository.save(solicitacao);
+
+        //             HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
+        //         .dataHora(LocalDateTime.now())
+        //         .descricao("Orçamento realizado.")
+        //         .solicitacao(solicitacao)
+        //         .funcionario(funcionario)
+        //         .build();
+
+        // historicoRepository.save(historico);
+
             return new SolicitacaoResponseDTO(solicitacao);
         });
     }
@@ -138,7 +148,19 @@ public class SolicitacaoService {
         switch (key) {
             case "descricaoEquipamento" -> solicitacao.setDescricaoEquipamento((String) value);
             case "descricaoDefeito" -> solicitacao.setDescricaoDefeito((String) value);
-            case "estado" -> solicitacao.setEstado((String) value);
+            case "estado" -> {
+                String novoEstado = (String) value;
+                solicitacao.setEstado(novoEstado);
+                
+                // Criar histórico para mudança de estado
+                HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
+                    .dataHora(LocalDateTime.now())
+                    .descricao("Estado alterado para: " + novoEstado)
+                    .solicitacao(solicitacao)
+                    .build();
+                
+                historicoRepository.save(historico);
+            }
             case "dataPagamento" -> {
                 if (value == null) {
                     solicitacao.setDataPagamento(null);

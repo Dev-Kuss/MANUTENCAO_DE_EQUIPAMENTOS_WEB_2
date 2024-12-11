@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -16,6 +16,7 @@ import { Solicitacao } from '../../models/solicitacao.model';
 
 export class MostrarOrcamentoComponent implements OnChanges {
   @Input() solicitacao: Solicitacao | null = null;
+  @Output() solicitacaoAtualizada = new EventEmitter<void>();
   
 
   constructor(
@@ -36,20 +37,26 @@ export class MostrarOrcamentoComponent implements OnChanges {
   }
 
   aprovarServico() {
-    if (this.solicitacao && this.solicitacao.orcamentos?.[0]?.valor !== undefined) {
-      this.solicitacao.estado = 'ARRUMADA';
-
-      console.log('Serviço aprovado:', this.solicitacao);
-
-      alert(`Serviço Aprovado no Valor R$ ${this.solicitacao.orcamentos[0].valor.toFixed(2)}`);
+    if (this.solicitacao) {
+      this.mostrarOrcamentoService.aprovarSolicitacao(this.solicitacao).subscribe(
+        (response) => {
+          console.log('Serviço aprovado:', response);
+          alert(`Serviço Aprovado no Valor R$ ${this.ultimoOrcamento?.valor.toFixed(2)}`);
+          this.solicitacaoAtualizada.emit();
+        }
+      );
     }
   }
 
   rejeitarServico() {
     if (this.solicitacao) {
-      this.solicitacao.estado = 'REJEITADA';
-      console.log('Serviço rejeitado:', this.solicitacao);
-      alert('Serviço Rejeitado.');
+      this.mostrarOrcamentoService.rejeitarSolicitacao(this.solicitacao).subscribe(
+        (response) => {
+          console.log('Serviço rejeitado:', response);
+          alert('Serviço Rejeitado.');
+          this.solicitacaoAtualizada.emit();
+        }
+      );
     }
   }
 
