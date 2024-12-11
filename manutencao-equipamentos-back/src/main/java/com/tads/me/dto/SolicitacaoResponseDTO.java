@@ -21,7 +21,8 @@ public record SolicitacaoResponseDTO(
         CategoriaEquipamentoResponseDTO categoria,
         ClienteResponseDTO cliente,
         List<HistoricoSolicitacaoResponseDTO> historicos,
-        List<OrcamentoResponseDTO> orcamentos
+        List<OrcamentoResponseDTO> orcamentos,
+        String orientacoesCliente
 ) {
     public SolicitacaoResponseDTO(Solicitacao solicitacao) {
         this(
@@ -32,10 +33,11 @@ public record SolicitacaoResponseDTO(
                 solicitacao.getDataHoraFinalizacao(),
                 solicitacao.getDataPagamento(),
                 solicitacao.getEstado(),
-                new CategoriaEquipamentoResponseDTO(solicitacao.getCategoria()), // Usando CategoriaEquipamentoResponseDTO
+                new CategoriaEquipamentoResponseDTO(solicitacao.getCategoria()),
                 new ClienteResponseDTO(solicitacao.getCliente()),
                 solicitacao.getHistoricos().stream().map(HistoricoSolicitacaoResponseDTO::new).collect(Collectors.toList()),
-                solicitacao.getOrcamentos().stream().map(OrcamentoResponseDTO::new).collect(Collectors.toList())
+                solicitacao.getOrcamentos().stream().map(OrcamentoResponseDTO::new).collect(Collectors.toList()),
+                solicitacao.getOrientacoesCliente()
         );
  
     }

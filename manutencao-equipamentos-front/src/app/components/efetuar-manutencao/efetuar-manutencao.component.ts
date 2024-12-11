@@ -73,21 +73,16 @@ export class EfetuarManutencaoComponent implements OnInit {
 
   confirmarManutencao() {
     if (this.solicitacao && this.descricaoManutencao && this.funcionarioLogado) {
-      // Atualiza o estado da solicitação para "AGUARDANDO PAGAMENTO"
-      this.solicitacao.estado = 'AGUARDANDO PAGAMENTO';
 
-      // Inicializa o array de históricos se não existir
-      if (!this.solicitacao.historicos) {
-        this.solicitacao.historicos = [];
-      }
-
-      const historico: HistoricoSolicitacao = {
-        dataHora: new Date(),
-        descricao: `Manutenção realizada: ${this.descricaoManutencao}. Orientações: ${this.orientacoesCliente}`,
-        idFuncionario: this.funcionarioLogado.id,
-        nomeFuncionario: this.funcionarioLogado.nome
-      };
-      this.solicitacao.historicos.push(historico);
+      const updates = { estado: 'AGUARDANDO PAGAMENTO', idResponsavel: this.funcionarioDestino?.id, orientacoesCliente: this.orientacoesCliente }; 
+      this.solicitacaoService.patchSolicitacao(this.solicitacao.idSolicitacao, updates).subscribe({
+        next: () => {
+          console.log('Solicitação atualizada parcialmente com sucesso');
+        },
+        error: (error) => {
+          console.error('Erro ao atualizar solicitação parcialmente:', error);
+        }
+      });
 
       console.log('Manutenção registrada com sucesso:', this.solicitacao);
     }
@@ -105,27 +100,6 @@ export class EfetuarManutencaoComponent implements OnInit {
           console.error('Erro ao atualizar solicitação parcialmente:', error);
         }
       });
-
-
-      // // Atualiza o estado da solicitação para REDIRECIONADA
-      // this.solicitacao.estado = 'REDIRECIONADA';
-
-      // // Inicializa o array de históricos se não existir
-      // if (!this.solicitacao.historicos) {
-      //   this.solicitacao.historicos = [];
-      // }
-
-      // // Adiciona o histórico do redirecionamento
-      // const historico: HistoricoSolicitacao = {
-      //   dataHora: new Date(),
-      //   descricao: `Solicitação redirecionada de ${this.funcionarioLogado.nome} para ${this.funcionarioDestino.nome}`,
-      //     idFuncionario: this.funcionarioLogado.id,
-      //     nomeFuncionario: this.funcionarioLogado.nome
-
-      // };
-      // this.solicitacao.historicos.push(historico);
-
-      // console.log('Solicitação redirecionada com sucesso:', this.solicitacao);
     }
   }
 

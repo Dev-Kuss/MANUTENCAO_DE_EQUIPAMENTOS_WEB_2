@@ -16,6 +16,7 @@ export interface Solicitacao {
     idResponsavel?: string;
     historicos?: HistoricoSolicitacao[];
     orcamentos?: Orcamento[];
+    orientacoesCliente?: string;
 }
 
 // export interface Solicitacao {

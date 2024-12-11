@@ -11,5 +11,6 @@ public record SolicitacaoRequestDTO(
         LocalDateTime dataHoraFinalizacao,
         Long idCategoria,
         UUID idCliente,
-        UUID idResponsavel
+        UUID idResponsavel,
+        String orientacoesCliente
 ) {}
