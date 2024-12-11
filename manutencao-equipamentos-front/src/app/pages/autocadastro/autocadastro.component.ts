@@ -23,6 +23,8 @@ export class AutocadastroComponent {
       telefone: ['', Validators.required],
       cep: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
       logradouro: ['', Validators.required],
+      numero: [''],
+      complemento: [''],
       bairro: ['', Validators.required],
       cidade: ['', Validators.required],
       estado: ['', Validators.required]
