@@ -24,6 +24,7 @@ export class EfetuarManutencaoComponent implements OnInit {
   @Input() solicitacao: Solicitacao | null = null;
   @Input() cliente: Cliente = {} as Cliente;
   @Input() funcionarios: Funcionario[] = [];
+  @Input() orcamento: Orcamento[] = [];
   @Input() funcionarioLogado!: Funcionario;
 
   constructor(private clienteService: ClienteService) {}
@@ -96,5 +97,9 @@ export class EfetuarManutencaoComponent implements OnInit {
 
       console.log('Solicitação redirecionada com sucesso:', this.solicitacao);
     }
+  }
+
+  get ultimoOrcamento() {
+    return this.solicitacao?.orcamentos?.[this.solicitacao?.orcamentos?.length - 1];
   }
 }
