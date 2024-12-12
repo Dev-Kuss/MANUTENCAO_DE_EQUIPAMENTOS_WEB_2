@@ -8,7 +8,7 @@ export interface Solicitacao {
     descricaoEquipamento: string;
     descricaoDefeito?: string;
     estado: string;
-    dataPagamento?: Date;
+    dataPagamento?: string | Date;
     dataHoraFinalizacao?: Date; 
     idCategoria: number;
     idCliente: string;

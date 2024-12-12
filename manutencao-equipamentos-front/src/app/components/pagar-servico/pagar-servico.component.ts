@@ -14,6 +14,7 @@ export class PagarServicoComponent {
   @Input() solicitacao: Solicitacao | null = null;
   @Input() funcionarioLogado!: Funcionario;
   @Output() onPagamentoConfirmado = new EventEmitter<void>();
+  @Output() fecharModal = new EventEmitter<void>();
 
   constructor(private solicitacaoService: SolicitacaoService) {}
 
@@ -28,7 +29,7 @@ export class PagarServicoComponent {
     if (this.solicitacao) {
       const updates = {
         estado: 'PAGA',
-        dataPagamento: new Date()
+        dataPagamento: new Date().toISOString().replace(/\.\d{3}Z$/, '')
       };
 
       this.solicitacaoService.patchSolicitacao(this.solicitacao.idSolicitacao, updates).subscribe({
@@ -36,6 +37,8 @@ export class PagarServicoComponent {
           console.log('Pagamento registrado com sucesso');
           this.onPagamentoConfirmado.emit();
           alert('Pagamento realizado com sucesso!');
+          this.fecharModal.emit();
+          window.location.reload();
         },
         error: (error) => {
           console.error('Erro ao registrar pagamento:', error);
