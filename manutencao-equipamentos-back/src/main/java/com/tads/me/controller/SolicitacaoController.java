@@ -25,13 +25,16 @@ public class SolicitacaoController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
-    public ResponseEntity<SolicitacaoResponseDTO> createSolicitacao(@RequestBody SolicitacaoRequestDTO data) {
+    public ResponseEntity<?> createSolicitacao(@RequestBody SolicitacaoRequestDTO data) {
         try {
             var solicitacao = solicitacaoService.createSolicitacao(data);  
             return new ResponseEntity<>(solicitacao, HttpStatus.CREATED);
         } catch (Exception e) {
-            System.err.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());            
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
         }
     }
 
@@ -71,7 +74,7 @@ public class SolicitacaoController {
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<SolicitacaoResponseDTO> updateSolicitacao(
             @PathVariable("id") Long id,
             @RequestBody SolicitacaoRequestDTO data) {
@@ -82,7 +85,7 @@ public class SolicitacaoController {
     }
 
     @PatchMapping("/update/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<?> patchSolicitacao(
             @PathVariable("id") Long id,
             @RequestBody Map<String, Object> updates) {
@@ -90,8 +93,6 @@ public class SolicitacaoController {
             if (id == null) {
                 return ResponseEntity.badRequest().body("ID não pode ser nulo.");
             }
-            System.out.println("ID recebido: " + id); // Log para depuração
-            System.out.println("Updates recebidos: " + updates); // Log para depuração
             
             var solicitacaoData = solicitacaoService.patchSolicitacao(id, updates);
             return solicitacaoData
@@ -106,5 +107,4 @@ public class SolicitacaoController {
                     .body(errorResponse);
         }
     }
-    
 }

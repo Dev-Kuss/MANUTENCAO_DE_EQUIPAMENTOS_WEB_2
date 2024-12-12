@@ -122,12 +122,6 @@ public class SolicitacaoService {
     public Optional<SolicitacaoResponseDTO> patchSolicitacao(Long id, Map<String, Object> updates) {
         return repository.findById(id).map(solicitacao -> {
             updates.forEach((key, value) -> updateField(solicitacao, key, value));
-
-            // UUID responsavelId = updates.containsKey("idResponsavel") 
-            //         ? UUID.fromString((String) updates.get("idResponsavel")) 
-            //         : null;
-
-            // registrarHistorico(solicitacao, responsavelId, "Solicitação atualizada parcialmente");
             repository.save(solicitacao);
             return new SolicitacaoResponseDTO(solicitacao);
         });
@@ -138,7 +132,19 @@ public class SolicitacaoService {
         switch (key) {
             case "descricaoEquipamento" -> solicitacao.setDescricaoEquipamento((String) value);
             case "descricaoDefeito" -> solicitacao.setDescricaoDefeito((String) value);
-            case "estado" -> solicitacao.setEstado((String) value);
+            case "orientacoesCliente" -> solicitacao.setOrientacoesCliente((String) value);
+            case "estado" -> {
+                String novoEstado = (String) value;
+                solicitacao.setEstado(novoEstado);
+
+                HistoricoSolicitacao historico = HistoricoSolicitacao.builder()
+                    .dataHora(LocalDateTime.now())
+                    .descricao("Estado alterado para: " + novoEstado)
+                    .solicitacao(solicitacao)
+                    .build();
+                
+                historicoRepository.save(historico);
+            }
             case "dataPagamento" -> {
                 if (value == null) {
                     solicitacao.setDataPagamento(null);
@@ -208,3 +214,4 @@ public class SolicitacaoService {
                 .collect(Collectors.toList());
     }
 }
+    

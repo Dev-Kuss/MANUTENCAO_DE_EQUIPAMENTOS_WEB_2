@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Solicitacao } from '../models/solicitacao.model';
 
@@ -13,18 +13,36 @@ export class MostrarOrcamentoService {
   constructor(private http: HttpClient) {}
 
   aprovarSolicitacao(solicitacao: Solicitacao): Observable<Solicitacao> {
-    solicitacao.estado = 'ARRUMADA';
-    return this.http.put<Solicitacao>(
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+
+    const updates = {
+      estado: 'APROVADA'
+    };
+
+    return this.http.patch<Solicitacao>(
       `${this.apiUrl}/update/${solicitacao.idSolicitacao}`,
-      solicitacao
+      updates,
+      { headers }
     );
   }
 
   rejeitarSolicitacao(solicitacao: Solicitacao): Observable<Solicitacao> {
-    solicitacao.estado = 'REJEITADA';
-    return this.http.put<Solicitacao>(
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+
+    const updates = {
+      estado: 'REJEITADA'
+    };
+
+    return this.http.patch<Solicitacao>(
       `${this.apiUrl}/update/${solicitacao.idSolicitacao}`,
-      solicitacao
+      updates,
+      { headers }
     );
   }
 }

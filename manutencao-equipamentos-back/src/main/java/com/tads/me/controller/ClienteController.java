@@ -11,12 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,17 +45,27 @@ class ClienteController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PostMapping("/create")
-    public ResponseEntity<ClienteResponseDTO> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
-        Cliente newCliente = this.clienteService.createCliente(data);
-        ClienteResponseDTO clienteResponseDTO = new ClienteResponseDTO(newCliente);
+    public ResponseEntity<?> create(@RequestBody ClienteRequestDTO data) throws NoSuchAlgorithmException {
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(newCliente.getId())
-                .toUri();
+        try {
+            Cliente newCliente = this.clienteService.createCliente(data);
+            ClienteResponseDTO clienteResponseDTO = new ClienteResponseDTO(newCliente);
 
-        return ResponseEntity.created(location).body(clienteResponseDTO);
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(newCliente.getId())
+                    .toUri();
+
+            return ResponseEntity.created(location).body(clienteResponseDTO);
+
+       } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());            
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
+        }
     }
 
     @Operation(summary = "Lista todos os clientes", description = "Endpoint público para listar todos os clientes.")

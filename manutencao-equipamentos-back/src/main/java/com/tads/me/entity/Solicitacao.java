@@ -29,6 +29,9 @@ public class Solicitacao {
     @Column(length = 255)
     private String descricaoDefeito;
 
+    @Column(length = 255)
+    private String orientacoesCliente;
+
     @Column(nullable = false, length = 50)
     private String estado;
 

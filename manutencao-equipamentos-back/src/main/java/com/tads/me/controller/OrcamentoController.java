@@ -90,8 +90,8 @@ public class OrcamentoController {
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PreAuthorize("hasRole('ADMIN') or hasRole('EMPLOYEE')")
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FUNCIONARIO', 'CLIENT')")
     public ResponseEntity<Orcamento> updateOrcamento(@PathVariable("id") Long id, @RequestBody OrcamentoRequestDTO orcamentoRequestDTO) {
         try {
             Optional<Orcamento> updatedOrcamento = orcamentoService.updateOrcamento(id, orcamentoRequestDTO);

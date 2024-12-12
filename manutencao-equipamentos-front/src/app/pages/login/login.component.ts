@@ -44,7 +44,7 @@ export class LoginComponent {
             }
 
             this.showSuccessAnimation = false;
-          }, 2000);
+          }, 0);
         },
         (error: any) => {
           console.log('Erro de autenticação:', error);
