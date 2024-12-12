@@ -15,6 +15,13 @@ export class PagarServicoComponent {
   @Input() funcionarioLogado!: Funcionario;
   @Output() onPagamentoConfirmado = new EventEmitter<void>();
 
+  getUltimoValorOrcamento(): number {
+    if (!this.solicitacao?.orcamentos) return 0;
+    if (this.solicitacao.orcamentos.length === 0) return 0;
+    
+    return this.solicitacao.orcamentos[this.solicitacao.orcamentos.length - 1].valor;
+  }
+
   confirmarPagamento() {
     if (this.solicitacao) {
       this.solicitacao.estado = 'APROVADA';

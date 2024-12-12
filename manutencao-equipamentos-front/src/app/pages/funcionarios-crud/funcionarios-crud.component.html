@@ -58,7 +58,7 @@
 
 <app-base-modal [isOpen]="isFuncionarioModalOpen" (onClose)="fecharModalFuncionario()">
     <ng-container modal-header>
-        <h2 class="text-2xl font-semibold text-gray-700">{{ funcionarioSelecionado.id ? 'Editar Funcionário' : 'Adicionar Funcionário' }}</h2>
+        <h2 class="text-2xl font-semibold text-gray-700">{{ funcionarioSelecionado?.id !== '' ? 'Editar Funcionário' : 'Adicionar Funcionário' }}</h2>
     </ng-container>
     <ng-container modal-body>
         <form *ngIf="funcionarioSelecionado" (ngSubmit)="salvarFuncionario()" class="space-y-2">
@@ -76,7 +76,7 @@
 
             <div class="flex justify-end mt-4">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md">
-                    {{ funcionarioSelecionado.id ? 'Salvar' : 'Adicionar' }}
+                    {{ funcionarioSelecionado?.id !== '' ? 'Salvar' : 'Adicionar' }}
                 </button>
             </div>
         </form>
