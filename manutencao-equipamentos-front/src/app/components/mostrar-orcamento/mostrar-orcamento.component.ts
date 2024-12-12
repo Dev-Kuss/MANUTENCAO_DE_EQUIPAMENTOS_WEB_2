@@ -10,12 +10,13 @@ import { Solicitacao } from '../../models/solicitacao.model';
 @Component({
   selector: 'app-mostrar-orcamento',
   standalone: true,
-  imports: [CommonModule, BaseModalComponent],
+  imports: [CommonModule,],
   templateUrl: './mostrar-orcamento.component.html',
 })
 
 export class MostrarOrcamentoComponent implements OnChanges {
   @Input() solicitacao: Solicitacao | null = null;
+  @Input() fecharModal!: () => void;
   @Output() solicitacaoAtualizada = new EventEmitter<void>();
   
 
@@ -43,6 +44,10 @@ export class MostrarOrcamentoComponent implements OnChanges {
           console.log('Serviço aprovado:', response);
           alert(`Serviço Aprovado no Valor R$ ${this.ultimoOrcamento?.valor.toFixed(2)}`);
           this.solicitacaoAtualizada.emit();
+          if (this.fecharModal) {
+            this.fecharModal();
+          }
+          window.location.reload();
         }
       );
     }
@@ -55,6 +60,10 @@ export class MostrarOrcamentoComponent implements OnChanges {
           console.log('Serviço rejeitado:', response);
           alert('Serviço Rejeitado.');
           this.solicitacaoAtualizada.emit();
+          if (this.fecharModal) {
+            this.fecharModal();
+          }
+          window.location.reload();
         }
       );
     }

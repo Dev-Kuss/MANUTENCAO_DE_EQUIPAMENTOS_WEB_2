@@ -74,7 +74,7 @@
             <i class="fa fa-chevron-left"></i>
         </button>
 
-        <button (click)="mudarPagina(1)"
+        <button *ngIf="totalPaginas > 1" (click)="mudarPagina(1)"
             [ngClass]="{'bg-blue-500 text-white': paginaAtual === 1, 'text-gray-500': paginaAtual !== 1}"
             class="px-3 py-1 rounded-lg">
             1
@@ -90,7 +90,7 @@
 
         <span *ngIf="paginaAtual < totalPaginas - 2" class="text-gray-500">...</span>
 
-        <button (click)="mudarPagina(totalPaginas)"
+        <button *ngIf="totalPaginas > 1" (click)="mudarPagina(totalPaginas)"
             [ngClass]="{'bg-blue-500 text-white': paginaAtual === totalPaginas, 'text-gray-500': paginaAtual !== totalPaginas}"
             class="px-3 py-1 rounded-lg">
             {{ totalPaginas }}
