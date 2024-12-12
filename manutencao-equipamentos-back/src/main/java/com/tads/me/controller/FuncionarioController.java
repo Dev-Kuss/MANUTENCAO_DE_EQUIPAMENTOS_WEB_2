@@ -6,7 +6,6 @@ import com.tads.me.dto.FuncionarioResponseDTO;
 import com.tads.me.repository.FuncionarioRepository;
 import com.tads.me.service.FuncionarioService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.EntityNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -124,8 +123,8 @@ class FuncionarioController {
         try {
             funcionarioService.deleteFuncionario(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        // } catch (EntityNotFoundException e) {
+        //     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
