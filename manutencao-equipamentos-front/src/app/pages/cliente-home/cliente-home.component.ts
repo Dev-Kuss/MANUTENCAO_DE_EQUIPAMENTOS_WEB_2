@@ -127,21 +127,24 @@ export class ClienteHomeComponent implements OnInit {
   }
 
   resgatarServico(solicitacao: Solicitacao): void {
-    const previousEstado = solicitacao.estado;
-    solicitacao.estado = 'APROVADA';
+    if (solicitacao) {
+      const updates = {
+        estado: 'APROVADA'
+      };
 
-    if (!solicitacao.historicos) {
-      solicitacao.historicos = [];
+      this.solicitacaoService.patchSolicitacao(solicitacao.idSolicitacao, updates).subscribe({
+        next: () => {
+          console.log('Serviço resgatado com sucesso');
+          alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');
+          const usuarioId = this.authService.getId();
+          this.carregarSolicitacoes(usuarioId);
+        },
+        error: (error) => {
+          console.error('Erro ao resgatar serviço:', error);
+          alert('Erro ao resgatar serviço. Por favor, tente novamente.');
+        }
+      });
     }
-
-    solicitacao.historicos.push({
-      dataHora: new Date(),
-      descricao: `Solicitação passou de ${previousEstado} para APROVADA.`,
-        idFuncionario: localStorage.getItem('id') || '', 
-        nomeFuncionario: '',
-    });
-
-    alert('Serviço resgatado com sucesso. A solicitação foi aprovada novamente.');
   }
 
   pagarServico(): void {
