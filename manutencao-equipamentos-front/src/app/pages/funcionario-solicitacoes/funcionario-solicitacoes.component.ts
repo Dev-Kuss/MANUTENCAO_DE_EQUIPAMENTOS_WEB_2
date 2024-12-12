@@ -258,12 +258,13 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     doc.text('Relatório de Receitas por Período', pageWidth / 2, 10, { align: 'center' });
-
+    
     const solicitacoesFiltradas = this.filtrarSolicitacoesPorData();
     const groupedByDate = solicitacoesFiltradas.reduce((acc, curr) => {
+      console.log(curr.dataHora)
       const ultimoOrcamento = curr.orcamentos?.slice(-1)[0];
       if (ultimoOrcamento?.valor !== undefined) {
-        const dateKey = curr.dataHora.toISOString().split('T')[0];
+        const dateKey = curr.dataHora.toString().split('T')[0];
         if (!acc[dateKey]) acc[dateKey] = [];
         acc[dateKey].push(curr);
       }
@@ -277,21 +278,11 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
         return sum + (ultimoOrcamento?.valor ?? 0);
       }, 0);
       
-      solicitacoes.forEach(solicitacao => {
-        const ultimoOrcamento = solicitacao.orcamentos?.slice(-1)[0];
-        const cliente = this.clientes[solicitacao.idCliente];
-        dataTable.push([
-          date,
-          cliente?.nome ?? 'N/A',
-          solicitacao.descricaoEquipamento,
-          `R$ ${ultimoOrcamento?.valor ?? 0}`
-        ]);
-      });
-      dataTable.push([`${date} - Total`, '', '', `R$ ${totalDia}`]);
+      dataTable.push([`${date}`, `R$ ${totalDia}`]);
     }
 
     (doc as any).autoTable({
-      head: [['Data', 'Cliente', 'Descrição', 'Valor']],
+      head: [['Data', 'Valor']],
       body: dataTable,
     });
 
@@ -321,16 +312,14 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
       solicitacoes.forEach(solicitacao => {
         dataTable.push([
           categoria,
-          this.clientes[solicitacao.idCliente]?.nome ?? 'N/A',
-          solicitacao.descricaoEquipamento,
           `R$ ${solicitacao.orcamentos?.slice(-1)[0]?.valor ?? 0}`
         ]);
       });
-      dataTable.push([`${categoria} - Total`, '', '', `R$ ${totalCategoria}`]);
+      dataTable.push([`Total`, `R$ ${totalCategoria}`]);
     }
 
     (doc as any).autoTable({
-      head: [['Categoria', 'Cliente', 'Descrição', 'Valor']],
+      head: [['Categoria', 'Valor']],
       body: dataTable,
     });
 
