@@ -272,7 +272,6 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
     
     const solicitacoesFiltradas = this.filtrarSolicitacoesPorData();
     const groupedByDate = solicitacoesFiltradas.reduce((acc, curr) => {
-      console.log(curr.dataHora)
       const ultimoOrcamento = curr.orcamentos?.slice(-1)[0];
       if (ultimoOrcamento?.valor !== undefined) {
         const dateKey = curr.dataHora.toString().split('T')[0];
@@ -283,18 +282,22 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
     }, {} as { [key: string]: Solicitacao[] });
 
     const dataTable: any[] = [];
+    let totalGeral = 0;
+    
     for (const [date, solicitacoes] of Object.entries(groupedByDate)) {
       const totalDia = solicitacoes.reduce((sum, s) => {
         const ultimoOrcamento = s.orcamentos?.slice(-1)[0];
         return sum + (ultimoOrcamento?.valor ?? 0);
       }, 0);
       
-      dataTable.push([`${date}`, `R$ ${totalDia}`]);
+      totalGeral += totalDia;
+      dataTable.push([`${date}`, `R$ ${totalDia.toFixed(2)}`]);
     }
 
     (doc as any).autoTable({
       head: [['Data', 'Valor']],
       body: dataTable,
+      foot: [['Total Geral', `R$ ${totalGeral.toFixed(2)}`]],
     });
 
     doc.save('relatorio-receitas-periodo.pdf');
@@ -315,23 +318,30 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
     }, {} as CategoryGroup);
 
     const dataTable: any[] = [];
+    let totalGeral = 0;
+
     for (const [categoria, solicitacoes] of Object.entries(groupedByCategory)) {
       const totalCategoria = solicitacoes.reduce((sum, s) => {
         const ultimoOrcamento = s.orcamentos?.slice(-1)[0];
         return sum + (ultimoOrcamento?.valor ?? 0);
       }, 0);
+      
+      totalGeral += totalCategoria;
+      
       solicitacoes.forEach(solicitacao => {
         dataTable.push([
           categoria,
-          `R$ ${solicitacao.orcamentos?.slice(-1)[0]?.valor ?? 0}`
+          `R$ ${(solicitacao.orcamentos?.slice(-1)[0]?.valor ?? 0).toFixed(2)}`
         ]);
       });
-      dataTable.push([`Total`, `R$ ${totalCategoria}`]);
+      dataTable.push([`Total ${categoria}`, `R$ ${totalCategoria.toFixed(2)}`]);
     }
+
 
     (doc as any).autoTable({
       head: [['Categoria', 'Valor']],
       body: dataTable,
+      foot: [['Total Geral', `R$ ${totalGeral.toFixed(2)}`]],
     });
 
     doc.save('relatorio-receitas-categoria.pdf');
