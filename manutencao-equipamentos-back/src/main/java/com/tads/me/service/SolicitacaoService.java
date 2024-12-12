@@ -132,6 +132,7 @@ public class SolicitacaoService {
         switch (key) {
             case "descricaoEquipamento" -> solicitacao.setDescricaoEquipamento((String) value);
             case "descricaoDefeito" -> solicitacao.setDescricaoDefeito((String) value);
+            case "descricaoManutencao" -> solicitacao.setDescricaoManutencao((String) value);
             case "orientacoesCliente" -> solicitacao.setOrientacoesCliente((String) value);
             case "estado" -> {
                 String novoEstado = (String) value;

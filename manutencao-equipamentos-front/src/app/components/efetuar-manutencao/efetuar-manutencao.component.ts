@@ -73,8 +73,13 @@ export class EfetuarManutencaoComponent implements OnInit {
 
   confirmarManutencao() {
     if (this.solicitacao && this.descricaoManutencao && this.funcionarioLogado) {
+      const updates = {
+        estado: 'AGUARDANDO PAGAMENTO',
+        idResponsavel: this.funcionarioLogado.id,
+        orientacoesCliente: this.orientacoesCliente,
+        descricaoManutencao: this.descricaoManutencao
+      }; 
 
-      const updates = { estado: 'AGUARDANDO PAGAMENTO', idResponsavel: this.funcionarioDestino?.id, orientacoesCliente: this.orientacoesCliente }; 
       this.solicitacaoService.patchSolicitacao(this.solicitacao.idSolicitacao, updates).subscribe({
         next: () => {
           console.log('Solicitação atualizada parcialmente com sucesso');
