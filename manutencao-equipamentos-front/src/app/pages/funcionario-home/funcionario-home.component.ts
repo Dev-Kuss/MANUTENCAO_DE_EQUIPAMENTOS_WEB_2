@@ -13,7 +13,8 @@ import {
   faWrench,
   faUserPlus,
   faFilePdf,
-  faCheckCircle
+  faCheckCircle,
+  faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
@@ -65,7 +66,8 @@ export class FuncionarioHomeComponent implements OnInit {
   faWrench = faWrench;
   faUserPlus = faUserPlus;
   faFilePdf = faFilePdf;
-  faCheckCircle = faCheckCircle
+  faCheckCircle = faCheckCircle;
+  faSignOutAlt = faSignOutAlt;
 
   nomeUsuario: string | null = '';
 
@@ -122,6 +124,10 @@ export class FuncionarioHomeComponent implements OnInit {
         console.error('Erro ao carregar solicitações:', error);
       },
     });
+  }
+
+  logout() {
+    window.location.href = '/login';
   }
 
   get totalPaginas(): number {
