@@ -1,56 +1,67 @@
 <div class="bg-gradient-to-b from-blue-700 to-blue-500 px-4 py-8 lg:px-14 pb-36">
-    <nav class="max-w-screen-2xl mx-auto flex items-center justify-between mb-4">
-        <div class="flex items-center space-x-4">
-            <img src="assets/logo.svg" alt="Logo" class="h-7 w-7">
-            <span class="font-semibold text-white text-2xl ml-2.5">Manutenção</span>
-        </div>
-        <ul class="flex items-center space-x-8">
-            <li><a routerLink="/funcionario-home" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Página Inicial</a></li>
-            <li><a routerLink="/categorias-crud" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Categorias</a></li>
-            <li><a routerLink="/funcionario-crud" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Funcionários</a></li>
-        </ul>
-        <div class="flex items-center space-x-4">
-            <div class="bg-pink-500 h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold">F</div>
-        </div>
-    </nav>
-
-    <div class="max-w-screen-2xl mx-auto flex flex-col justify-between mt-10">
-        <h1 class="text-2xl lg:text-4xl text-white font-medium">Gerencie as Categorias de Equipamentos</h1>
-        <p class="text-sm lg:text-base text-[#89b6fd]">Adicione, edite ou remova as categorias de equipamentos disponíveis</p>
+  <nav class="max-w-screen-2xl mx-auto flex items-center justify-between mb-4">
+    <div class="flex items-center space-x-4">
+      <img src="assets/logo.svg" alt="Logo" class="h-7 w-7">
+      <span class="font-semibold text-white text-2xl ml-2.5">Manutenção</span>
     </div>
+    <ul class="flex items-center space-x-8">
+      <li><a routerLink="/funcionario-home" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Página
+          Inicial</a></li>
+      <li><a routerLink="/funcionario-solicitacoes"
+          class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Solicitações</a></li>
+      <li><a routerLink="/categorias-crud" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Categorias</a>
+      </li>
+      <li><a routerLink="/funcionario-crud"
+          class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Funcionários</a></li>
+    </ul>
+    <div class="flex items-center space-x-4">
+      <div class="bg-pink-500 h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold">F</div>
+    </div>
+  </nav>
+
+  <div class="max-w-screen-2xl mx-auto flex flex-col justify-between mt-10">
+    <h1 class="text-2xl lg:text-4xl text-white font-medium">Gerencie as Categorias de Equipamentos</h1>
+    <p class="text-sm lg:text-base text-[#89b6fd]">Adicione, edite ou remova as categorias de equipamentos disponíveis
+    </p>
+  </div>
 </div>
 
 <!-- Main Content -->
 <div class="max-w-screen-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-    <!-- Título e botão para adicionar nova categoria -->
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-4xl font-semibold text-gray-700 mt-2">Categorias</h2>
-        <button (click)="abrirModalCategoria()" class="bg-black text-white font-medium py-2 px-4 rounded-md shadow-md">Adicionar Categoria</button>
-    </div>
+  <!-- Título e botão para adicionar nova categoria -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-4xl font-semibold text-gray-700 mt-2">Categorias</h2>
+    <button (click)="abrirModalCategoria()"
+      class="bg-black text-white font-medium py-2 px-4 rounded-md shadow-md">Adicionar Categoria</button>
+  </div>
 
-    <!-- Tabela de Categorias -->
-    <table class="min-w-full bg-white border border-gray-200 rounded">
-        <thead>
-            <tr>
-                <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Categoria</th>
-                <th class="py-2 px-4 text-center text-sm font-semibold text-gray-600">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let categoria of categorias" class="border-t">
-              <td class="py-2 px-4 text-sm">
-                {{ categoria.ativo ? categoria.nome_categoria : (categoria.nome_categoria + ' (Inativo)') }}
-              </td>                <td class="py-2 px-4 text-sm text-center space-x-2">
-                    <button (click)="editarCategoria(categoria)" class="bg-blue-500 text-white py-2 px-3 rounded hover:bg-blue-600 w-10 h-10">
-                        <fa-icon [icon]="faEdit"></fa-icon>
-                    </button>
-                    <button (click)="removerCategoria(categoria)" class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 w-10 h-10" [disabled]="categorias.length === 1">
-                        <fa-icon [icon]="faTrash"></fa-icon>
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+  <!-- Tabela de Categorias -->
+  <table class="min-w-full bg-white border border-gray-200 rounded">
+    <thead>
+      <tr>
+        <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600">Categoria</th>
+        <th class="py-2 px-4 text-center text-sm font-semibold text-gray-600">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let categoria of categorias" class="border-t">
+        <td class="py-2 px-4 text-sm">
+          {{ categoria.ativo ? categoria.nome_categoria : (categoria.nome_categoria + ' (Inativo)') }}
+        </td>
+        <td class="py-2 px-4 text-sm text-center space-x-2">
+          <button (click)="editarCategoria(categoria)"
+            class="bg-blue-500 text-white py-2 px-3 rounded hover:bg-blue-600 w-10 h-10">
+            <fa-icon [icon]="faEdit"></fa-icon>
+          </button>
+          <button (click)="removerCategoria(categoria)"
+            class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 w-10 h-10"
+            [disabled]="categorias.length === 1">
+            <fa-icon [icon]="faTrash"></fa-icon>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <!-- Modal para inserir/editar categoria -->
@@ -62,14 +73,8 @@
   </ng-container>
   <ng-container modal-body>
     <form *ngIf="categoriaSelecionada" (ngSubmit)="salvarCategoria()">
-      <input
-        type="text"
-        [(ngModel)]="categoriaSelecionada.nome_categoria"
-        name="nome"
-        class="border rounded-md w-full px-4 py-2 mt-2"
-        placeholder="Nome da Categoria"
-        required
-      />
+      <input type="text" [(ngModel)]="categoriaSelecionada.nome_categoria" name="nome"
+        class="border rounded-md w-full px-4 py-2 mt-2" placeholder="Nome da Categoria" required />
 
       <!-- Controle Deslizante para Ativar/Inativar Categoria, visível apenas no modo de edição -->
       <div *ngIf="categoriaSelecionada.id" class="flex items-center mt-4">
@@ -80,7 +85,8 @@
         </label>
       </div>
       <div class="flex justify-end mt-4">
-        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md">{{ categoriaSelecionada.id ? 'Salvar' : 'Adicionar' }}</button>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md">{{
+          categoriaSelecionada.id ? 'Salvar' : 'Adicionar' }}</button>
       </div>
     </form>
   </ng-container>
