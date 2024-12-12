@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -23,7 +23,6 @@ import { SolicitacaoService } from '../../services/solicitacao.service';
 })
 
 export class EfetuarManutencaoComponent implements OnInit {
-  
   @Input() solicitacao: Solicitacao | null = null;
   @Input() cliente: Cliente = {} as Cliente;
   @Input() funcionarios: Funcionario[] = [];
