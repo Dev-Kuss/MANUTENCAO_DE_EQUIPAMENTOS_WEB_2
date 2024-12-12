@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { Funcionario } from '../../models/funcionario.model';
 import { Solicitacao } from '../../models/solicitacao.model';
+import { SolicitacaoService } from '../../services/solicitacao.service';
 
 @Component({
   selector: 'app-pagar-servico',
@@ -15,6 +15,8 @@ export class PagarServicoComponent {
   @Input() funcionarioLogado!: Funcionario;
   @Output() onPagamentoConfirmado = new EventEmitter<void>();
 
+  constructor(private solicitacaoService: SolicitacaoService) {}
+
   getUltimoValorOrcamento(): number {
     if (!this.solicitacao?.orcamentos) return 0;
     if (this.solicitacao.orcamentos.length === 0) return 0;
@@ -24,25 +26,22 @@ export class PagarServicoComponent {
 
   confirmarPagamento() {
     if (this.solicitacao) {
-      this.solicitacao.estado = 'APROVADA';
-      this.solicitacao.dataPagamento = new Date();
+      const updates = {
+        estado: 'PAGA',
+        dataPagamento: new Date()
+      };
 
-      if (!this.solicitacao.historicos) {
-        this.solicitacao.historicos = [];
-      }
-
-      this.solicitacao.historicos.push({
-        dataHora: this.solicitacao.dataPagamento,
-        descricao: 'Pagamento confirmado pelo cliente.',
-        idFuncionario: this.funcionarioLogado.id,
-        nomeFuncionario: this.funcionarioLogado.nome
+      this.solicitacaoService.patchSolicitacao(this.solicitacao.idSolicitacao, updates).subscribe({
+        next: () => {
+          console.log('Pagamento registrado com sucesso');
+          this.onPagamentoConfirmado.emit();
+          alert('Pagamento realizado com sucesso!');
+        },
+        error: (error) => {
+          console.error('Erro ao registrar pagamento:', error);
+          alert('Erro ao processar pagamento. Por favor, tente novamente.');
+        }
       });
-
-      // Emit an event to notify parent component
-      this.onPagamentoConfirmado.emit();
-
-      // Optional: Display a confirmation message
-      alert('Pagamento realizado com sucesso!');
     }
   }
 }
