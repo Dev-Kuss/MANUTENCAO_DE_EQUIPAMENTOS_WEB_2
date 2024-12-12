@@ -1,6 +1,7 @@
 import { Orcamento } from "./orcamento.model";
 import { HistoricoSolicitacao } from "./historico-solicitacao.model";
 import { Cliente } from "./cliente.model";
+import { Funcionario } from './funcionario.model';
 
 export interface Solicitacao {
     idSolicitacao: number;
@@ -17,4 +18,5 @@ export interface Solicitacao {
     historicos?: HistoricoSolicitacao[];
     orcamentos?: Orcamento[];
     orientacoesCliente?: string;
+    responsavel?: Funcionario;
 }

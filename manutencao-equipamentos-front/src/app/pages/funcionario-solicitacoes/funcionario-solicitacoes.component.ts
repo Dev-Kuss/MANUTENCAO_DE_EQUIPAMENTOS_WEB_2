@@ -249,7 +249,9 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
         this.solicitacoesFiltradas = [];
       }
     } else {
-      this.solicitacoesFiltradas = [...this.solicitacoes];
+      this.solicitacoesFiltradas = this.solicitacoes.filter(solicitacao => 
+        solicitacao.estado !== 'REDIRECIONADA' || solicitacao.responsavel?.id === this.funcionarioLogado?.id
+      );
     }
   }
 

@@ -25,7 +25,7 @@ export class FuncionarioCrudComponent implements OnInit {
   faTrash = faTrash;
   isFuncionarioModalOpen = false;
   funcionarios: Funcionario[] = [];
-  funcionarioSelecionado!: Funcionario;
+  funcionarioSelecionado: Funcionario = { id: '', nome: '', email: '', dataNascimento: '', senha: '' };
   funcionarioLogado!: Funcionario;
   
 
