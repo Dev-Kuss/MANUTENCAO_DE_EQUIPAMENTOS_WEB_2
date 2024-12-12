@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
@@ -13,7 +13,8 @@ import {
   faWrench,
   faUserPlus,
   faFilePdf,
-  faCheckCircle
+  faCheckCircle,
+  faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
@@ -68,6 +69,8 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
   faUserPlus = faUserPlus;
   faFilePdf = faFilePdf;
   faCheckCircle = faCheckCircle;
+  faSignOutAlt = faSignOutAlt;
+
 
   nomeUsuario: string | null = '';
 
@@ -103,7 +106,8 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
     private authService: AuthService,
     private funcionarioService: FuncionarioService,
     private solicitacaoService: SolicitacaoService,
-    private clienteService: ClienteService
+    private clienteService: ClienteService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -154,6 +158,11 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
     const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
     const fim = inicio + this.itensPorPagina;
     return this.solicitacoesFiltradas.slice(inicio, fim);
+  }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['/login']);
   }
 
   mudarPagina(numeroPagina: number) {

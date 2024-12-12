@@ -26,7 +26,7 @@ export class EfetuarManutencaoComponent implements OnInit {
   @Input() solicitacao: Solicitacao | null = null;
   @Input() cliente: Cliente = {} as Cliente;
   @Input() funcionarios: Funcionario[] = [];
-  @Input() orcamento: Orcamento[] = [];
+  @Input() fecharModal!: () => void;
   funcionarioLogado: Funcionario | null = null;
 
   constructor(private clienteService: ClienteService, private solicitacaoService: SolicitacaoService, private funcionarioService: FuncionarioService) {}
@@ -67,8 +67,7 @@ export class EfetuarManutencaoComponent implements OnInit {
   orientacoesCliente: string = '';
   funcionarioDestino: Funcionario | null = null;
 
-  // Variável para controlar a aba selecionada
-  abaSelecionada: string = 'manutencao'; // 'manutencao' ou 'redirecionar'
+  abaSelecionada: string = 'manutencao'; 
 
   confirmarManutencao() {
     if (this.solicitacao && this.descricaoManutencao && this.funcionarioLogado) {
@@ -81,27 +80,35 @@ export class EfetuarManutencaoComponent implements OnInit {
 
       this.solicitacaoService.patchSolicitacao(this.solicitacao.idSolicitacao, updates).subscribe({
         next: () => {
-          console.log('Solicitação atualizada parcialmente com sucesso');
+          alert('Manutenção registrada com sucesso!');
+          if (this.fecharModal) {
+            this.fecharModal();
+          }
+          window.location.reload();
         },
         error: (error) => {
           console.error('Erro ao atualizar solicitação parcialmente:', error);
+          alert('Erro ao registrar manutenção');
         }
       });
-
-      console.log('Manutenção registrada com sucesso:', this.solicitacao);
     }
   }
 
   confirmarRedirecionamento() {
     if (this.solicitacao && this.funcionarioDestino && this.funcionarioLogado) {
-
       const updates = { estado: 'REDIRECIONADA', idResponsavel: this.funcionarioDestino.id }; 
+      
       this.solicitacaoService.patchSolicitacao(this.solicitacao.idSolicitacao, updates).subscribe({
         next: () => {
-          console.log('Solicitação atualizada parcialmente com sucesso');
+          alert('Solicitação redirecionada com sucesso!');
+          if (this.fecharModal) {
+            this.fecharModal();
+          }
+          window.location.reload();
         },
         error: (error) => {
           console.error('Erro ao atualizar solicitação parcialmente:', error);
+          alert('Erro ao redirecionar solicitação');
         }
       });
     }
