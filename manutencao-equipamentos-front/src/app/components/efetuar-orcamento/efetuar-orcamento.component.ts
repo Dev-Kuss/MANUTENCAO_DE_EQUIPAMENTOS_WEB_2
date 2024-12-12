@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule  } from '@angular/forms';
 import { Solicitacao } from '../../models/solicitacao.model';
 import { Orcamento } from '../../models/orcamento.model';
@@ -18,6 +18,8 @@ import { FormsModule } from '@angular/forms';
 })
 export class EfetuarOrcamentoComponent {
   @Input() solicitacao: Solicitacao | null = null;
+  @Input() fecharModal!: () => void;
+  @Output() orcamentoConfirmado = new EventEmitter<void>();
   valorOrcamento!: number;
   descricaoServico!: string;
 
@@ -35,25 +37,50 @@ export class EfetuarOrcamentoComponent {
       };
 
       this.solicitacaoService.createOrcamento(novoOrcamento).subscribe({
-        next: (response) => {
-          console.log('Orçamento registrado com sucesso:', response);
-          this.valorOrcamento = 0;
-          this.descricaoServico = '';
-        },
-        error: (error) => {
-          console.error('Erro ao registrar orçamento:', error);
-        }
-      });
-
-      const updates = { estado: 'ORÇADA' }; 
-      this.solicitacaoService.patchSolicitacao(this.solicitacao.idSolicitacao, updates).subscribe({
         next: () => {
-          console.log('Solicitação atualizada parcialmente com sucesso');
+          this.solicitacaoService.patchSolicitacao(this.solicitacao!.idSolicitacao, { estado: 'ORÇADA' }).subscribe({
+            next: () => {
+              alert('Orçamento Realizado com Sucesso!');
+              this.valorOrcamento = 0;
+              this.descricaoServico = '';
+              this.orcamentoConfirmado.emit();
+              if (this.fecharModal) {
+                this.fecharModal();
+              }
+              window.location.reload();
+            },
+            error: (error) => {
+              console.error('Erro ao atualizar solicitação:', error);
+              alert('Erro ao atualizar o estado da solicitação');
+            }
+          });
         },
         error: (error) => {
-          console.error('Erro ao atualizar solicitação parcialmente:', error);
+          if (error.status === 200) {
+            this.solicitacaoService.patchSolicitacao(this.solicitacao!.idSolicitacao, { estado: 'ORÇADA' }).subscribe({
+              next: () => {
+                alert('Orçamento Realizado com Sucesso!');
+                this.valorOrcamento = 0;
+                this.descricaoServico = '';
+                this.orcamentoConfirmado.emit();
+                if (this.fecharModal) {
+                  this.fecharModal();
+                }
+                window.location.reload();
+              },
+              error: (patchError) => {
+                console.error('Erro ao atualizar solicitação:', patchError);
+                alert('Erro ao atualizar o estado da solicitação');
+              }
+            });
+          } else {
+            console.error('Erro ao registrar orçamento:', error);
+            alert('Erro ao registrar orçamento');
+          }
         }
       });
+    } else {
+      alert('Por favor, preencha todos os campos obrigatórios');
     }
   }
 }

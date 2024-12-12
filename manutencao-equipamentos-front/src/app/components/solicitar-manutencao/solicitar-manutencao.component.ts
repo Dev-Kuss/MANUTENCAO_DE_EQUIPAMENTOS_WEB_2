@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule  } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BaseModalComponent } from '../base-modal/base-modal.component';
@@ -11,12 +11,13 @@ import { Cliente } from '../../models/cliente.model';
 @Component({
   selector: 'app-solicitar-manutencao',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BaseModalComponent],
+  imports: [CommonModule, ReactiveFormsModule,],
   templateUrl:  './solicitar-manutencao.component.html',
 })
 
 export class SolicitarManutencaoComponent implements OnInit {
   @Input() fecharModal!: () => void;
+  @Output() solicitacaoCriada = new EventEmitter<void>();
   
   solicitacaoForm: FormGroup;
   categorias: { idCategoria: number; nome: string }[] = [];
@@ -81,13 +82,9 @@ export class SolicitarManutencaoComponent implements OnInit {
         this.solicitacaoService.createSolicitacao(novaSolicitacao).subscribe(
           response => {
               console.log('Solicitação registrada com sucesso:', response);
-              console.log('Valor de fecharModal:', this.fecharModal);
-      
+              this.solicitacaoCriada.emit();
               if (this.fecharModal) {
                   this.fecharModal();
-                  console.log('Modal fechada com sucesso');
-              } else {
-                  console.error('Função fecharModal não está definida');
               }
           },
           error => {

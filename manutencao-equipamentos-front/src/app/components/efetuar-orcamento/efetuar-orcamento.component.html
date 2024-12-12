@@ -8,8 +8,7 @@
     
     <div>
       <label class="block text-sm font-medium text-gray-600">Cliente</label>
-      <!-- <p class="mt-1 text-gray-800">{{ solicitacao?.cliente?.nome }}</p> -->
-      <p class="mt-1 text-gray-800">{{ solicitacao?.idCliente }}</p>
+      <p class="mt-1 text-gray-800">{{ solicitacao?.cliente?.nome }}</p>
     </div>
     
     <div>
@@ -24,7 +23,15 @@
     
     <div class="my-6">
       <label for="valorOrcamento" class="block text-sm font-medium text-gray-600">Valor do Orçamento</label>
-      <input [(ngModel)]="valorOrcamento" type="number" id="valorOrcamento" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Digite o valor do orçamento">
+      <div class="relative">
+        <span class="absolute left-3 top-2">R$</span>
+        <input [(ngModel)]="valorOrcamento" 
+               (keypress)="$event.charCode >= 48 && $event.charCode <= 57 || $event.charCode === 44 || $event.charCode === 46"
+               type="text" 
+               id="valorOrcamento" 
+               class="mt-1 block w-full pl-12 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+               placeholder="0,00">
+      </div>
     </div>
 
     <div>

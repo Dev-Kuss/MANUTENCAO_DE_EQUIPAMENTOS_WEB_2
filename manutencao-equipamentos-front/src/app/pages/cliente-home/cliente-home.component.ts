@@ -11,6 +11,7 @@ import { MostrarOrcamentoComponent } from '../../components/mostrar-orcamento/mo
 import { VisualizarServicoComponent } from '../../components/visualizar-servico/visualizar-servico.component';
 import { PagarServicoComponent } from '../../components/pagar-servico/pagar-servico.component';
 import { HistoricoSolicitacaoService } from '../../services/historico-solicitacao.service';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 
 import { Solicitacao } from '../../models/solicitacao.model';
@@ -40,6 +41,8 @@ export class ClienteHomeComponent implements OnInit {
   faFileInvoiceDollar = faFileInvoiceDollar;
   faUndoAlt = faUndoAlt;
   faMoneyBillWave = faMoneyBillWave;
+  faSignOutAlt = faSignOutAlt;
+
 
   isManutencaoModalOpen = false;
   isOrcamentoModalOpen = false;
@@ -81,6 +84,13 @@ export class ClienteHomeComponent implements OnInit {
 
   fecharManutencaoModal(): void {
     this.isManutencaoModalOpen = false;
+    const usuarioId = this.authService.getId();
+    this.carregarSolicitacoes(usuarioId);
+  }
+
+  onSolicitacaoCriada(): void {
+    alert('Solicitação criada com sucesso!');
+    this.fecharManutencaoModal();
   }
 
   abrirOrcamentoModal(solicitacao: Solicitacao): void {
@@ -136,11 +146,13 @@ export class ClienteHomeComponent implements OnInit {
 
   pagarServico(): void {
     console.log('Pagar Serviço');
-    // TODO: Implementar lógica para RF010
   }
 
   onPagamentoConfirmado(): void {
     this.fecharPagamentoModal();
-    // Optional: Additional actions after payment confirmation
+  }
+
+  logout() {
+    window.location.href = '/login';
   }
 }
