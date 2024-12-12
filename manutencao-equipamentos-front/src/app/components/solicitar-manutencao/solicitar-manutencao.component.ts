@@ -74,7 +74,8 @@ export class SolicitarManutencaoComponent implements OnInit {
             idCliente: localStorage.getItem('id') ?? '',
             cliente: this.clienteAtual!,
             idCategoria: categoriaSelecionada.idCategoria,
-            idResponsavel: ''
+            idResponsavel: '',
+            categoria: { id: categoriaSelecionada.idCategoria, nome_categoria: categoriaSelecionada.nome, ativo: true }
         }; 
 
         console.log('Valor da categoria selecionada:', categoriaSelecionada);

@@ -27,13 +27,19 @@ import { AuthService } from '../../services/auth.service';
 import { SolicitacaoService } from '../../services/solicitacao.service';
 import { ClienteService } from '../../services/cliente.service';
 import { FuncionarioService } from '../../services/funcionario.service';
+import { CategoriaService } from '../../services/categoria.service';
 
 import { Solicitacao } from '../../models/solicitacao.model';
 import { Funcionario } from '../../models/funcionario.model';
 import { Cliente } from '../../models/cliente.model';
 
+interface CategoryData {
+  solicitacoes: Solicitacao[];
+  total: number;
+}
+
 interface CategoryGroup {
-  [key: string]: Solicitacao[];
+  [key: string]: CategoryData;
 }
 
 @Component({
@@ -102,17 +108,21 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
 
   solicitacoesFiltradas: Solicitacao[] = [...this.solicitacoes];
 
+  categorias: { [id: string]: string } = {};
+
   constructor(
     private authService: AuthService,
     private funcionarioService: FuncionarioService,
     private solicitacaoService: SolicitacaoService,
     private clienteService: ClienteService,
+    private categoriaService: CategoriaService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.loadListaFuncionarios();
     this.loadSolicitacoes();
+    this.loadCategorias();
     this.nomeUsuario = this.authService.getNomeUsuario();
   }
 
@@ -131,6 +141,18 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
       error: (error) => {
         console.error('Erro ao carregar solicitações:', error);
       },
+    });
+  }
+
+  loadCategorias(): void {
+    this.categoriaService.getCategorias().subscribe(categorias => {
+      console.log('Loaded categories:', categorias);
+      this.categorias = categorias.reduce((acc, cat) => {
+        console.log(`Processing category - ID: ${cat.id}, Name: ${cat.nome_categoria}`);
+        acc[cat.id.toString()] = cat.nome_categoria;
+        return acc;
+      }, {} as { [id: string]: string });
+      console.log('Processed categories mapping:', this.categorias);
     });
   }
 
@@ -294,6 +316,7 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
       dataTable.push([`${date}`, `R$ ${totalDia.toFixed(2)}`]);
     }
 
+
     (doc as any).autoTable({
       head: [['Data', 'Valor']],
       body: dataTable,
@@ -304,15 +327,49 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
   }
 
   gerarRelatorioReceitasPorCategoria() {
+    if (!this.solicitacoes || this.solicitacoes.length === 0) {
+      console.log('No solicitacoes found');
+      return;
+    }
+
+    if (Object.keys(this.categorias).length === 0) {
+      console.log('No categories loaded');
+      return;
+    }
+
+    console.log('Current categories mapping:', this.categorias);
+    console.log('Sample solicitacao:', this.solicitacoes[0]);
+    
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     doc.text('Relatório de Receitas por Categoria', pageWidth / 2, 10, { align: 'center' });
 
     const groupedByCategory: CategoryGroup = this.solicitacoes.reduce((acc, curr) => {
       if (curr.orcamentos && curr.orcamentos.length > 0) {
-        const categoria = curr.idCategoria;
-        if (!acc[categoria]) acc[categoria] = [];
-        acc[categoria].push(curr);
+        console.log('Solicitacao:', {
+          id: curr.idSolicitacao,
+          categoria: curr.categoria,
+          idCategoria: curr.idCategoria
+        });
+        
+        const categoryKey = curr.categoria?.id?.toString();
+        console.log('Category mapping:', {
+          key: categoryKey,
+          availableCategories: Object.keys(this.categorias),
+          foundName: this.categorias[categoryKey]
+        });
+        
+        const categoriaNome = this.categorias[categoryKey] || 'Categoria Desconhecida';
+        const ultimoOrcamento = curr.orcamentos[curr.orcamentos.length - 1];
+        
+        if (!acc[categoriaNome]) {
+          acc[categoriaNome] = {
+            solicitacoes: [],
+            total: 0
+          } as CategoryData;
+        }
+        acc[categoriaNome].solicitacoes.push(curr);
+        acc[categoriaNome].total += ultimoOrcamento?.valor || 0;
       }
       return acc;
     }, {} as CategoryGroup);
@@ -320,23 +377,10 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
     const dataTable: any[] = [];
     let totalGeral = 0;
 
-    for (const [categoria, solicitacoes] of Object.entries(groupedByCategory)) {
-      const totalCategoria = solicitacoes.reduce((sum, s) => {
-        const ultimoOrcamento = s.orcamentos?.slice(-1)[0];
-        return sum + (ultimoOrcamento?.valor ?? 0);
-      }, 0);
-      
-      totalGeral += totalCategoria;
-      
-      solicitacoes.forEach(solicitacao => {
-        dataTable.push([
-          categoria,
-          `R$ ${(solicitacao.orcamentos?.slice(-1)[0]?.valor ?? 0).toFixed(2)}`
-        ]);
-      });
-      dataTable.push([`Total ${categoria}`, `R$ ${totalCategoria.toFixed(2)}`]);
+    for (const [categoria, dados] of Object.entries(groupedByCategory)) {
+      dataTable.push([categoria, `R$ ${dados.total.toFixed(2)}`]);
+      totalGeral += dados.total;
     }
-
 
     (doc as any).autoTable({
       head: [['Categoria', 'Valor']],
