@@ -6,6 +6,9 @@
         </div>
         <ul class="flex items-center space-x-8">
             <li><a routerLink="/funcionario-home" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Página Inicial</a></li>
+            <li><a routerLink="/funcionario-solicitacoes"
+                class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Solicitações</a></li>
+            <li><a routerLink="/funcionario-solicitacoes" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Solicitações</a></li>
             <li><a routerLink="/categorias-crud" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Categorias</a></li>
             <li><a routerLink="/funcionario-crud" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Funcionários</a></li>
         </ul>
@@ -55,7 +58,7 @@
 
 <app-base-modal [isOpen]="isFuncionarioModalOpen" (onClose)="fecharModalFuncionario()">
     <ng-container modal-header>
-        <h2 class="text-2xl font-semibold text-gray-700">{{ funcionarioSelecionado?.id ? 'Editar Funcionário' : 'Adicionar Funcionário' }}</h2>
+        <h2 class="text-2xl font-semibold text-gray-700">{{ funcionarioSelecionado.id ? 'Editar Funcionário' : 'Adicionar Funcionário' }}</h2>
     </ng-container>
     <ng-container modal-body>
         <form *ngIf="funcionarioSelecionado" (ngSubmit)="salvarFuncionario()" class="space-y-2">

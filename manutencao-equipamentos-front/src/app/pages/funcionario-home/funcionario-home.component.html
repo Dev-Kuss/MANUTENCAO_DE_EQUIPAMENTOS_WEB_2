@@ -6,16 +6,23 @@
         </div>
 
         <ul class="flex items-center space-x-8">
-            <li><a routerLink="/funcionario-home" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Página Inicial</a></li>
-            <li><a routerLink="/funcionario-solicitacoes" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Solicitações</a></li>
-            <li><a routerLink="/categorias-crud" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Categorias</a></li>
-            <li><a routerLink="/funcionario-crud" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Funcionários</a></li>
+            <li><a routerLink="/funcionario-home" class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Página
+                    Inicial</a></li>
+            <li><a routerLink="/funcionario-solicitacoes"
+                    class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Solicitações</a></li>
+            <li><a routerLink="/categorias-crud"
+                    class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Categorias</a></li>
+            <li><a routerLink="/funcionario-crud"
+                    class="rounded px-4 py-2 text-white text-sm hover:bg-white/20">Funcionários</a></li>
         </ul>
 
         <div class="flex items-center space-x-4">
             <div class="bg-pink-500 h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold">
                 F
             </div>
+            <fa-icon [icon]="faSignOutAlt" (click)="logout()"
+                class="text-white text-xl cursor-pointer hover:text-red-500" title="Logout">
+            </fa-icon>
         </div>
     </nav>
     <div class="max-w-screen-2xl mx-auto flex flex-col justify-between mt-10">
@@ -47,7 +54,8 @@
                 <td class="py-2 px-4 text-sm">{{ solicitacao.descricaoDefeito | slice: 0:30}}</td>
                 <td class="py-2 px-4 text-sm">
                     <span class="inline-block align-middle">{{ solicitacao.estado }}</span>
-                    <span class="inline-block w-2 h-2 rounded-full align-middle ml-2 mb-1" [ngClass]="estadoCores[solicitacao.estado]"></span>
+                    <span class="inline-block w-2 h-2 rounded-full align-middle ml-2 mb-1"
+                        [ngClass]="estadoCores[solicitacao.estado]"></span>
                 </td>
                 <td class="py-2 px-4 text-sm text-center space-x-2">
                     <button *ngIf="solicitacao.estado === 'ABERTA'" (click)="efetuarOrcamento(solicitacao)"
@@ -61,7 +69,8 @@
 
     <!-- Navegação de Paginação -->
     <div class="flex space-x-2 mt-4">
-        <button (click)="mudarPagina(paginaAtual - 1)" [disabled]="paginaAtual === 1" class="text-gray-500 hover:text-blue-500">
+        <button (click)="mudarPagina(paginaAtual - 1)" [disabled]="paginaAtual === 1"
+            class="text-gray-500 hover:text-blue-500">
             <i class="fa fa-chevron-left"></i>
         </button>
 
