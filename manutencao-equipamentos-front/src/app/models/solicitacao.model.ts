@@ -9,7 +9,7 @@ export interface Solicitacao {
     descricaoDefeito?: string;
     estado: string;
     dataPagamento?: string | Date;
-    dataHoraFinalizacao?: Date; 
+    dataHoraFinalizacao?: string | Date;
     idCategoria: number;
     idCliente: string;
     cliente: Cliente; 
@@ -18,18 +18,3 @@ export interface Solicitacao {
     orcamentos?: Orcamento[];
     orientacoesCliente?: string;
 }
-
-// export interface Solicitacao {
-//     idSolicitacao: number;
-//     dataHora: Date;
-//     descricaoEquipamento: string;
-//     descricaoDefeito?: string;
-//     estado: string;
-//     dataPagamento?: Date;
-//     dataHoraFinalizacao?: Date; 
-//     idCategoria: number;
-//     idCliente: string;
-//     idResponsavel?: string;
-//     historicos?: HistoricoSolicitacao[];
-//     orcamentos?: Orcamento[];
-// }

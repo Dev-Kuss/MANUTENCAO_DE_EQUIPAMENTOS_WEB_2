@@ -87,7 +87,7 @@ export class FuncionarioSolicitacoesComponent implements OnInit {
 
   estadoCores: any = {
     'ABERTA': 'bg-gray-500',
-    'ORÇADA': 'bg-brown-500',
+    'ORÇADA': 'bg-amber-700',
     'REJEITADA': 'bg-red-500',
     'APROVADA': 'bg-yellow-500',
     'REDIRECIONADA': 'bg-purple-500',
